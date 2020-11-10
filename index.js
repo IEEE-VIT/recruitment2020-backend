@@ -2,13 +2,13 @@ const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
-
+const port = process.env.port || 5000
 require("dotenv").config();
 
 const app = express();
 app.use(
   express.json({
-    extended: false,
+    extended: true,
   })
 );
 
