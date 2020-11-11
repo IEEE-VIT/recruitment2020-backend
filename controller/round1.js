@@ -1,7 +1,8 @@
 const userModel = require("../models/userModel");
+const roundModel = require("../models/roundModel");
 const response = require("../utils/genericResponse");
 
-const updateProjectLink = (req, res) => {
+const updateProjectLink = async (req, res) => {
   userModel
     .update(
       { projectLink: req.body.projectLink },
@@ -19,5 +20,26 @@ const updateProjectLink = (req, res) => {
     });
 };
 
+const fetchReadyCandidates = async (req, res) => {
+  roundModel
+    .findAll({
+      attributes: ["regNo"],
+      include: userModel,
+      where: {
+        roundNo: 1,
+        meetingCompleted: false,
+      },
+    })
+    .then((result) => {
+      if (result === null) {
+        response(res, true, result, "No Ready candidates for Round 1 found");
+      } else {
+        response(res, true, result, "Ready candidates for Round 1 found");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
 
-module.exports = {updateProjectLink}
+module.exports = { updateProjectLink, fetchReadyCandidates };

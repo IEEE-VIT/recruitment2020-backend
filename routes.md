@@ -37,7 +37,7 @@
 
 #### R1
 
-- Fetch Ready Candidates (GET) --> Hemanth  (/api/admin/r1/candidates) GET
+- ~~Fetch Ready Candidates (GET) --> Hemanth  (/api/admin/r1/candidates) GET~~
 
 - Select Candidate to interview (POST) --> Hemanth (/api/admin/r1/candidates) POST
 
