@@ -4,7 +4,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const port = process.env.port || 5000;
 require("dotenv").config();
-const sequelize = require("./utils/relations")
+const relations = require("./utils/relations")
 
 const app = express();
 app.use(
@@ -21,8 +21,10 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+const sequelize = relations
+
 sequelize
-  .sync({ force: true })
+  .sync({ force: true, logging: false })
   .then(() => {
     console.log("Success connection to db");
     const port = process.env.PORT || 5000;

@@ -44,6 +44,10 @@ const User=sequelize.define('User',{
       notEmpty:true
     }
   },
+  coreDomain:{
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: false
+  },
   selectedDomains:{
     type: DataTypes.ARRAY(DataTypes.STRING)
   },
