@@ -17,6 +17,7 @@
     "express-validator": "^6.6.1",
     "helmet": "^4.2.0",
     "morgan": "^1.10.0",
+    "mysql2": "^2.2.5",
     "sequelize": "^6.3.5"
   },
   "devDependencies": {

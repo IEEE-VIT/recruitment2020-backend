@@ -2,8 +2,9 @@ const express = require("express");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
-const port = process.env.port || 5000
+const port = process.env.port || 5000;
 require("dotenv").config();
+const sequelize = require("./utils/relations")
 
 const app = express();
 app.use(
@@ -20,4 +21,13 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+sequelize
+  .sync({ force: true })
+  .then(() => {
+    console.log("Success connection to db");
+    const port = process.env.PORT || 5000;
+    app.listen(port, () => console.log(`Server running on port ${port}`));
+  })
+  .catch((err) => {
+    console.log(`Failure to connect to db due to ${err}`);
+  });

@@ -1,48 +1,48 @@
-const { DataTypes } = require("sequelize");
-const validator = require('validator');
+const { DataTypes, Sequelize }   = require("sequelize");
+const validator = require("validator");
+const sequelize = require("../utils/db");
 
-const Admin=sequelize.define('Admin',{
-  auid:{
+const Admin = sequelize.define("Admin", {
+  auid: {
     type: DataTypes.UUID,
-    primaryKey:true,
-    unique:true,
+    primaryKey: true,
+    unique: true,
     defaultValue: Sequelize.UUIDV4,
-    validate:{
-      notNull:true,
-      notEmpty:true
-    }
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
-  name:{
-    type:DataTypes.STRING,
-    validate:{
-      notNull:true,
-      notEmpty:true,
-      isAlpha:true
-    }
-  },
-  email:{
-    type:DataTypes.STRING,
-    unique:true,
-    validate:{
-      notNull:true,
-      notEmpty:true,
-      isEmail:true
-    }
-  },
-  password:{
-    type:DataTypes.STRING,
-    validate:{
-      notNull:true,
-      notEmpty:true
-    }
-  },
-  meetLink:{
+  name: {
     type: DataTypes.STRING,
-    validate:{
-      isUrl:true
-    }
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      isAlpha: true,
+    },
   },
-  tableName:'Admins'
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+      isEmail: true,
+    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
+  },
+  meetLink: {
+    type: DataTypes.STRING,
+    validate: {
+      isUrl: true,
+    },
+  }
 });
 
-module.exports=Admin;
+module.exports = Admin;
