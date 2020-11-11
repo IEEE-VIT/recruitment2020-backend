@@ -13,6 +13,9 @@ const Slot=sequelize.define('Slot',{
       notEmpty:true
     }
   },
+  moderatorId: {
+    type: DataTypes.UUID
+  },
   date:{
     type:DataTypes.DATEONLY,
     allowNull: false,

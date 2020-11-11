@@ -8,7 +8,7 @@ const teaserQuestion = require("../models/teaserQuestionModel");
 const sequelize = require("./db");
 
 
-function relations(){
+const relations = () => {
     slot.belongsTo(round, {foreignKey: 'suid'});
     admin.belongsTo(round,{foreignKey: 'auid'});
     comment.belongsTo(round, {foreignKey: 'cuid'});
@@ -18,4 +18,4 @@ function relations(){
 }
 
 
-module.exports = relations();
+module.exports = relations;
