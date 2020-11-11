@@ -17,7 +17,6 @@ const User = sequelize.define("User", {
     allowNull: false,
     validate: {
       notEmpty: true,
-      isAlpha: true,
     },
   },
   phoneNo: {

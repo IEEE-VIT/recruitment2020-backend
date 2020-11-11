@@ -6,16 +6,19 @@ const port = process.env.port || 5000;
 require("dotenv").config();
 const relations = require("./utils/relations");
 
+const userRoute = require("./routes/user");
+
 const app = express();
 app.use(
   express.json({
-    extended: true,
+    extended: false,
   })
 );
 
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
+app.use("/api", userRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
