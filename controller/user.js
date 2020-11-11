@@ -70,7 +70,6 @@ const deleteUser = async (req, res) => {
         }else{
             response(res, true, user, "User deleted successfully")
         }
-      
     })
     .catch((err) => {
       response(res, false, "", err.toString());

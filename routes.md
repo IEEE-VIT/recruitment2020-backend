@@ -1,6 +1,6 @@
 ### User Routes 
 
-- User Obj - CRUD --> Hemanth  (/api/user GET POST DEL PUT)
+- ~~User Obj - CRUD --> Hemanth  (/api/user GET POST DEL PUT)~~
 
 - Fetch BrainTeasers (GET) --> Shubham (/api/r0/bt)
     - Questions (No of Ques)
@@ -19,7 +19,7 @@
     - yes/no
 
 #### Tech 
-- Project Submission Link (POST)  --> Hemanth (/api/r1/project)
+- ~~Project Submission Link (POST)  --> Hemanth (/api/r1/project)~~
     - URLs (One GitHub Gist/Readme)
 
 #### Mgmt 
