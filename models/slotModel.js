@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const validator = require('validator');
 
 const Slot=sequelize.define('Slot',{
-  Suid:{
+  suid:{
     type: DataTypes.UUID,
     primaryKey:true,
     unique:true,
@@ -12,25 +12,25 @@ const Slot=sequelize.define('Slot',{
       notEmpty:true
     }
   },
-  Date:{
+  date:{
     type:DataTypes.DATEONLY,
     validate:{
       notNull:true,
       notEmpty:true
     }
   },
-  TimeRange:{
+  timeRange:{
     type:DataTypes.STRING,
     validate:{
       notNull:true,
       notEmpty:true
     }
   },
-  Count:{
+  count:{
     type:DataTypes.INTEGER,
     defaultValue:0
   },
-  GDPLink:{
+  gdpLink:{
     type: DataTypes.STRING,
     validate:{
       isUrl:true
@@ -39,4 +39,4 @@ const Slot=sequelize.define('Slot',{
   tableName:'Slots'
 });
 
-module.exports={ Slot }
+module.exports=Slot;

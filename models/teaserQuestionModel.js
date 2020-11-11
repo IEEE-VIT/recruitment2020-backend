@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const validator = require('validator');
 
 const TeaserQuestion=sequelize.define('TeaserQuestion',{
-  Quid:{
+  quid:{
     type: DataTypes.UUID,
     primaryKey:true,
     unique:true,
@@ -12,7 +12,7 @@ const TeaserQuestion=sequelize.define('TeaserQuestion',{
       notEmpty:true
     }
   },
-  Question:{
+  question:{
     type:DataTypes.STRING,
     validate:{
       notNull:true,
@@ -22,4 +22,4 @@ const TeaserQuestion=sequelize.define('TeaserQuestion',{
   tableName:'TeaserQuestions'
 });
 
-module.exports={ TeaserQuestion }
+module.exports=TeaserQuestion;

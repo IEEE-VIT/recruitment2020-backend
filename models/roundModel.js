@@ -2,12 +2,12 @@ const { DataTypes } = require("sequelize");
 const validator = require('validator');
 
 const Round=sequelize.define('Round',{
-  RoundNo:{
+  roundNo:{
     primaryKey:true,
     type:DataTypes.ENUM,
     values:['0','1','2','3']
   },
-  RegNo:{
+  regNo:{
     type:DataTypes.STRING(9),
     primaryKey:true,
     validate:{
@@ -15,7 +15,7 @@ const Round=sequelize.define('Round',{
       notEmpty:true
     }
   },
-  Auid:{
+  auid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
     validate:{
@@ -23,7 +23,7 @@ const Round=sequelize.define('Round',{
       notEmpty:true
     }
   },
-  Suid:{
+  suid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
     validate:{
@@ -31,7 +31,7 @@ const Round=sequelize.define('Round',{
       notEmpty:true
     }
   },
-  Cuid:{
+  cuid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
     validate:{
@@ -39,15 +39,15 @@ const Round=sequelize.define('Round',{
       notEmpty:true
     }
   },
-  Exception:{
+  exception:{
     type:DataTypes.BOOLEAN,
     defaultValue:false
   },
-  MeetingCompleted:{
+  meetingCompleted:{
     type:DataTypes.BOOLEAN,
     defaultValue:false
   },
-  Domain:{
+  domain:{
     type:DataTypes.STRING,
     primaryKey:true,
     validate:{
@@ -58,4 +58,4 @@ const Round=sequelize.define('Round',{
   tableName:'Rounds'
 });
 
-module.exports={ Round }
+module.exports=Round;

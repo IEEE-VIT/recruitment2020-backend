@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const validator = require('validator');
 
 const Admin=sequelize.define('Admin',{
-  Auid:{
+  auid:{
     type: DataTypes.UUID,
     primaryKey:true,
     unique:true,
@@ -12,7 +12,7 @@ const Admin=sequelize.define('Admin',{
       notEmpty:true
     }
   },
-  Name:{
+  name:{
     type:DataTypes.STRING,
     validate:{
       notNull:true,
@@ -20,7 +20,7 @@ const Admin=sequelize.define('Admin',{
       isAlpha:true
     }
   },
-  Email:{
+  email:{
     type:DataTypes.STRING,
     unique:true,
     validate:{
@@ -29,14 +29,14 @@ const Admin=sequelize.define('Admin',{
       isEmail:true
     }
   },
-  Password:{
+  password:{
     type:DataTypes.STRING,
     validate:{
       notNull:true,
       notEmpty:true
     }
   },
-  MeetLink:{
+  meetLink:{
     type: DataTypes.STRING,
     validate:{
       isUrl:true
@@ -45,4 +45,4 @@ const Admin=sequelize.define('Admin',{
   tableName:'Admins'
 });
 
-module.exports={ Admin }
+module.exports=Admin;
