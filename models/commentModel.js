@@ -1,40 +1,40 @@
-const { DataTypes } = require("sequelize");
-const validator = require('validator');
+const { DataTypes, Sequelize }   = require("sequelize");
+const validator = require("validator");
+const sequelize = require("../utils/db");
 
-const Comment=sequelize.define('Comment',{
-  cuid:{
+const Comment = sequelize.define("Comment", {
+  cuid: {
     type: DataTypes.UUID,
-    primaryKey:true,
-    unique:true,
+    primaryKey: true,
+    unique: true,
     defaultValue: Sequelize.UUIDV4,
-    validate:{
-      notNull:true,
-      notEmpty:true
-    }
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
-  regNo:{
-    type:DataTypes.STRING(9),
-    validate:{
-      notNull:true,
-      notEmpty:true
-    }
+  regNo: {
+    type: DataTypes.STRING(9),
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
-  auid:{
+  auid: {
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
-    validate:{
-      notNull:true,
-      notEmpty:true
-    }
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
-  comment:{
-    type:DataTypes.STRING,
-    validate:{
-      notNull:true,
-      notEmpty:true,
-    }
+  comment: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
-  tableName:'Comments'
 });
 
-module.exports=Comment;
+module.exports = Comment;

@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize");
-const validator = require('validator');
+const { DataTypes, Sequelize }   = require("sequelize");
+const validator = require("validator");
+const sequelize = require("../utils/db");
 
 const TeaserQuestion=sequelize.define('TeaserQuestion',{
   quid:{
@@ -7,19 +8,18 @@ const TeaserQuestion=sequelize.define('TeaserQuestion',{
     primaryKey:true,
     unique:true,
     defaultValue: Sequelize.UUIDV4,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
   question:{
     type:DataTypes.STRING,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
-  },
-  tableName:'TeaserQuestions'
+  }
 });
 
 module.exports=TeaserQuestion;

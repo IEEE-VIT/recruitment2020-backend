@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize");
-const validator = require('validator');
+const { DataTypes, Sequelize }   = require("sequelize");
+const validator = require("validator");
+const sequelize = require("../utils/db");
 
 const Slot=sequelize.define('Slot',{
   suid:{
@@ -7,22 +8,22 @@ const Slot=sequelize.define('Slot',{
     primaryKey:true,
     unique:true,
     defaultValue: Sequelize.UUIDV4,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
   date:{
     type:DataTypes.DATEONLY,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
   timeRange:{
     type:DataTypes.STRING,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
@@ -35,8 +36,7 @@ const Slot=sequelize.define('Slot',{
     validate:{
       isUrl:true
     }
-  },
-  tableName:'Slots'
+  }
 });
 
 module.exports=Slot;

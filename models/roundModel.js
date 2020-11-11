@@ -1,5 +1,6 @@
-const { DataTypes } = require("sequelize");
-const validator = require('validator');
+const { DataTypes, Sequelize }   = require("sequelize");
+const validator = require("validator");
+const sequelize = require("../utils/db");
 
 const Round=sequelize.define('Round',{
   roundNo:{
@@ -10,32 +11,32 @@ const Round=sequelize.define('Round',{
   regNo:{
     type:DataTypes.STRING(9),
     primaryKey:true,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
   auid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
   suid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
   cuid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
   },
@@ -50,12 +51,11 @@ const Round=sequelize.define('Round',{
   domain:{
     type:DataTypes.STRING,
     primaryKey:true,
+    allowNull: false,
     validate:{
-      notNull:true,
       notEmpty:true
     }
-  },
-  tableName:'Rounds'
+  }
 });
 
 module.exports=Round;
