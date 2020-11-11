@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const validator = require('validator');
 
-const teaserQuestion=sequelize.define('teaserQuestion',{
+const TeaserQuestion=sequelize.define('TeaserQuestion',{
   Quid:{
     type: DataTypes.UUID,
     defaultValue: Sequelize.UUIDV4,

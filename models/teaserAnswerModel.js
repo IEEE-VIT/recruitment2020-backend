@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const validator = require('validator');
 
-const teaserAnswer=sequelize.define('teaserAnswer',{
+const TeaserAnswer=sequelize.define('TeaserAnswer',{
   RegNo:{
     type:DataTypes.STRING(9),
     validate:{
