@@ -4,20 +4,20 @@ const validator = require('validator');
 const Comment=sequelize.define('Comment',{
   Cuid:{
     type: DataTypes.UUID,
+    primaryKey:true,
+    unique:true,
     defaultValue: Sequelize.UUIDV4,
     validate:{
       notNull:true,
       notEmpty:true
-    },
-    unique:true
+    }
   },
   RegNo:{
     type:DataTypes.STRING(9),
     validate:{
       notNull:true,
       notEmpty:true
-    },
-    unique:true
+    }
   },
   Auid:{
     type: DataTypes.UUID,
@@ -25,8 +25,7 @@ const Comment=sequelize.define('Comment',{
     validate:{
       notNull:true,
       notEmpty:true
-    },
-    unique:true
+    }
   },
   Comment:{
     type:DataTypes.STRING,
@@ -37,3 +36,5 @@ const Comment=sequelize.define('Comment',{
   },
   tableName:'Comments'
 });
+
+module.exports={ Comment }

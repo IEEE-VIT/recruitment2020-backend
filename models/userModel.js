@@ -4,11 +4,12 @@ const validator = require('validator');
 const User=sequelize.define('User',{
   RegNo:{
     type:DataTypes.STRING(9),
+    primaryKey:true,
+    unique:true,
     validate:{
       notNull:true,
       notEmpty:true
-    },
-    unique:true
+    }
   },
   Name:{
     type:DataTypes.STRING,
@@ -20,23 +21,27 @@ const User=sequelize.define('User',{
   },
   PhoneNo:{
     type:DataTypes.BIGINT(12),
+    unique:true,
     validate:{
       notNull:true,
       notEmpty:true,
       isNumeric:true,
-      unique:true
-    },
-    unique:true
+    }
   },
   Email:{
     type:DataTypes.STRING,
-    allowNull:false,
-    unique:true,
-    isEmail:true
+    validate:{
+      notNull:true,
+      notEmpty:true,
+      isEmail:true,
+    }
   },
   Password:{
     type:DataTypes.STRING,
-    allowNull:false
+    validate:{
+      notNull:true,
+      notEmpty:true
+    }
   },
   SelectedDomains:{
     type:DataTypes.ARRAY(DataTypes.STRING)
@@ -49,3 +54,5 @@ const User=sequelize.define('User',{
   },
   tableName:'Users'
 });
+
+module.exports= { User }

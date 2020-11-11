@@ -4,12 +4,13 @@ const validator = require('validator');
 const Slot=sequelize.define('Slot',{
   Suid:{
     type: DataTypes.UUID,
+    primaryKey:true,
+    unique:true,
     defaultValue: Sequelize.UUIDV4,
     validate:{
       notNull:true,
       notEmpty:true
-    },
-    unique:true
+    }
   },
   Date:{
     type:DataTypes.DATEONLY,
@@ -37,3 +38,5 @@ const Slot=sequelize.define('Slot',{
   },
   tableName:'Slots'
 });
+
+module.exports={ Slot }

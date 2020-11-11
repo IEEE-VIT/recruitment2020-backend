@@ -3,12 +3,13 @@ const validator = require('validator');
 
 const Round=sequelize.define('Round',{
   RoundNo:{
+    primaryKey:true,
     type:DataTypes.ENUM,
-    values:['Round 0','Round 1','Round 2','Round 3']
-
+    values:['0','1','2','3']
   },
   RegNo:{
     type:DataTypes.STRING(9),
+    primaryKey:true,
     validate:{
       notNull:true,
       notEmpty:true
@@ -48,6 +49,7 @@ const Round=sequelize.define('Round',{
   },
   Domain:{
     type:DataTypes.STRING,
+    primaryKey:true,
     validate:{
       notNull:true,
       notEmpty:true
@@ -55,3 +57,5 @@ const Round=sequelize.define('Round',{
   },
   tableName:'Rounds'
 });
+
+module.exports={ Round }
