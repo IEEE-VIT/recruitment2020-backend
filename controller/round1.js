@@ -26,7 +26,7 @@ const fetchReadyCandidates = async (req, res) => {
       attributes: ["regNo"],
       include: userModel,
       where: {
-        roundNo: 1,
+        roundNo: "1",
         meetingCompleted: false,
       },
     })

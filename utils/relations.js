@@ -12,7 +12,8 @@ const relations = () => {
     slot.belongsTo(round, {foreignKey: 'suid'});
     admin.belongsTo(round,{foreignKey: 'auid'});
     comment.belongsTo(round, {foreignKey: 'cuid'});
-    user.belongsTo(round, {foreignKey: 'regNo'});
+    user.hasMany(round,{foreignKey: "regNo"})
+    round.belongsTo(user,{foreignKey: "regNo"});
     teaserQuestion.belongsTo(teaserAnswer, {foreignKey: 'quid'});
     return sequelize;
 }
