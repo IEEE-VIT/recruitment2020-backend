@@ -30,8 +30,8 @@ const fetchReadyCandidates = async (req, res) => {
         meetingCompleted: false,
       },
     })
-    .then((result) => {
-      if (result === null) {
+    .then(result => {
+      if (result.length === 0 ) {
         response(res, true, result, "No Ready candidates for Round 1 found");
       } else {
         response(res, true, result, "Ready candidates for Round 1 found");
