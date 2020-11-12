@@ -19,6 +19,8 @@ app.use(
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
+app.use("/api", userRoute);
+
 
 app.use("/api", userRoute);
 app.use("/api/admin",adminRound1Route)
