@@ -2,7 +2,7 @@ const { DataTypes, Sequelize }   = require("sequelize");
 const validator = require("validator");
 const sequelize = require("../utils/db");
 
-const TeaserAnswer=sequelize.define('TeaserAnswer',{
+const Answer=sequelize.define('Answer',{
   regNo:{
     type:DataTypes.STRING(9),
     primaryKey:true,
@@ -12,9 +12,8 @@ const TeaserAnswer=sequelize.define('TeaserAnswer',{
     }
   },
   quid:{
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER,
     primaryKey:true,
-    defaultValue: Sequelize.UUIDV4,
     allowNull: false,
     validate:{
       notEmpty:true
@@ -29,4 +28,4 @@ const TeaserAnswer=sequelize.define('TeaserAnswer',{
   }
 });
 
-module.exports=TeaserAnswer;
+module.exports=Answer;

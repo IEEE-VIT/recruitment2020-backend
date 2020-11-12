@@ -4,17 +4,16 @@ const sequelize = require("../utils/db");
 
 const Slot=sequelize.define('Slot',{
   suid:{
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER,
     primaryKey:true,
     unique:true,
-    defaultValue: Sequelize.UUIDV4,
     allowNull: false,
     validate:{
       notEmpty:true
     }
   },
   moderatorId: {
-    type: DataTypes.UUID
+    type: DataTypes.INTEGER
   },
   date:{
     type:DataTypes.DATEONLY,

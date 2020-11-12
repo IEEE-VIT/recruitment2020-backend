@@ -17,24 +17,21 @@ const Round = sequelize.define("Round", {
     },
   },
   auid: {
-    type: DataTypes.UUID,
-    defaultValue: Sequelize.UUIDV4,
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
   suid: {
-    type: DataTypes.UUID,
-    defaultValue: Sequelize.UUIDV4,
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
   cuid: {
-    type: DataTypes.UUID,
-    defaultValue: Sequelize.UUIDV4,
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       notEmpty: true,

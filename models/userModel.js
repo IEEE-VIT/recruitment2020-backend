@@ -20,7 +20,7 @@ const User = sequelize.define("User", {
     },
   },
   phoneNo: {
-    type: DataTypes.BIGINT(12),
+    type: DataTypes.INTEGER,
     allowNull: false,
     unique: true,
     validate: {
@@ -49,6 +49,9 @@ const User = sequelize.define("User", {
   },
   specificDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
+  },
+  puid: {
+    type: DataTypes.INTEGER,
   },
   projectLink: {
     type: DataTypes.STRING,

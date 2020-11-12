@@ -4,10 +4,9 @@ const sequelize = require("../utils/db");
 
 const Admin = sequelize.define("Admin", {
   auid: {
-    type: DataTypes.UUID,
+    type: DataTypes.INTEGER,
     primaryKey: true,
     unique: true,
-    defaultValue: Sequelize.UUIDV4,
     allowNull: false,
     validate: {
       notEmpty: true,

@@ -10,7 +10,8 @@ const response = require("../utils/genericResponse");
 const addQuestion= async (req,res)=>{
   await questionModel.create({
     quid: req.body.quid,
-    question: req.body.question
+    question: req.body.question,
+    mandatory:req.body.mandatory
   })
   .then((ques)=>{
     response(res,true,ques,"Question added");
