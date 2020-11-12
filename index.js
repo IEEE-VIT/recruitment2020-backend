@@ -8,6 +8,9 @@ const relations = require("./utils/relations");
 
 const userRoute = require("./routes/user");
 const adminRound1Route = require("./routes/admin")
+const userRoute2 = require("./routes/user/brainteaser");
+const r0slotRoute = require("./routes/user/r0slots");
+
 
 const app = express();
 app.use(
@@ -19,7 +22,9 @@ app.use(
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
+
 app.use("/api", userRoute);
+app.use("/api", r0slotRoute);
 
 
 app.use("/api", userRoute);

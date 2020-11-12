@@ -10,13 +10,14 @@ const addQuestion= async (req,res)=>{
     response(res,true,ques,"Question added");
   })
   .catch((err)=>{
-    response(res,false,"",err.toString);
+    response(res,false,"",err.toString());
   })
 };
 
 
 const getQuestions= async (req,res)=>{
-  await btModel.findAll()
+  var n=2;
+  await btModel.findAll({limit:n})
   .then((teaser)=>{
     response(res,true,teaser,"Questions Sent");
   })
