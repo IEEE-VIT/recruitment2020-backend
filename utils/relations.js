@@ -3,8 +3,8 @@ const user = require("../models/userModel");
 const comment = require("../models/commentModel");
 const round = require("../models/roundModel");
 const slot = require("../models/slotModel");
-const teaserAnswer = require("../models/teaserAnswerModel");
-const teaserQuestion = require("../models/teaserQuestionModel");
+const teaserAnswer = require("../models/answerModel");
+const teaserQuestion = require("../models/questionModel");
 const sequelize = require("./db");
 
 

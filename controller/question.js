@@ -1,4 +1,4 @@
-const btModel = require("../models/teaserQuestionModel");
+const btModel = require("../models/questionModel");
 const response = require("../utils/genericResponse");
 
 const addQuestion= async (req,res)=>{
