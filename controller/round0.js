@@ -1,5 +1,5 @@
 const { Op } = require("sequelize");
-
+const sequelize=require("sequelize");
 const slotModel = require("../models/slotModel");
 const questionModel = require("../models/questionModel");
 const roundModel = require("../models/roundModel");
@@ -22,18 +22,18 @@ const addQuestion= async (req,res)=>{
 };
 
 
-const getQuestions= async (req,res)=>{
-  var n=2;
-  await questionModel.findAll({limit:n})
-  .then((teaser)=>{
+const getQuestions= async (req,res)=>
+{
+  // RETURNS 2 ARRAYS ONE WITH mandatory AND ONE WITH optional
+  Promise.all(questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: 1 }), questionModel.findAll({where:{mandatory:true}}))
+  .then((teaser) => {
     response(res,true,teaser,"Questions Sent");
-  })
-  .catch((err)=>{
-    response(res,false,"",err.toString());
-  })
-};
-
-module.exports = { addQuestion, getQuestions };
+    })
+    .catch((err)=>{
+      console.log(err);
+      response(res,false,"",err.toString());
+    })
+  };
 
 
 const addSlot= async (req,res)=>{
