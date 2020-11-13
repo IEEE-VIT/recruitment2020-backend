@@ -17,11 +17,7 @@ const Round = sequelize.define("Round", {
     },
   },
   auid: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
+    type: DataTypes.INTEGER
   },
   suid: {
     type: DataTypes.INTEGER,
@@ -31,11 +27,7 @@ const Round = sequelize.define("Round", {
     },
   },
   cuid: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
+    type: DataTypes.INTEGER
   },
   exception: {
     type: DataTypes.BOOLEAN,
