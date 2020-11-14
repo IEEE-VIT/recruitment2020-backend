@@ -42,4 +42,27 @@ const fetchReadyCandidates = async (req, res) => {
     });
 };
 
-module.exports = { updateProjectLink, fetchReadyCandidates };
+const isReady=async (req,res)=>{
+  roundModel.findOne({where:{regNo:req.body.regNo,roundNo:"0"}})
+  .then((data)=>{
+    roundModel.create({
+      roundNo:"1",
+      regNo: data.regNo,
+      suid:data.suid,
+      status:"PR",
+      domain:data.domain
+      }).
+      then((round)=>{
+        response(res,true,round,"Added to Round 1");
+      })
+      .catch((err)=>{
+          response(res,false,"",err.toString());
+      })
+  })
+  .catch((err) =>
+  {
+    response(res, false, "", err.toString());
+  });
+};
+
+module.exports = { updateProjectLink, fetchReadyCandidates, isReady };
