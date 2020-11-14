@@ -6,6 +6,7 @@ router.post("/slots",round0Controller.addSlot);
 router.get("/slots", round0Controller.getSlots);
 router.post("/question", round0Controller.addQuestion);
 router.get("/question", round0Controller.getQuestions);
+router.post("/verifyslotTime",round0Controller.verifyslotTime);
 
 
 module.exports = router;

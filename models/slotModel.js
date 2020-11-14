@@ -22,8 +22,15 @@ const Slot=sequelize.define('Slot',{
       notEmpty:true
     }
   },
-  timeRange:{
-    type:DataTypes.STRING,
+  timeFrom:{
+    type:DataTypes.TIME,
+    allowNull: false,
+    validate:{
+      notEmpty:true
+    }
+  },
+  timeTo:{
+    type:DataTypes.TIME,
     allowNull: false,
     validate:{
       notEmpty:true

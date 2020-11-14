@@ -40,7 +40,8 @@ const addSlot= async (req,res)=>{
   slotModel.create({
     suid: req.body.suid,
     date: req.body.date,
-    timeRange: req.body.timeRange
+    timeFrom: req.body.timeFrom,
+    timeTo:req.body.timeTo
   })
   .then((ques)=>{
     response(res,true,ques,"Slot added");
@@ -75,7 +76,7 @@ const userForm= async (req,res)=>{
       console.log(err);
     })
   });
-  slotModel.findOne({where:{date:req.body.date,timeRange:req.body.timeRange}})
+  slotModel.findOne({where:{date:req.body.date,timeFrom:req.body.timeFrom,timeTo:req.body.timeTo}})
   .then((slot)=>{
     roundModel.create({
       roundNo:0,
@@ -96,6 +97,40 @@ const userForm= async (req,res)=>{
     });
 };
 
+const verifyslotTime= async (req,res)=>{
 
+  // NEED TO CHECK IF IT WORKS FOR DIFFERENT TIME ZONES TOO
+  // AS OF NOW IT WORKS IF THE TIME SLOTS AND THE SERVER CLOCK ARE SYNCED
 
-module.exports = { addQuestion, getQuestions, addSlot, getSlots, userForm };
+  roundModel.findOne({where:{regNo:req.body.regNo}})
+  .then((data)=>{
+    slotModel.findOne({where:{suid:data.suid}})
+    .then((slot)=>{
+      var todayDate = new Date().toISOString().slice(0,10);
+      var todayTime = new Date().toLocaleTimeString('it-IT',{hour12:false});
+
+      // console.log(todayDate);
+      // console.log(todayTime);
+      // console.log(slot.timeFrom);
+      // console.log(slot.timeTo);
+
+      if(todayDate==slot.date && todayTime>=slot.timeFrom && todayTime<=slot.timeTo)
+      {
+        response(res,true,true,"Slot Time Verified");
+      }
+      else
+      {
+        response(res,true,false,"Slot Time Incorrect");
+      }
+
+    })
+    .catch((err)=>{
+        response(res,false,"",err.toString());
+    })
+  })
+  .catch((err)=>{
+      response(res,false,"",err.toString());
+  })
+};
+
+module.exports = { addQuestion, getQuestions, addSlot, getSlots, userForm, verifyslotTime };
