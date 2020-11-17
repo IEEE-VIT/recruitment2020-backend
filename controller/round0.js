@@ -26,7 +26,7 @@ const addQuestion= async (req,res)=>{
 const getQuestions= async (req,res)=>
 {
   // RETURNS 2 ARRAYS ONE WITH mandatory AND ONE WITH optional
-  Promise.all(questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: 1 }), questionModel.findAll({where:{mandatory:true}}))
+  Promise.all([questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: 1 }), questionModel.findAll({where:{mandatory:true}})])
   .then((teaser) => {
     response(res,true,teaser,"Questions Sent");
     })
@@ -39,6 +39,7 @@ const getQuestions= async (req,res)=>
 const addSlot= async (req,res)=>{
   slotModel.create({
     suid: req.body.suid,
+    roundNo:1,
     date: req.body.date,
     timeFrom: req.body.timeFrom,
     timeTo:req.body.timeTo
@@ -53,7 +54,7 @@ const addSlot= async (req,res)=>{
 
 
 const getSlots= async (req,res)=>{
-  slotModel.findAll({where:{count:{[Op.lt]:5}}})
+  slotModel.findAll({where:{count:{[Op.lt]:5},roundNo:"1"}})
   .then((slot)=>{
     response(res,true,slot,"Slots Sent");
   })

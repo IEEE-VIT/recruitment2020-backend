@@ -12,6 +12,14 @@ const Slot=sequelize.define('Slot',{
       notEmpty:true
     }
   },
+  roundNo: {
+    type: DataTypes.ENUM,
+    values: ["0", "1", "2", "3"],
+    allowNull: false,
+    validate:{
+      notEmpty:true
+    }
+  },
   moderatorId: {
     type: DataTypes.INTEGER
   },

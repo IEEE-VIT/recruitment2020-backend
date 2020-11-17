@@ -20,7 +20,7 @@ const User = sequelize.define("User", {
     },
   },
   phoneNo: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.BIGINT,
     allowNull: false,
     unique: true,
     validate: {
