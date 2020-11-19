@@ -10,5 +10,6 @@ router.get("/r2/mgmt/candidates",adminController.fetchMgmtRound2Candidates);
 router.get("/all",adminController.fetchAllAdmins);
 
 router.get("/exceptions",adminController.fetchExceptions);
+router.post("/exceptions",adminController.resolveExceptions);
 
 module.exports = router;

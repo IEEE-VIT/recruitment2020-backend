@@ -30,8 +30,8 @@ const Round = sequelize.define("Round", {
     type: DataTypes.INTEGER
   },
   exception: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false,
+    type: DataTypes.STRING,
+    defaultValue: null,
   },
   meetingCompleted: {
     type: DataTypes.BOOLEAN,

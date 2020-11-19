@@ -3,6 +3,7 @@ const adminModel = require("../models/adminModel");
 const roundModel=require("../models/roundModel");
 const userModel=require("../models/userModel");
 const slotModel=require("../models/slotModel");
+const commentModel=require("../models/commentModel");
 
 const response = require("../utils/genericResponse");
 
@@ -110,7 +111,51 @@ const fetchAllAdmins= async (req,res)=>{
 }
 
 const fetchExceptions= async (req,res)=>{
-  res.send(req.query.id);
+  roundModel.findAll({where:{roundNo:req.query.roundNo,regNo:req.query.regNo, exception:{[Op.ne]:null}}})
+  .then((data)=>{
+    response(res,true,data,"Exceptions Sent");
+  })
+  .catch((err)=>{
+    response(res, false, "", err.toString());
+  })
 };
 
-module.exports={ readAdmin, updateAdmin, fetchTechRound2Candidates, fetchMgmtRound2Candidates, fetchAllAdmins, fetchExceptions }
+const resolveExceptions=async(req,res)=>{
+  roundModel.update({
+    exception:null
+  },{where:{roundNo:req.body.roundNo , regNo:req.body.regNo, domain:req.body.domain}})
+  .then((data)=>{
+    if(data==1)
+    {
+      commentModel.create({
+        cuid:req.body.cuid,
+        regNo:req.body.regNo,
+        auid:req.body.auid,
+        comment:req.body.comment
+      })
+      .then((comment)=>{
+        roundModel.update({
+          cuid:comment.cuid
+        },{where:{roundNo:req.body.roundNo , regNo:req.body.regNo, domain:req.body.domain}})
+        .then((data)=>{
+            response(res,true,data,"Exception Resolved");
+        })
+        .catch((err)=>{
+          response(res, false, "", err.toString());
+        })
+      })
+      .catch((err)=>{
+        response(res, false, "", err.toString());
+      })
+    }
+    else
+    {
+      response(res, false, "", "Exception not Found");
+    }
+  })
+  .catch((err)=>{
+    response(res, false, "", err.toString());
+  })
+};
+
+module.exports={ readAdmin, updateAdmin, fetchTechRound2Candidates, fetchMgmtRound2Candidates, fetchAllAdmins, fetchExceptions, resolveExceptions }
