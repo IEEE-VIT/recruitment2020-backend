@@ -4,29 +4,15 @@ const slotModel = require("../models/slotModel");
 const questionModel = require("../models/questionModel");
 const answerModel= require("../models/answerModel");
 const roundModel = require("../models/roundModel");
+const userModel=require("../models/userModel");
 
 const response = require("../utils/genericResponse");
-
-
-const addQuestion= async (req,res)=>{
-  questionModel.create({
-    quid: req.body.quid,
-    question: req.body.question,
-    mandatory:req.body.mandatory
-  })
-  .then((ques)=>{
-    response(res,true,ques,"Question added");
-  })
-  .catch((err)=>{
-    response(res,false,"",err.toString());
-  })
-};
-
 
 const getQuestions= async (req,res)=>
 {
   // RETURNS 2 ARRAYS ONE WITH mandatory AND ONE WITH optional
-  Promise.all([questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: 1 }), questionModel.findAll({where:{mandatory:true}})])
+  const randomQuestionToBeSent=3;
+  Promise.all([questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: randomQuestionToBeSent }), questionModel.findAll({where:{mandatory:true}})])
   .then((teaser) => {
     response(res,true,teaser,"Questions Sent");
     })
@@ -39,13 +25,18 @@ const getSlots= async (req,res)=>{
   var todayDate = new Date().toISOString().slice(0,10);
   var todayTime = new Date().toLocaleTimeString('it-IT',{hour12:false});
 
-  console.log(todayDate);
-
   slotModel.findAll({where:{
     [Op.or]:[{count:{[Op.lt]:5},roundNo:"1",date:{[Op.gt]:todayDate}}, {count:{[Op.lt]:5},roundNo:"1",date:todayDate,timeFrom:{[Op.gte]:todayTime}}]
   }})
   .then((slot)=>{
-    response(res,true,slot,"Slots Sent");
+    if(slot=="")
+    {
+      response(res,true,"","All Slots Filled");
+    }
+    else
+    {
+      response(res,true,slot,"Slots Sent");
+    }
   })
   .catch((err)=>{
     response(res,false,"",err.toString());
@@ -53,38 +44,61 @@ const getSlots= async (req,res)=>{
 };
 
 const userForm= async (req,res)=>{
-  req.body.questions.forEach((item, i) => {
-    answerModel.create({
-      regNo:req.body.regNo,
-      quid:req.body.questions[i].quid,
-      answer:req.body.questions[i].answer
-    })
-    .then((ans)=>{
-      console.log("Question Added");
-    })
-    .catch((err)=>{
-      console.log(err);
-    })
-  });
-  slotModel.findOne({where:{date:req.body.date,timeFrom:req.body.timeFrom,timeTo:req.body.timeTo}})
-  .then((slot)=>{
-    roundModel.create({
-      roundNo:0,
-      regNo: req.body.regNo,
-      suid:slot.suid,
-      status:"PR",
-      domain:req.body.domain
+  userModel.findOne({where:{regNo:req.body.regNo}})
+  .then((user)=>{
+    slotModel.findOne({where:{suid:req.body.suid}})
+    .then((slot)=>{
+      if(slot.suid)
+      {
+        slotModel.update({count:slot.count+1},{where:{suid:req.body.suid}})
+        .then((updatedSlot)=>{
+          req.body.questions.forEach((item, i) => {
+            answerModel.create({
+              regNo:user.regNo,
+              quid:req.body.questions[i].quid,
+              answer:req.body.questions[i].answer
+            })
+            .then((ans)=>{
+              console.log("Answer Added");
+            })
+            .catch((err)=>{
+              console.log(err);
+            })
+          });
+          roundModel.create({
+            roundNo:0,
+            regNo: user.regNo,
+            suid:slot.suid,
+            status:"PR",
+            
+            // NEED TO CONFIRM THE DOMAIN THINGY ONCE AS IN THE USERMODEL WE ALREADY TAKE AN INPUT AS AN ARRAY
+            domain:req.body.domain
+            }).
+            then((round)=>{
+              response(res,true,round,"Added to Round 0");
+            })
+            .catch((err)=>{
+                response(res,false,"",err.toString());
+            })
+        })
+        .catch((err)=>{
+            response(res,false,"",err.toString());
+        })
+      }
+      else
+      {
+        response(res,false,"",err.toString());
+      }
       }).
-      then((round)=>{
-        response(res,true,round,"Added to Round 0");
-      })
-      .catch((err)=>{
-          response(res,false,"",err.toString());
-      })
-    }).
-    catch((err)=>{
-      response(res,false,"",err.toString());
-    });
+      catch((err)=>{
+        response(res,false,"",err.toString());
+      });
+
+  })
+  .catch((err)=>{
+    response(res,false,"",err.toString());
+  });
+
 };
 
 const verifyslotTime= async (req,res)=>{
@@ -123,4 +137,4 @@ const verifyslotTime= async (req,res)=>{
   })
 };
 
-module.exports = { addQuestion, getQuestions, getSlots, userForm, verifyslotTime };
+module.exports = { getQuestions, getSlots, userForm, verifyslotTime };
