@@ -35,26 +35,15 @@ const getQuestions= async (req,res)=>
     })
   };
 
-
-const addSlot= async (req,res)=>{
-  slotModel.create({
-    suid: req.body.suid,
-    roundNo:1,
-    date: req.body.date,
-    timeFrom: req.body.timeFrom,
-    timeTo:req.body.timeTo
-  })
-  .then((ques)=>{
-    response(res,true,ques,"Slot added");
-  })
-  .catch((err)=>{
-    response(res,false,"",err.toString());
-  })
-};
-
-
 const getSlots= async (req,res)=>{
-  slotModel.findAll({where:{count:{[Op.lt]:5},roundNo:"1"}})
+  var todayDate = new Date().toISOString().slice(0,10);
+  var todayTime = new Date().toLocaleTimeString('it-IT',{hour12:false});
+
+  console.log(todayDate);
+
+  slotModel.findAll({where:{
+    [Op.or]:[{count:{[Op.lt]:5},roundNo:"1",date:{[Op.gt]:todayDate}}, {count:{[Op.lt]:5},roundNo:"1",date:todayDate,timeFrom:{[Op.gte]:todayTime}}]
+  }})
   .then((slot)=>{
     response(res,true,slot,"Slots Sent");
   })
@@ -134,4 +123,4 @@ const verifyslotTime= async (req,res)=>{
   })
 };
 
-module.exports = { addQuestion, getQuestions, addSlot, getSlots, userForm, verifyslotTime };
+module.exports = { addQuestion, getQuestions, getSlots, userForm, verifyslotTime };
