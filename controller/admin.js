@@ -9,7 +9,7 @@ const response = require("../utils/genericResponse");
 
 
 const readAdmin=async (req,res)=>{
-  adminModel.findOne({where:{auid:req.body.auid}})
+  adminModel.findOne({where:{auid:req.query.auid}})
   .then((admin)=>{
     if(admin==null)
     {
@@ -60,7 +60,7 @@ const fetchTechRound2Candidates=async (req,res)=>{
     })
     .then(result => {
       if (result.length === 0 ) {
-        response(res, true, result, "No Ready candidates for Tech Round 2 found");
+        response(res, true, null, "No Ready candidates for Tech Round 2 found");
       } else {
         response(res, true, result, "Ready candidates for Tech Round 2 found");
       }
@@ -71,7 +71,7 @@ const fetchTechRound2Candidates=async (req,res)=>{
 };
 
 const fetchMgmtRound2Candidates=async (req,res)=>{
-  slotModel.findOne({where:{date:req.body.date,timeFrom:req.body.timeFrom,timeTo:req.body.timeTo}})
+  slotModel.findOne({where:{suid:req.query.suid}})
   .then((slot)=>{
     roundModel
       .findAll({
@@ -113,7 +113,13 @@ const fetchAllAdmins= async (req,res)=>{
 const fetchExceptions= async (req,res)=>{
   roundModel.findAll({where:{roundNo:req.query.roundNo,regNo:req.query.regNo, exception:{[Op.ne]:null}}})
   .then((data)=>{
-    response(res,true,data,"Exceptions Sent");
+    if(data.length==0)
+    {
+      response(res,true,null,"No Exception Found");
+    }
+    else {
+      response(res,true,data,"Exceptions Sent");
+    }
   })
   .catch((err)=>{
     response(res, false, "", err.toString());

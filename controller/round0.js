@@ -70,9 +70,7 @@ const userForm= async (req,res)=>{
             regNo: user.regNo,
             suid:slot.suid,
             status:"PR",
-            
-            // NEED TO CONFIRM THE DOMAIN THINGY ONCE AS IN THE USERMODEL WE ALREADY TAKE AN INPUT AS AN ARRAY
-            domain:req.body.domain
+            domain:"DEFAULT"
             }).
             then((round)=>{
               response(res,true,round,"Added to Round 0");
