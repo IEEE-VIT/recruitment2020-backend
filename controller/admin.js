@@ -134,7 +134,6 @@ const resolveExceptions=async(req,res)=>{
     if(data==1)
     {
       commentModel.create({
-        cuid:req.body.cuid,
         regNo:req.body.regNo,
         auid:req.body.auid,
         comment:req.body.comment

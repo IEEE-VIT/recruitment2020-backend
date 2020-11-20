@@ -6,6 +6,7 @@ const Question=sequelize.define('Question',{
   quid:{
     type: DataTypes.INTEGER,
     primaryKey:true,
+    autoIncrement: true,
     unique:true,
     allowNull: false,
     validate:{

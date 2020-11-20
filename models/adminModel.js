@@ -6,6 +6,7 @@ const Admin = sequelize.define("Admin", {
   auid: {
     type: DataTypes.INTEGER,
     primaryKey: true,
+    autoIncrement: true,
     unique: true,
     allowNull: false,
     validate: {
