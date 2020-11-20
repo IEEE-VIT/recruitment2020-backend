@@ -90,21 +90,21 @@ const selectSlot = async (req, res) => {
 
 const fetchGdp = (req, res) => {
   roundModel
-  .findOne({
-    include: slotModel,
-    where: {
-      roundNo: "2",
-      regNo: req.body.regNo,
-      domain: "MGMT"
-    },
-  })
-  .then(result => {
-    console.log(result)
-    response(res, true, result.Slot, "Found GDP");
-  })
-  .catch((err) => {
-    response(res, false, "", err.toString());
-  });
+    .findOne({
+      include: slotModel,
+      where: {
+        roundNo: "2",
+        regNo: req.body.regNo,
+        domain: "MGMT",
+      },
+    })
+    .then((result) => {
+      console.log(result);
+      response(res, true, result.Slot, "Found GDP");
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
 };
 
 const fetchGda = async (req, res) => {
@@ -114,11 +114,11 @@ const fetchGda = async (req, res) => {
       where: {
         roundNo: "2",
         regNo: req.body.regNo,
-        domain: "MGMT"
+        domain: "MGMT",
       },
     })
-    .then(resu0 => {
-      console.log(result)
+    .then((resu0) => {
+      console.log(result);
       response(res, true, result.Admin, "Found GDA");
     })
     .catch((err) => {
@@ -126,4 +126,26 @@ const fetchGda = async (req, res) => {
     });
 };
 
-module.exports = { getSlots, selectSlot, fetchGda, fetchGdp };
+const setGdp = async (req, res) => {
+  slotModel.update(
+    {
+      gdpLink: req.body.gdpLink,
+    },
+    {
+      where: {
+        suid: req.body.suid,
+      },
+    }
+  )
+  .then(data =>{
+      if(data > 0){
+        response(res, true, "", "GDP Updated Successfully!");
+      }else{
+        response(res, true, "", "Error updating GDP!");
+      }
+  }).catch(err =>{
+    response(res, false, "", err.toString());
+  })
+}
+
+module.exports = { setGdp, getSlots, selectSlot, fetchGda, fetchGdp };
