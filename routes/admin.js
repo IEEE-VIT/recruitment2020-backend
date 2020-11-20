@@ -7,7 +7,8 @@ router.get("/", adminController.readAdmin);
 router.put("/", adminController.updateAdmin);
 router.get("/r2/tech/candidates",adminController.fetchTechRound2Candidates);
 router.get("/r2/mgmt/candidates",adminController.fetchMgmtRound2Candidates);
-router.get("/all",adminController.fetchAllAdmins);
+router.get("/allAdmins",adminController.fetchAllAdmins);
+router.get("/allCandidates",adminController.fetchAllUsers);
 
 router.get("/exceptions",adminController.fetchExceptions);
 router.post("/exceptions",adminController.resolveExceptions);

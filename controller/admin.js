@@ -163,4 +163,19 @@ const resolveExceptions=async(req,res)=>{
   })
 };
 
-module.exports={ readAdmin, updateAdmin, fetchTechRound2Candidates, fetchMgmtRound2Candidates, fetchAllAdmins, fetchExceptions, resolveExceptions }
+
+const fetchAllUsers = async (req,res) =>{
+    userModel.findAll({})
+    .then(data =>{
+      if(data !== null){
+        response(res,true,data,"All Users Data!")
+      }else{
+        response(res,true,data,"NO DATA FOUND! Contact Hemanth or Shubham ASAP!")
+      }
+      
+    }).catch(err =>{
+      response(res,false,"",err.toString())
+    })
+}
+
+module.exports={ fetchAllUsers ,readAdmin, updateAdmin, fetchTechRound2Candidates, fetchMgmtRound2Candidates, fetchAllAdmins, fetchExceptions, resolveExceptions }
