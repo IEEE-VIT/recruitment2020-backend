@@ -37,7 +37,7 @@ app.get("/", (req, res) => {
 });
 
 relations()
-  .sync({ force: true, logging: false })
+  .sync({ force: false, logging: false })
   .then(() => {
     console.log("Success connection to db");
     const port = process.env.PORT || 5000;

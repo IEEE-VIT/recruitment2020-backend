@@ -9,11 +9,14 @@ const sequelize = require("./db");
 
 
 const relations = () => {
-    slot.belongsTo(round, {foreignKey: 'suid'});
-    admin.belongsTo(round,{foreignKey: 'auid'});
-    comment.belongsTo(round, {foreignKey: 'cuid'});
+    slot.hasMany(round, {foreignKey: 'suid'});
+    admin.hasMany(round,{foreignKey: 'auid'});
+    comment.hasMany(round, {foreignKey: 'cuid'});
     user.hasMany(round,{foreignKey: "regNo"})
     round.belongsTo(user,{foreignKey: "regNo"});
+    round.belongsTo(admin, {foreignKey: 'auid'});
+    round.belongsTo(slot,{foreignKey: 'suid'});
+    round.belongsTo(comment,{foreignKey: 'cuid'});
     teaserQuestion.belongsTo(teaserAnswer, {foreignKey: 'quid'});
     return sequelize;
 }
