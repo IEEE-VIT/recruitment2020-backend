@@ -10,16 +10,22 @@ const response = require("../utils/genericResponse");
 
 const getQuestions= async (req,res)=>
 {
-  // RETURNS 2 ARRAYS ONE WITH mandatory AND ONE WITH optional
   const randomQuestionToBeSent=3;
-  Promise.all([questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: randomQuestionToBeSent }), questionModel.findAll({where:{mandatory:true}})])
-  .then((teaser) => {
-    response(res,true,teaser,"Questions Sent");
+  questionModel.findAll({where:{mandatory:false},order: sequelize.literal('random()'), limit: randomQuestionToBeSent })
+  .then((ques) => {
+    questionModel.findAll({where:{mandatory:true}})
+    .then((manQues)=>{
+      var all=manQues.concat(ques);
+      response(res,true,all,"Questions Sent");
     })
     .catch((err)=>{
       response(res,false,"",err.toString());
     })
-  };
+  })
+  .catch((err)=>{
+      response(res,false,"",err.toString());
+    })
+}
 
 const getSlots= async (req,res)=>{
   var todayDate = new Date().toISOString().slice(0,10);
