@@ -58,19 +58,15 @@ const userForm= async (req,res)=>{
       {
         slotModel.update({count:slot.count+1},{where:{suid:req.body.suid}})
         .then((updatedSlot)=>{
-          req.body.questions.forEach((item, i) => {
+
+          for (var i in req.body.questions) {
             answerModel.create({
-              regNo:user.regNo,
-              quid:req.body.questions[i].quid,
-              answer:req.body.questions[i].answer
-            })
-            .then((ans)=>{
-              console.log("Answer Added");
-            })
-            .catch((err)=>{
-              console.log(err);
-            })
-          });
+                regNo:user.regNo,
+                quid:req.body.questions[i].quid,
+                answer:req.body.questions[i].answer
+              })
+          };
+
           roundModel.create({
             roundNo:0,
             regNo: user.regNo,
