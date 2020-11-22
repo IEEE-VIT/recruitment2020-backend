@@ -1,15 +1,7 @@
 const router = require("express").Router();
-const middleware = require("../middleware/authentication");
-const passport = require("passport");
-router.post("/login", middleware.loginMiddleware);
-router.get(
-  "/testProtectedRoute",
-  passport.authenticate("jwt", { session: false }),
-  async (req, res) => {
-    res.json({
-      msg: `Authorised by ${req.user.name}`,
-    });
-  }
-);
+const authController = require("../controller/authentication");
+
+router.post("/login", authController.login);
+router.post("/register",authController.register);
 
 module.exports = router;
