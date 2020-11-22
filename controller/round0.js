@@ -65,6 +65,12 @@ const userForm= async (req,res)=>{
                 quid:req.body.questions[i].quid,
                 answer:req.body.questions[i].answer
               })
+              .then((ans)=>{
+                console.log("ans added");
+              })
+              .catch((err)=>{
+                response(res,false,"",err.toString());
+              })
           };
 
           roundModel.create({
