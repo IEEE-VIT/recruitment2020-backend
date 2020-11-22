@@ -111,7 +111,14 @@ const fetchAllAdmins= async (req,res)=>{
 }
 
 const fetchExceptions= async (req,res)=>{
-  roundModel.findAll({where:{roundNo:req.query.roundNo,regNo:req.query.regNo, exception:{[Op.ne]:null}}})
+
+  roundModel.findAll(
+    {
+      include:[commentModel],
+      where:{
+        exception:true
+      }
+    })
   .then((data)=>{
     if(data.length==0)
     {
@@ -127,36 +134,47 @@ const fetchExceptions= async (req,res)=>{
 };
 
 const resolveExceptions=async(req,res)=>{
-  roundModel.update({
-    exception:null
-  },{where:{roundNo:req.body.roundNo , regNo:req.body.regNo, domain:req.body.domain}})
-  .then((data)=>{
-    if(data==1)
-    {
-      commentModel.create({
-        regNo:req.body.regNo,
-        auid:req.body.auid,
-        comment:req.body.comment
-      })
-      .then((comment)=>{
-        roundModel.update({
-          cuid:comment.cuid
-        },{where:{roundNo:req.body.roundNo , regNo:req.body.regNo, domain:req.body.domain}})
-        .then((data)=>{
-            response(res,true,data,"Exception Resolved");
+  roundModel.findOne({where:{roundNo:req.body.roundNo , regNo:req.body.regNo, domain:req.body.domain}})
+  .then((roundData)=>{
+    roundModel.update({
+      exception:false
+    },{where:{roundNo:req.body.roundNo , regNo:req.body.regNo, domain:req.body.domain}})
+    .then((updated)=>{
+      if(updated==1)
+      {
+        commentModel.findOne({where:{cuid:roundData.cuid}})
+        .then((rawCommentData)=>{
+
+          var newComment=rawCommentData.comment.concat("//exception resolved: ").concat(req.body.reason);
+          commentModel.update({
+            comment:newComment
+          },{where:{cuid:roundData.cuid}})
+          .then((commentChanged)=>{
+            if(commentChanged==1)
+            {
+              response(res,true,commentChanged,"Exception Resolved");
+            }
+            else
+            {
+              response(res,false,"","Exception not found");
+            }
+          })
+          .catch((err)=>{
+            response(res, false, "", err.toString());
+          })
         })
         .catch((err)=>{
           response(res, false, "", err.toString());
         })
-      })
-      .catch((err)=>{
-        response(res, false, "", err.toString());
-      })
-    }
-    else
-    {
-      response(res, false, "", "Exception not Found");
-    }
+      }
+      else
+      {
+        response(res,false,"","Exception not found");
+      }
+    })
+    .catch((err)=>{
+      response(res, false, "", err.toString());
+    })
   })
   .catch((err)=>{
     response(res, false, "", err.toString());
@@ -172,7 +190,7 @@ const fetchAllUsers = async (req,res) =>{
       }else{
         response(res,true,data,"NO DATA FOUND! Contact Hemanth or Shubham ASAP!")
       }
-      
+
     }).catch(err =>{
       response(res,false,"",err.toString())
     })
