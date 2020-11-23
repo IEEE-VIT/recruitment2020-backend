@@ -8,10 +8,10 @@ router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
 router.post("/r1/candidates", round1Controller.selectReadyCandidates);
 router.get("/", adminController.readAdmin);
 router.put("/", adminController.updateAdmin);
-router.get("/r2/tech/candidates", adminController.fetchTechRound2Candidates);
-router.get("/r2/mgmt/candidates", adminController.fetchMgmtRound2Candidates);
-router.get("/allAdmins", adminController.fetchAllAdmins);
-router.get("/allCandidates", queryFilter, adminController.fetchAllUsers);
+router.get("/r2/tech/candidates",queryFilter, adminController.fetchTechRound2Candidates);
+router.get("/r2/mgmt/candidates",queryFilter, adminController.fetchMgmtRound2Candidates);
+router.get("/allAdmins",queryFilter, adminController.fetchAllAdmins);
+router.get("/allCandidates",queryFilter ,adminController.fetchAllUsers);
 
 router.post("/mgmt/r2/gdp", round2Controller.setGdp);
 

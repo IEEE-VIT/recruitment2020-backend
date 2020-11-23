@@ -41,7 +41,13 @@ const Admin = sequelize.define("Admin", {
     validate: {
       isUrl: true,
     },
-  },
-});
+  }
+},
+{
+    defaultScope: {
+      attributes: { exclude: ["password"] },
+    },
+  }
+);
 
 module.exports = Admin;
