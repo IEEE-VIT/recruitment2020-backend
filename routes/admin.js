@@ -5,6 +5,7 @@ const round2Controller = require("../controller/round2");
 const queryFilter = require("../middleware/filter")
 
 router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
+router.post("/r1/candidates", round1Controller.selectReadyCandidates);
 router.get("/", adminController.readAdmin);
 router.put("/", adminController.updateAdmin);
 router.get("/r2/tech/candidates", adminController.fetchTechRound2Candidates);
