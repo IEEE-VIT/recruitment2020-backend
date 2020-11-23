@@ -1,8 +1,7 @@
-const { DataTypes, Sequelize }   = require("sequelize");
-const validator = require("validator");
-const sequelize = require("../utils/db");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../utils/db');
 
-const Comment = sequelize.define("Comment", {
+const Comment = sequelize.define('Comment', {
   cuid: {
     type: DataTypes.INTEGER,
     primaryKey: true,

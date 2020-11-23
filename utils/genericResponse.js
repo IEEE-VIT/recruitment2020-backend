@@ -5,9 +5,9 @@ const response = (res, success, data, message) => {
     res.status(400);
   }
   res.json({
-    success: success,
-    data: data,
-    message: message,
+    success,
+    data,
+    message,
   });
 };
 

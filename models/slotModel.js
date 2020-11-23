@@ -1,60 +1,59 @@
-const { DataTypes, Sequelize }   = require("sequelize");
-const validator = require("validator");
-const sequelize = require("../utils/db");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../utils/db');
 
-const Slot=sequelize.define('Slot',{
-  suid:{
+const Slot = sequelize.define('Slot', {
+  suid: {
     type: DataTypes.INTEGER,
-    primaryKey:true,
+    primaryKey: true,
     autoIncrement: true,
-    unique:true,
+    unique: true,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
   roundNo: {
     type: DataTypes.ENUM,
-    values: ["0", "1", "2", "3"],
+    values: ['0', '1', '2', '3'],
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
   moderatorId: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
-  date:{
-    type:DataTypes.DATEONLY,
+  date: {
+    type: DataTypes.DATEONLY,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  timeFrom:{
-    type:DataTypes.TIME,
+  timeFrom: {
+    type: DataTypes.TIME,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  timeTo:{
-    type:DataTypes.TIME,
+  timeTo: {
+    type: DataTypes.TIME,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  count:{
-    type:DataTypes.INTEGER,
-    defaultValue:0
+  count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
-  gdpLink:{
+  gdpLink: {
     type: DataTypes.STRING,
-    validate:{
-      isUrl:true
-    }
-  }
+    validate: {
+      isUrl: true,
+    },
+  },
 });
 
-module.exports=Slot;
+module.exports = Slot;

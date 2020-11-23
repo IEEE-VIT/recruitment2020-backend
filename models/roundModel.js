@@ -1,12 +1,11 @@
-const { DataTypes, Sequelize } = require("sequelize");
-const validator = require("validator");
-const sequelize = require("../utils/db");
+const { DataTypes } = require('sequelize');
+const sequelize = require('../utils/db');
 
-const Round = sequelize.define("Round", {
+const Round = sequelize.define('Round', {
   roundNo: {
     primaryKey: true,
     type: DataTypes.ENUM,
-    values: ["0", "1", "2", "3"],
+    values: ['0', '1', '2', '3'],
   },
   regNo: {
     type: DataTypes.STRING(9),
@@ -17,7 +16,7 @@ const Round = sequelize.define("Round", {
     },
   },
   auid: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
   suid: {
     type: DataTypes.INTEGER,
@@ -27,7 +26,7 @@ const Round = sequelize.define("Round", {
     },
   },
   cuid: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
   exception: {
     type: DataTypes.BOOLEAN,
@@ -39,7 +38,7 @@ const Round = sequelize.define("Round", {
   },
   status: {
     type: DataTypes.ENUM,
-    values: ["PR", "AR", "RR", "ER"],
+    values: ['PR', 'AR', 'RR', 'ER'],
   },
   domain: {
     type: DataTypes.STRING,
