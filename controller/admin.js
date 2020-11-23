@@ -183,7 +183,9 @@ const resolveExceptions=async(req,res)=>{
 
 
 const fetchAllUsers = async (req,res) =>{
-    userModel.findAll({})
+    userModel.findAll({
+      where: req.query
+    })
     .then(data =>{
       if(data !== null){
         response(res,true,data,"All Users Data!")
