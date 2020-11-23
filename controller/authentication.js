@@ -9,8 +9,9 @@ const login = async (req, res) => {
       .findOne({
         where: { regNo },
       })
-      .then((user) => {
-        if (user.password === password) {
+      .then(async (user) => {
+        const validPassword = await user.isValidPassword(password);
+        if (validPassword) {
           const payload = { regNo: user.regNo };
           authMiddlewaare.generateJwtToken(
             payload,
@@ -30,6 +31,7 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
+  console.log(req.body);
   userModel
     .create({
       regNo: req.body.regNo,
@@ -37,7 +39,7 @@ const register = async (req, res) => {
       phoneNo: req.body.phoneNo,
       email: req.body.email,
       password: req.body.password,
-      coreDomain: req.body.coreDomain,
+      coreDomains: req.body.coreDomains,
       specificDomains: req.body.specificDomains,
     })
     .then((user) => {
