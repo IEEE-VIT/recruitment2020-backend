@@ -53,9 +53,12 @@ const fetchTechRound2Candidates=async (req,res)=>{
       attributes: ["regNo"],
       include: userModel,
       where: {
-        roundNo: "2",
-        meetingCompleted: false,
-        domain: "TECH"
+        [Op.and]:[req.query,
+        {
+          roundNo: "2",
+          meetingCompleted: false,
+          domain: "TECH"
+        }]
       },
     })
     .then(result => {
@@ -78,10 +81,12 @@ const fetchMgmtRound2Candidates=async (req,res)=>{
         attributes: ["regNo"],
         include: userModel,
         where: {
-          roundNo: "2",
-          meetingCompleted: false,
-          domain: "MGMT",
-          suid:slot.suid
+          [Op.and]:[req.query,
+          {
+            roundNo: "2",
+            meetingCompleted: false,
+            domain: "MGMT"
+          }]
         },
       })
       .then(result => {
@@ -115,9 +120,12 @@ const fetchExceptions= async (req,res)=>{
   roundModel.findAll(
     {
       include:[commentModel],
-      where:{
-        exception:true
-      }
+      where: {
+        [Op.and]:[req.query,
+        {
+          exception:true
+        }]
+      },
     })
   .then((data)=>{
     if(data.length==0)
