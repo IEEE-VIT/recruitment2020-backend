@@ -1,8 +1,8 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/db');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../utils/db");
 
 const User = sequelize.define(
-  'User',
+  "User",
   {
     regNo: {
       type: DataTypes.STRING(9),
@@ -64,9 +64,9 @@ const User = sequelize.define(
   },
   {
     defaultScope: {
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ["password"] },
     },
-  },
+  }
 );
 
 module.exports = User;

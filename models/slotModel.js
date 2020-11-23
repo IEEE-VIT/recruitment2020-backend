@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/db');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../utils/db");
 
-const Slot = sequelize.define('Slot', {
+const Slot = sequelize.define("Slot", {
   suid: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,7 +14,7 @@ const Slot = sequelize.define('Slot', {
   },
   roundNo: {
     type: DataTypes.ENUM,
-    values: ['0', '1', '2', '3'],
+    values: ["0", "1", "2", "3"],
     allowNull: false,
     validate: {
       notEmpty: true,

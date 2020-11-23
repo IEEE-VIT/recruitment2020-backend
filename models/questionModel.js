@@ -1,7 +1,7 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/db');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../utils/db");
 
-const Question = sequelize.define('Question', {
+const Question = sequelize.define("Question", {
   quid: {
     type: DataTypes.INTEGER,
     primaryKey: true,

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 const slotModel = require("../models/slotModel");
@@ -81,13 +82,13 @@ const userForm = async (req, res) => {
       if (slot == null) {
         throw new Error("Invalid Slot");
       }
-
-      for (var question in req.body.questions) {
+      for (let i = 0; i < req.body.questions.length; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
         await answerModel.create(
           {
             regNo: user.regNo,
-            quid: req.body.questions[question].quid,
-            answer: req.body.questions[question].answer,
+            quid: req.body.questions[i].quid,
+            answer: req.body.questions[i].answer,
           },
           { transaction: t }
         );
@@ -104,8 +105,8 @@ const userForm = async (req, res) => {
         { transaction: t }
       );
 
-      var slotCount = slot.count;
-      slotCount++;
+      let slotCount = slot.count;
+      slotCount += 1;
 
       await slotModel.update(
         { count: slotCount },

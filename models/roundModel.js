@@ -1,11 +1,11 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../utils/db');
+const { DataTypes } = require("sequelize");
+const sequelize = require("../utils/db");
 
-const Round = sequelize.define('Round', {
+const Round = sequelize.define("Round", {
   roundNo: {
     primaryKey: true,
     type: DataTypes.ENUM,
-    values: ['0', '1', '2', '3'],
+    values: ["0", "1", "2", "3"],
   },
   regNo: {
     type: DataTypes.STRING(9),
@@ -38,7 +38,7 @@ const Round = sequelize.define('Round', {
   },
   status: {
     type: DataTypes.ENUM,
-    values: ['PR', 'AR', 'RR', 'ER'],
+    values: ["PR", "AR", "RR", "ER"],
   },
   domain: {
     type: DataTypes.STRING,

@@ -1,6 +1,6 @@
-const authMiddlewaare = require('../middleware/authentication');
-const userModel = require('../models/userModel');
-const response = require('../utils/genericResponse');
+const authMiddlewaare = require("../middleware/authentication");
+const userModel = require("../models/userModel");
+const response = require("../utils/genericResponse");
 
 const login = async (req, res) => {
   const { regNo, password } = req.body;
@@ -15,16 +15,16 @@ const login = async (req, res) => {
           authMiddlewaare.generateJwtToken(
             payload,
             res,
-            '',
-            'User Authenticated Successfully!',
+            "",
+            "User Authenticated Successfully!"
           );
         } else {
-          response(res, true, '', 'Incorrect Password!');
+          response(res, true, "", "Incorrect Password!");
         }
       })
       .catch((err) => {
         console.log(err);
-        response(res, false, '', 'Invalid User!');
+        response(res, false, "", "Invalid User!");
       });
   }
 };
@@ -46,11 +46,11 @@ const register = async (req, res) => {
         payload,
         res,
         user,
-        'User created successfully!',
+        "User created successfully!"
       );
     })
     .catch((err) => {
-      response(res, false, '', err.toString());
+      response(res, false, "", err.toString());
     });
 };
 

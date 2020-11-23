@@ -1,8 +1,8 @@
-const jwt = require('jsonwebtoken');
-const passport = require('passport');
-const passportJWT = require('passport-jwt');
-const userModel = require('../models/userModel');
-const response = require('../utils/genericResponse');
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+const passportJWT = require("passport-jwt");
+const userModel = require("../models/userModel");
+const response = require("../utils/genericResponse");
 
 const { ExtractJwt } = passportJWT;
 
@@ -12,19 +12,21 @@ const jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = process.env.JWT_SECRET;
 
-const strategy = new JwtStrategy(jwtOptions, ((jwtPayload, next) => {
-  console.log('payload received', jwtPayload);
-  userModel.findOne({
-    where: { regNo: jwtPayload.regNo },
-  })
+const strategy = new JwtStrategy(jwtOptions, (jwtPayload, next) => {
+  console.log("payload received", jwtPayload);
+  userModel
+    .findOne({
+      where: { regNo: jwtPayload.regNo },
+    })
     .then((user) => {
       next(null, user);
     })
     .catch((_err) => {
-      console.log('Middelware Error', _err);
-      next(null, false); next(null, false);
+      console.log("Middelware Error", _err);
+      next(null, false);
+      next(null, false);
     });
-}));
+});
 
 passport.use(strategy);
 
