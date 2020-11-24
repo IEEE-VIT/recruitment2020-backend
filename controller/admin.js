@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+const { Op } = require("sequelize");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -51,12 +52,14 @@ const fetchTechRound2Candidates = async (req, res) => {
       attributes: ["regNo"],
       include: userModel,
       where: {
-        [Op.and]:[req.query,
-        {
-          roundNo: "2",
-          meetingCompleted: false,
-          domain: "TECH"
-        }]
+        [Op.and]: [
+          req.query,
+          {
+            roundNo: "2",
+            meetingCompleted: false,
+            domain: "TECH",
+          },
+        ],
       },
     })
     .then((result) => {
@@ -71,32 +74,45 @@ const fetchTechRound2Candidates = async (req, res) => {
     });
 };
 
-const fetchMgmtRound2Candidates=async (req,res)=>{
-  slotModel.findOne({where:{suid:req.query.suid}})
-  .then((slot)=>{
-    roundModel
-      .findAll({
-        attributes: ["regNo"],
-        include: userModel,
-        where: {
-          [Op.and]:[req.query,
-          {
-            roundNo: "2",
-            meetingCompleted: false,
-            domain: "MGMT"
-          }]
-        },
-      })
-      .then(result => {
-        if (result.length === 0 ) {
-          response(res, true, result, "No Ready candidates for Mgmt Round 2 found");
-        } else {
-          response(res, true, result, "Ready candidates for Mgmt Round 2 found");
-        }
-      })
-      .catch((err) => {
-        response(res, false, "", err.toString());
-      });
+const fetchMgmtRound2Candidates = async (req, res) => {
+  slotModel
+    .findOne({ where: { suid: req.query.suid } })
+    .then(() => {
+      roundModel
+        .findAll({
+          attributes: ["regNo"],
+          include: userModel,
+          where: {
+            [Op.and]: [
+              req.query,
+              {
+                roundNo: "2",
+                meetingCompleted: false,
+                domain: "MGMT",
+              },
+            ],
+          },
+        })
+        .then((result) => {
+          if (result.length === 0) {
+            response(
+              res,
+              true,
+              result,
+              "No Ready candidates for Mgmt Round 2 found"
+            );
+          } else {
+            response(
+              res,
+              true,
+              result,
+              "Ready candidates for Mgmt Round 2 found"
+            );
+          }
+        })
+        .catch((err) => {
+          response(res, false, "", err.toString());
+        });
     })
     .catch((err) => {
       response(res, false, "", err.toString());
@@ -114,15 +130,25 @@ const fetchAllAdmins = async (req, res) => {
     });
 };
 
-  roundModel.findAll(
-    {
-      include:[commentModel],
+const fetchExceptions = async (req, res) => {
+  roundModel
+    .findAll({
+      include: [commentModel],
       where: {
-        [Op.and]:[req.query,
-        {
-          exception:true
-        }]
+        [Op.and]: [
+          req.query,
+          {
+            exception: true,
+          },
+        ],
       },
+    })
+    .then((data) => {
+      if (data.length == 0) {
+        response(res, true, null, "No Exception Found");
+      } else {
+        response(res, true, data, "Exceptions Sent");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());
