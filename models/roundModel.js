@@ -1,5 +1,4 @@
-const { DataTypes, Sequelize } = require("sequelize");
-const validator = require("validator");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
 const Round = sequelize.define("Round", {
@@ -17,7 +16,7 @@ const Round = sequelize.define("Round", {
     },
   },
   auid: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
   suid: {
     type: DataTypes.INTEGER,
@@ -27,7 +26,7 @@ const Round = sequelize.define("Round", {
     },
   },
   cuid: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
   },
   exception: {
     type: DataTypes.BOOLEAN,

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 const userModel = require("../models/userModel");
 const roundModel = require("../models/roundModel");
 const response = require("../utils/genericResponse");
@@ -44,28 +45,31 @@ const fetchReadyCandidates = async (req, res) => {
 };
 
 const selectReadyCandidates = async (req, res) => {
-  const chain_transaction = await db.transaction();
+  const chainTransaction = await db.transaction();
   try {
-    const candidates = req.body.candidates;
-    const admin_id = req.body.auid;
-    let candidate;
-    for (candidate of candidates) {
+    const { candidates } = req.body;
+    const adminId = req.body.auid;
+
+    for (let i = 0; i < candidates.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
       const result = await roundModel.update(
         {
-          auid: admin_id,
+          auid: adminId,
         },
         {
           where: {
-            regNo: candidate,
+            regNo: candidates[i],
           },
-          transaction: chain_transaction,
+          transaction: chainTransaction,
         }
       );
       if (result == 0) {
-        throw "Unable to update with admin, please resend the candidates list";
+        throw Error(
+          "Unable to update with admin, please resend the candidates list"
+        );
       }
     }
-    await chain_transaction.commit();
+    await chainTransaction.commit();
     response(
       res,
       true,
@@ -73,7 +77,7 @@ const selectReadyCandidates = async (req, res) => {
       "Candidates Selected to interview!"
     );
   } catch (err) {
-    await chain_transaction.rollback();
+    await chainTransaction.rollback();
     response(res, false, "", err.toString());
   }
 };

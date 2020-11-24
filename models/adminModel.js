@@ -1,5 +1,4 @@
-const { DataTypes, Sequelize }   = require("sequelize");
-const validator = require("validator");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
 const Admin = sequelize.define("Admin", {
@@ -42,7 +41,7 @@ const Admin = sequelize.define("Admin", {
     validate: {
       isUrl: true,
     },
-  }
+  },
 });
 
 module.exports = Admin;

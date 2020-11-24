@@ -1,31 +1,30 @@
-const { DataTypes, Sequelize }   = require("sequelize");
-const validator = require("validator");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
-const Answer=sequelize.define('Answer',{
-  regNo:{
-    type:DataTypes.STRING(9),
-    primaryKey:true,
+const Answer = sequelize.define("Answer", {
+  regNo: {
+    type: DataTypes.STRING(9),
+    primaryKey: true,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  quid:{
+  quid: {
     type: DataTypes.INTEGER,
-    primaryKey:true,
+    primaryKey: true,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  answer:{
-    type:DataTypes.STRING,
+  answer: {
+    type: DataTypes.STRING,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
-  }
+    validate: {
+      notEmpty: true,
+    },
+  },
 });
 
-module.exports=Answer;
+module.exports = Answer;

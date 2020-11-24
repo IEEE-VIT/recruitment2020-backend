@@ -1,17 +1,15 @@
+/* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-const sequelize = require("sequelize");
 const slotModel = require("../models/slotModel");
-const questionModel = require("../models/questionModel");
-const answerModel = require("../models/answerModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
-const adminModel = require("../models//adminModel");
+const adminModel = require("../models/adminModel");
 
 const response = require("../utils/genericResponse");
 
 const getSlots = async (req, res) => {
-  var todayDate = new Date().toISOString().slice(0, 10);
-  var todayTime = new Date().toLocaleTimeString("it-IT", { hour12: false });
+  const todayDate = new Date().toISOString().slice(0, 10);
+  const todayTime = new Date().toLocaleTimeString("it-IT", { hour12: false });
 
   slotModel
     .findAll({
@@ -56,7 +54,7 @@ const selectSlot = async (req, res) => {
                 { count: slot.count + 1 },
                 { where: { suid: req.body.suid } }
               )
-              .then((updatedSlot) => {
+              .then(() => {
                 roundModel
                   .create({
                     roundNo: 2,
@@ -76,7 +74,7 @@ const selectSlot = async (req, res) => {
                 response(res, false, "", err.toString());
               });
           } else {
-            response(res, false, "", err.toString());
+            response(res, false, "", "Error");
           }
         })
         .catch((err) => {
@@ -117,7 +115,7 @@ const fetchGda = async (req, res) => {
         domain: "MGMT",
       },
     })
-    .then((resu0) => {
+    .then((result) => {
       console.log(result);
       response(res, true, result.Admin, "Found GDA");
     })
@@ -127,25 +125,33 @@ const fetchGda = async (req, res) => {
 };
 
 const setGdp = async (req, res) => {
-  slotModel.update(
-    {
-      gdpLink: req.body.gdpLink,
-    },
-    {
-      where: {
-        suid: req.body.suid,
+  slotModel
+    .update(
+      {
+        gdpLink: req.body.gdpLink,
       },
-    }
-  )
-  .then(data =>{
-      if(data > 0){
+      {
+        where: {
+          suid: req.body.suid,
+        },
+      }
+    )
+    .then((data) => {
+      if (data > 0) {
         response(res, true, "", "GDP Updated Successfully!");
-      }else{
+      } else {
         response(res, true, "", "Error updating GDP!");
       }
-  }).catch(err =>{
-    response(res, false, "", err.toString());
-  })
-}
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
 
-module.exports = { setGdp, getSlots, selectSlot, fetchGda, fetchGdp };
+module.exports = {
+  setGdp,
+  getSlots,
+  selectSlot,
+  fetchGda,
+  fetchGdp,
+};

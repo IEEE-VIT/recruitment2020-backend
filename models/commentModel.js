@@ -1,5 +1,4 @@
-const { DataTypes, Sequelize }   = require("sequelize");
-const validator = require("validator");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
 const Comment = sequelize.define("Comment", {
