@@ -5,6 +5,7 @@ const questionModel = require("../models/questionModel");
 const answerModel= require("../models/answerModel");
 const roundModel = require("../models/roundModel");
 const userModel=require("../models/userModel");
+const db=require("../utils/db");
 
 const response = require("../utils/genericResponse");
 
@@ -50,59 +51,55 @@ const getSlots= async (req,res)=>{
 };
 
 const userForm= async (req,res)=>{
-  userModel.findOne({where:{regNo:req.body.regNo}})
-  .then((user)=>{
-    slotModel.findOne({where:{suid:req.body.suid}})
-    .then((slot)=>{
-      if(slot.suid)
-      {
-        slotModel.update({count:slot.count+1},{where:{suid:req.body.suid}})
-        .then((updatedSlot)=>{
-          req.body.questions.forEach((item, i) => {
-            answerModel.create({
-              regNo:user.regNo,
-              quid:req.body.questions[i].quid,
-              answer:req.body.questions[i].answer
-            })
-            .then((ans)=>{
-              console.log("Answer Added");
-            })
-            .catch((err)=>{
-              console.log(err);
-            })
-          });
-          roundModel.create({
-            roundNo:0,
-            regNo: user.regNo,
-            suid:slot.suid,
-            status:"PR",
-            domain:"DEFAULT"
-            }).
-            then((round)=>{
-              response(res,true,round,"Added to Round 0");
-            })
-            .catch((err)=>{
-                response(res,false,"",err.toString());
-            })
-        })
-        .catch((err)=>{
-            response(res,false,"",err.toString());
-        })
-      }
-      else
-      {
-        response(res,false,"",err.toString());
-      }
-      }).
-      catch((err)=>{
-        response(res,false,"",err.toString());
-      });
 
-  })
-  .catch((err)=>{
-    response(res,false,"",err.toString());
-  });
+  try
+  {
+    const result = await db.transaction(async (t) => {
 
+      const user=await userModel.findOne({where:{regNo:req.body.regNo}},{ transaction: t })
+      if(user==null)
+      {
+        throw new Error("Invalid Registration Number");
+      }
+
+      const slot=await slotModel.findOne({where:{suid:req.body.suid}},{ transaction: t })
+      if(slot==null)
+      {
+        throw new Error("Invalid Slot");
+      }
+
+      for (var question in req.body.questions) {
+        await answerModel.create({
+          regNo:user.regNo,
+          quid:req.body.questions[question].quid,
+          answer:req.body.questions[question].answer
+        },
+        { transaction: t }
+            );
+          };
+
+          const round= await roundModel.create({
+              roundNo:0,
+              regNo: user.regNo,
+              suid:slot.suid,
+              status:"PR",
+              domain:"DEFAULT"
+            },
+            { transaction: t });
+
+            var slotCount=slot.count;
+            slotCount++;
+
+            await slotModel.update({count:slotCount},{where:{suid:req.body.suid}},{ transaction: t })
+            return round;
+
+        })
+            response(res,true,result,"Added to Round 0");
+    }
+  catch (error)
+  {
+    response(res,false,"",error.toString());
+  }
 };
 
 const verifyslotTime= async (req,res)=>{
