@@ -121,7 +121,9 @@ const fetchMgmtRound2Candidates = async (req, res) => {
 
 const fetchAllAdmins = async (req, res) => {
   adminModel
-    .findAll({ attributes: { exclude: "password" } })
+    .findAll({
+      where: req.query,
+    })
     .then((admins) => {
       response(res, true, admins, "Admins Found");
     })
