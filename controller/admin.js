@@ -5,7 +5,8 @@ const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const slotModel = require("../models/slotModel");
 const commentModel = require("../models/commentModel");
-
+// const sequelize = require("sequelize");
+// const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 
 const readAdmin = async (req, res) => {
@@ -131,7 +132,6 @@ const fetchAllAdmins = async (req, res) => {
       response(res, false, "", err.toString());
     });
 };
-
 const fetchExceptions = async (req, res) => {
   roundModel
     .findAll({
@@ -221,6 +221,75 @@ const resolveExceptions = async (req, res) => {
       response(res, false, "", err.toString());
     });
 };
+
+// const resolveExceptions = async (req, res) => {
+//   try {
+//     const result = await db.transaction(async (t) => {
+//
+//       const roundData=roundModel.findOne({
+//         where:{
+//           roundNo: req.body.roundNo,
+//           regNo: req.body.regNo,
+//           domain: req.body.domain,
+//         },},{ transaction: t });
+//
+//         if(roundData==null)
+//         {
+//           throw new Error("No such User found in given round")
+//         }
+//
+//         const updatedRoundData=roundModel.update(
+//           {
+//             exception: false,
+//           },
+//           {
+//             where:{
+//               roundNo: req.body.roundNo,
+//               regNo: req.body.regNo,
+//               domain: req.body.domain,
+//             },},{ transaction: t });
+//
+//             if(updatedRoundData==1)
+//             {
+//               const rawCommentData=commentModel.findOne({
+//                 where:{
+//                   cuid: roundData.cuid
+//                 },},{ transaction: t }
+//               );
+//
+//               const adminData=adminModel.findOne({
+//                 where:{
+//                   auid:req.body.auid
+//                 }},{ transaction: t }
+//               );
+//
+//               const newComment = rawCommentData.comment
+//                 .concat(" // exception resolved: ")
+//                 .concat(req.body.reason)
+//                 .concat("// by: ")
+//                 .concat(adminData.name);
+//
+//               const newCommentBool=commentModel
+//                 .update(
+//                   {
+//                     comment: newComment,
+//                   },
+//                   { where: { cuid: roundData.cuid } ,{ transaction: t }}
+//                 );
+//                 return newCommentBool
+//               }
+//               else
+//               {
+//                 throw new Error("Error Resolving Exception");
+//
+//               }
+//             });
+//             response(res, true, newCommentBool, "Exception Resolved");
+//             }
+//             catch (err) {
+//               response(res, false, "", "Error resolving Exception!");
+//   }
+// };
 
 const fetchAllUsers = async (req, res) => {
   userModel
