@@ -22,6 +22,7 @@ router.get("/allAdmins", queryFilter, adminController.fetchAllAdmins);
 router.get("/allCandidates", queryFilter, adminController.fetchAllUsers);
 
 router.post("/mgmt/r2/gdp", round2Controller.setGdp);
+router.post("/mgmt/r2/gda", round2Controller.setGda);
 
 router.get("/exceptions", adminController.fetchExceptions);
 router.post("/exceptions", adminController.resolveExceptions);
