@@ -11,10 +11,11 @@ const fetchMeetings = async (req, res) => {
   roundModel
     .findAll({
       include: userModel,
+      order: [["roundNo", "DESC"]],
       where: {
-        regNo: req.body.regNo,
+        regNo: req.query.regNo,
         meetingCompleted: false,
-        status: "PR",
+        status: constants.PendingReview,
       },
     })
     .then((data) => {
@@ -42,16 +43,17 @@ const fetchMeetings = async (req, res) => {
 const meetingCandidateHistory = async (req, res) => {
   roundModel
     .findAll({
+      order: ["roundNo"],
       include: [userModel, slotModel, commentsModel],
       where: {
-        regNo: req.body.regNo,
+        regNo: req.query.regNo,
       },
     })
     .then((data) => {
-      if (data !== null) {
-        response(res, true, data, "History found for the candidate!");
-      } else {
+      if (data.length === 0) {
         response(res, true, data, "No history found for the candidate!");
+      } else {
+        response(res, true, data, "History found for the candidate!");
       }
     })
     .catch((err) => {
@@ -163,6 +165,7 @@ const round2Amc = async (req, res) => {
             regNo,
             coreDomain,
             specificDomain,
+            status: constants.PendingReview,
           },
           { transaction: chain }
         );
