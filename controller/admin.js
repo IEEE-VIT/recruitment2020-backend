@@ -151,7 +151,7 @@ const resolveExceptions = async (req, res) => {
           where: {
             roundNo: req.body.roundNo,
             regNo: req.body.regNo,
-            domain: req.body.domain,
+            coreDomain: req.body.coreDomain,
           },
         },
         { transaction: t }
@@ -199,7 +199,7 @@ const resolveExceptions = async (req, res) => {
           where: {
             roundNo: req.body.roundNo,
             regNo: req.body.regNo,
-            domain: req.body.domain,
+            coreDomain: req.body.coreDomain,
           },
         },
         { transaction: t }

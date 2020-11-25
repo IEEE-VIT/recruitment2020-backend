@@ -7,6 +7,7 @@ const adminModel = require("../models/adminModel");
 const db = require("../utils/db");
 
 const response = require("../utils/genericResponse");
+const constants = require("../utils/constants");
 
 const getSlots = async (req, res) => {
   const todayDate = new Date().toISOString().slice(0, 10);
@@ -64,7 +65,11 @@ const selectSlot = async (req, res) => {
       }
 
       const roundData = await roundModel.findOne({
-        where: { roundNo: "2", regNo: req.body.regNo, domainType: "MGMT" },
+        where: {
+          roundNo: "2",
+          regNo: req.body.regNo,
+          coreDomain: constants.Mgmt,
+        },
       });
 
       if (roundData.suid) {
@@ -77,7 +82,7 @@ const selectSlot = async (req, res) => {
           where: {
             roundNo: "2",
             regNo: userData.regNo,
-            domainType: "MGMT",
+            coreDomain: constants.Mgmt,
           },
         },
         { transaction: t }
@@ -105,11 +110,10 @@ const fetchGdp = (req, res) => {
       where: {
         roundNo: "2",
         regNo: req.body.regNo,
-        domain: "MGMT",
+        coreDomain: constants.Mgmt,
       },
     })
     .then((result) => {
-      console.log(result);
       response(res, true, result.Slot, "Found GDP");
     })
     .catch((err) => {
@@ -124,11 +128,10 @@ const fetchGda = async (req, res) => {
       where: {
         roundNo: "2",
         regNo: req.body.regNo,
-        domain: "MGMT",
+        coreDomain: constants.Mgmt,
       },
     })
     .then((result) => {
-      console.log(result);
       response(res, true, result.Admin, "Found GDA");
     })
     .catch((err) => {

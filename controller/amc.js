@@ -96,6 +96,7 @@ const round1Amc = async (req, res) => {
             {
               regNo,
               roundNo: 2,
+              status: constants.PendingReview,
               specificDomain: eligibleDomains[i],
               coreDomain: eligibleDomains[i],
             },
@@ -163,8 +164,8 @@ const round2Amc = async (req, res) => {
           {
             roundNo: "3",
             regNo,
-            coreDomain,
             specificDomain,
+            coreDomain: specificDomain,
             status: constants.PendingReview,
           },
           { transaction: chain }
