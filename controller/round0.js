@@ -9,6 +9,7 @@ const userModel = require("../models/userModel");
 const db = require("../utils/db");
 
 const response = require("../utils/genericResponse");
+const constants = require("../utils/constants");
 
 const getQuestions = async (req, res) => {
   const randomQuestionToBeSent = 3;
@@ -120,8 +121,8 @@ const userForm = async (req, res) => {
           regNo: user.regNo,
           suid: slot.suid,
           status: "PR",
-          domainType: "UNKNOWN",
-          domain: "UNKNOWN",
+          coreDomain: constants.Unknown,
+          specificDomain: constants.Unknown,
         },
         { transaction: t }
       );

@@ -8,3 +8,8 @@
 ## To test
 
 - if verifyslotTime works in diff time zones
+
+## TODO
+
+- Puid Assign AMC
+- Create Exception for Round 1+
