@@ -3,8 +3,8 @@ const user = require("../models/userModel");
 const comment = require("../models/commentModel");
 const round = require("../models/roundModel");
 const slot = require("../models/slotModel");
-const teaserAnswer = require("../models/answerModel");
-const teaserQuestion = require("../models/questionModel");
+const answerModel = require("../models/answerModel");
+const questionModel = require("../models/questionModel");
 const sequelize = require("./db");
 
 const relations = () => {
@@ -16,7 +16,8 @@ const relations = () => {
   round.belongsTo(admin, { foreignKey: "auid" });
   round.belongsTo(slot, { foreignKey: "suid" });
   round.belongsTo(comment, { foreignKey: "cuid" });
-  teaserQuestion.belongsTo(teaserAnswer, { foreignKey: "quid" });
+  questionModel.hasMany(answerModel, { foreignKey: "quid" });
+  answerModel.belongsTo(questionModel, { foreignKey: "quid" });
   return sequelize;
 };
 
