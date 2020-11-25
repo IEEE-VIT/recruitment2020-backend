@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+const { Op } = require("sequelize");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -51,9 +52,14 @@ const fetchTechRound2Candidates = async (req, res) => {
       attributes: ["regNo"],
       include: userModel,
       where: {
-        roundNo: "2",
-        meetingCompleted: false,
-        domain: "TECH",
+        [Op.and]: [
+          req.query,
+          {
+            roundNo: "2",
+            meetingCompleted: false,
+            domain: "TECH",
+          },
+        ],
       },
     })
     .then((result) => {
@@ -71,16 +77,20 @@ const fetchTechRound2Candidates = async (req, res) => {
 const fetchMgmtRound2Candidates = async (req, res) => {
   slotModel
     .findOne({ where: { suid: req.query.suid } })
-    .then((slot) => {
+    .then(() => {
       roundModel
         .findAll({
           attributes: ["regNo"],
           include: userModel,
           where: {
-            roundNo: "2",
-            meetingCompleted: false,
-            domain: "MGMT",
-            suid: slot.suid,
+            [Op.and]: [
+              req.query,
+              {
+                roundNo: "2",
+                meetingCompleted: false,
+                domain: "MGMT",
+              },
+            ],
           },
         })
         .then((result) => {
@@ -111,7 +121,9 @@ const fetchMgmtRound2Candidates = async (req, res) => {
 
 const fetchAllAdmins = async (req, res) => {
   adminModel
-    .findAll({ attributes: { exclude: "password" } })
+    .findAll({
+      where: req.query,
+    })
     .then((admins) => {
       response(res, true, admins, "Admins Found");
     })
@@ -125,7 +137,12 @@ const fetchExceptions = async (req, res) => {
     .findAll({
       include: [commentModel],
       where: {
-        exception: true,
+        [Op.and]: [
+          req.query,
+          {
+            exception: true,
+          },
+        ],
       },
     })
     .then((data) => {
