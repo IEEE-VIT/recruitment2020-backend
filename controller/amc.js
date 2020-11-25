@@ -3,9 +3,25 @@ const slotModel = require("../models/slotModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const commentsModel = require("../models/commentModel");
+const projectsModel = require("../models/projectModel");
 const response = require("../utils/genericResponse");
 const db = require("../utils/db");
 const constants = require("../utils/constants");
+
+const fetchProjects = async (req, res) => {
+  projectsModel
+    .findAll({
+      where: req.query,
+    })
+    .then((data) => {
+      if (data.length === 0) {
+        response(res, true, "", "No Projects Found!");
+      } else {
+        response(res, true, data, "Projects Found!");
+      }
+    })
+    .catch((err) => response(res, false, "", err.toString()));
+};
 
 const fetchMeetings = async (req, res) => {
   roundModel
@@ -62,7 +78,7 @@ const meetingCandidateHistory = async (req, res) => {
 };
 
 const round1Amc = async (req, res) => {
-  const { id, comment, status, eligibleDomains, auid, regNo } = req.body;
+  const { id, comment, status, eligibleDomains, auid, regNo, pid } = req.body;
   try {
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
@@ -91,6 +107,14 @@ const round1Amc = async (req, res) => {
 
       if (status === constants.AcceptedReview) {
         for (let i = 0; i < eligibleDomains.length; i += 1) {
+          // eslint-disable-next-line no-await-in-loop
+          const userProjectIdUpdate = await userModel.update(
+            { pid },
+            { where: { regNo }, transaction: chain }
+          );
+          if (userProjectIdUpdate == 0) {
+            throw Error("Unable to Assign Project to user");
+          }
           // eslint-disable-next-line no-await-in-loop
           const round2create = await roundModel.create(
             {
@@ -219,4 +243,50 @@ const postAmc = async (req, res) => {
     .catch((err) => response(res, false, "", err.toString()));
 };
 
-module.exports = { meetingCandidateHistory, fetchMeetings, postAmc };
+const postException = async (req, res) => {
+  const { comment, auid, regNo, coreDomain, roundNo } = req.body;
+  try {
+    await db.transaction(async (chain) => {
+      const commentObj = await commentsModel.create(
+        {
+          auid,
+          regNo,
+          comment,
+        },
+        { transaction: chain }
+      );
+      if (commentObj == null) {
+        throw Error("Error in creating comment");
+      }
+
+      const roundModelUpdate = roundModel.update(
+        {
+          status: constants.ExceptionReview,
+          meetingCompleted: true,
+          cuid: commentObj.cuid,
+        },
+        { where: { regNo, coreDomain, roundNo }, transaction: chain }
+      );
+
+      if (roundModelUpdate == 0) {
+        throw Error("Cannot update exception in Round Table");
+      }
+      response(
+        res,
+        true,
+        "",
+        "Succesfully updated exception for the candidate."
+      );
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
+module.exports = {
+  meetingCandidateHistory,
+  fetchMeetings,
+  postAmc,
+  fetchProjects,
+  postException,
+};
