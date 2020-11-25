@@ -3,7 +3,6 @@ const { Op } = require("sequelize");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
-const slotModel = require("../models/slotModel");
 const commentModel = require("../models/commentModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
@@ -57,7 +56,7 @@ const fetchTechRound2Candidates = async (req, res) => {
           {
             roundNo: "2",
             meetingCompleted: false,
-            domain: "TECH",
+            domainType: "TECH",
           },
         ],
       },
@@ -75,44 +74,32 @@ const fetchTechRound2Candidates = async (req, res) => {
 };
 
 const fetchMgmtRound2Candidates = async (req, res) => {
-  slotModel
-    .findOne({ where: { suid: req.query.suid } })
-    .then(() => {
-      roundModel
-        .findAll({
-          attributes: ["regNo"],
-          include: userModel,
-          where: {
-            [Op.and]: [
-              req.query,
-              {
-                roundNo: "2",
-                meetingCompleted: false,
-                domain: "MGMT",
-              },
-            ],
+  roundModel
+    .findAll({
+      attributes: ["regNo"],
+      include: userModel,
+      where: {
+        [Op.and]: [
+          req.query,
+          {
+            roundNo: "2",
+            meetingCompleted: false,
+            domainType: "MGMT",
           },
-        })
-        .then((result) => {
-          if (result.length === 0) {
-            response(
-              res,
-              true,
-              result,
-              "No Ready candidates for Mgmt Round 2 found"
-            );
-          } else {
-            response(
-              res,
-              true,
-              result,
-              "Ready candidates for Mgmt Round 2 found"
-            );
-          }
-        })
-        .catch((err) => {
-          response(res, false, "", err.toString());
-        });
+        ],
+      },
+    })
+    .then((result) => {
+      if (result.length === 0) {
+        response(
+          res,
+          true,
+          result,
+          "No Ready candidates for Mgmt Round 2 found"
+        );
+      } else {
+        response(res, true, result, "Ready candidates for Mgmt Round 2 found");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());

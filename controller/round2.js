@@ -63,28 +63,22 @@ const selectSlot = async (req, res) => {
         throw new Error("No such Slot exists");
       }
 
-      const roundData = await roundModel.findOne(
+      const roundData = await roundModel.findOne({
+        where: { roundNo: "2", regNo: req.body.regNo, domainType: "MGMT" },
+      });
+
+      if (roundData.suid) {
+        throw new Error("User already selected a slot");
+      }
+
+      await roundModel.update(
+        { suid: req.body.suid },
         {
           where: {
             roundNo: "2",
             regNo: userData.regNo,
-            domain: "MGMT",
+            domainType: "MGMT",
           },
-        },
-        { transaction: t }
-      );
-
-      if (roundData) {
-        throw new Error("User already in Round 2");
-      }
-
-      await roundModel.create(
-        {
-          roundNo: "2",
-          regNo: userData.regNo,
-          suid: slotData.suid,
-          status: "PR",
-          domain: "MGMT",
         },
         { transaction: t }
       );
@@ -98,7 +92,7 @@ const selectSlot = async (req, res) => {
       return updatedSlot;
     });
 
-    response(res, true, result, "Added to Round 2");
+    response(res, true, result, "User added to slot");
   } catch (err) {
     response(res, false, "", err.toString());
   }

@@ -93,6 +93,7 @@ const isReady = async (req, res) => {
           suid: data.suid,
           status: "PR",
           domain: data.domain,
+          domainType: data.domainType,
         })
         .then((round) => {
           response(res, true, round, "Added to Round 1");

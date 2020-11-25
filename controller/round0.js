@@ -100,7 +100,8 @@ const userForm = async (req, res) => {
           regNo: user.regNo,
           suid: slot.suid,
           status: "PR",
-          domain: "DEFAULT",
+          domainType: "UNKNOWN",
+          domain: "UNKNOWN",
         },
         { transaction: t }
       );
