@@ -84,21 +84,23 @@ const round1Amc = async (req, res) => {
         throw Error("Unable to update Round 1 Object.");
       }
 
-      for (let i = 0; i < eligibleDomains.length; i += 1) {
-        // eslint-disable-next-line no-await-in-loop
-        const round2create = await roundModel.create(
-          {
-            regNo,
-            roundNo: 2,
-            domain: eligibleDomains[i],
-            domainType: eligibleDomains[i],
-          },
-          { transaction: chain }
-        );
-        if (round2create == null) {
-          throw Error(
-            `Unable to create object for round2 in domain of ${eligibleDomains[i]}`
+      if (status === "AR") {
+        for (let i = 0; i < eligibleDomains.length; i += 1) {
+          // eslint-disable-next-line no-await-in-loop
+          const round2create = await roundModel.create(
+            {
+              regNo,
+              roundNo: 2,
+              domain: eligibleDomains[i],
+              domainType: eligibleDomains[i],
+            },
+            { transaction: chain }
           );
+          if (round2create == null) {
+            throw Error(
+              `Unable to create object for round2 in domain of ${eligibleDomains[i]}`
+            );
+          }
         }
       }
 
