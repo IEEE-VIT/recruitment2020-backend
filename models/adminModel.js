@@ -17,7 +17,6 @@ const Admin = sequelize.define("Admin", {
     allowNull: false,
     validate: {
       notEmpty: true,
-      isAlpha: true,
     },
   },
   email: {
