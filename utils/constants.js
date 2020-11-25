@@ -1,7 +1,8 @@
 module.exports = {
-  Tech: "tech",
+  Tech: "Tech",
   Mgmt: "Management",
   Unknown: "Unknown",
+  Dsn: "Design",
   AcceptedReview: "AR",
   RejectedReview: "RR",
   ExceptionReview: "ER",

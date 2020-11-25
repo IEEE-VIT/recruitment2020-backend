@@ -4,6 +4,7 @@ const userModel = require("../models/userModel");
 const commentsModel = require("../models/commentModel");
 const response = require("../utils/genericResponse");
 const db = require("../utils/db");
+const constants = require("../utils/constants");
 
 const fetchMeetings = async (req, res) => {
   roundModel
@@ -84,15 +85,15 @@ const round1Amc = async (req, res) => {
         throw Error("Unable to update Round 1 Object.");
       }
 
-      if (status === "AR") {
+      if (status === constants.AcceptedReview) {
         for (let i = 0; i < eligibleDomains.length; i += 1) {
           // eslint-disable-next-line no-await-in-loop
           const round2create = await roundModel.create(
             {
               regNo,
               roundNo: 2,
-              domain: eligibleDomains[i],
-              domainType: eligibleDomains[i],
+              specificDomain: eligibleDomains[i],
+              coreDomain: eligibleDomains[i],
             },
             { transaction: chain }
           );
@@ -143,7 +144,7 @@ const round2Amc = async (req, res) => {
         );
       }
 
-      if (status === "AR") {
+      if (status === constants.AcceptedReview) {
         const approvalDomainUpdate = await roundModel.update(
           {
             status,

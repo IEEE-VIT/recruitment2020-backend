@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
+const constants = require("../utils/constants");
 
 const Round = sequelize.define("Round", {
   roundNo: {
@@ -35,32 +36,37 @@ const Round = sequelize.define("Round", {
   },
   status: {
     type: DataTypes.ENUM,
-    values: ["PR", "AR", "RR", "ER"],
+    values: [
+      constants.PendingReview,
+      constants.AcceptedReview,
+      constants.RejectedReview,
+      constants.ExceptionReview,
+    ],
   },
-  domain: {
+  specificDomain: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
-  domainType: {
+  coreDomain: {
     type: DataTypes.ENUM,
-    values: ["TECH", "MGMT", "Unknown"],
+    values: [constants.Tech, constants.Mgmt, constants.Unknown, constants.Dsn],
     defaultValue: null,
     set(value) {
       switch (value) {
-        case "APP":
-        case "WEB":
-        case "ML":
-        case "CYBERSECURITY":
-          this.setDataValue("domainType", "TECH");
+        case value in constants.TechDomain:
+          this.setDataValue("coreDomain", constants.Tech);
           break;
-        case "MGMT":
-          this.setDataValue("domainType", "MGMT");
+        case value in constants.MgmtDomains:
+          this.setDataValue("coreDomain", constants.Mgmt);
+          break;
+        case value in constants.DesignDomains:
+          this.setDataValue("coreDomain", constants.Dsn);
           break;
         default:
-          this.setDataValue("domainType", "Unknown");
+          this.setDataValue("coreDomain", constants.Unknown);
       }
     },
   },
