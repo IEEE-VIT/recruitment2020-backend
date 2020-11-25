@@ -109,6 +109,68 @@ const round1Amc = async (req, res) => {
   }
 };
 
+const round2Amc = async (req, res) => {
+  const { comment, status, specificDomain, coreDomain, auid, regNo } = req.body;
+
+  try {
+    await db.transaction(async (chain) => {
+      const commentObj = await commentsModel.create(
+        {
+          auid,
+          regNo,
+          comment,
+        },
+        { transaction: chain }
+      );
+      if (commentObj == null) {
+        throw Error("Error in creating comment");
+      }
+
+      const specificDomainUpdate = await roundModel.update(
+        {
+          status: "RR",
+          meetingCompleted: true,
+          cuid: commentObj.cuid,
+        },
+        { transaction: chain, where: { coreDomain } }
+      );
+
+      if (specificDomainUpdate == null) {
+        throw Error(
+          "Unable to update other entries in Round2 for the candidate in the same core domain"
+        );
+      }
+
+      if (status === "AR") {
+        const approvalDomainUpdate = await roundModel.update(
+          {
+            status,
+            meetingCompleted: true,
+            cuid: commentObj.cuid,
+          },
+          { where: { coreDomain, specificDomain }, transaction: chain }
+        );
+        if (approvalDomainUpdate == null) {
+          throw Error("Unable to approve candidate in the domain");
+        }
+        const round3Obj = await roundModel.create(
+          {
+            coreDomain,
+            specificDomain,
+          },
+          { transaction: chain }
+        );
+
+        if (round3Obj == null) {
+          throw Error("Unable to create Round3 Object for the candidate");
+        }
+      }
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
 const postAmc = async (req, res) => {
   const { id } = req.body;
   roundModel
@@ -127,6 +189,9 @@ const postAmc = async (req, res) => {
         switch (data.roundNo) {
           case "1":
             round1Amc(req, res);
+            break;
+          case "2":
+            round2Amc(req, res);
             break;
           default:
             response(
