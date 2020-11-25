@@ -47,10 +47,11 @@ const User = sequelize.define("User", {
   },
   coreDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false,
+    allowNull: true,
   },
   specificDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: true,
   },
   puid: {
     type: DataTypes.INTEGER,

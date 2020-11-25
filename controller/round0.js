@@ -84,6 +84,18 @@ const userForm = async (req, res) => {
       }
       for (let i = 0; i < req.body.questions.length; i += 1) {
         // eslint-disable-next-line no-await-in-loop
+        const alreadyAnswered = await answerModel.findOne({
+          where: {
+            regNo: user.regNo,
+            quid: req.body.questions[i].quid,
+          },
+        });
+
+        if (alreadyAnswered !== null) {
+          throw new Error("Question already answered");
+        }
+
+        // eslint-disable-next-line no-await-in-loop
         await answerModel.create(
           {
             regNo: user.regNo,
@@ -93,6 +105,14 @@ const userForm = async (req, res) => {
           { transaction: t }
         );
       }
+
+      await userModel.update(
+        {
+          coreDomains: req.body.coreDomains,
+          specificDomains: req.body.specificDomains,
+        },
+        { where: { regNo: req.body.regNo } }
+      );
 
       const round = await roundModel.create(
         {
