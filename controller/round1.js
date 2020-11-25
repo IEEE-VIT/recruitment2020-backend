@@ -86,6 +86,9 @@ const isReady = async (req, res) => {
   roundModel
     .findOne({ where: { regNo: req.body.regNo, roundNo: "0" } })
     .then((data) => {
+      if (data == null) {
+        response(res, true, data, "Invalid Registration Number");
+      }
       roundModel
         .create({
           roundNo: "1",

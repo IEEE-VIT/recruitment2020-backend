@@ -24,7 +24,11 @@ const getQuestions = async (req, res) => {
         .findAll({ where: { mandatory: true } })
         .then((manQues) => {
           const all = manQues.concat(ques);
-          response(res, true, all, "Questions Sent");
+          if (all.length == 0) {
+            response(res, true, all, "No Questions Found");
+          } else {
+            response(res, true, all, "Questions Sent");
+          }
         })
         .catch((err) => {
           response(res, false, "", err.toString());
@@ -55,7 +59,7 @@ const getSlots = async (req, res) => {
     })
     .then((slot) => {
       if (slot == "") {
-        response(res, true, "", "All Slots Filled");
+        response(res, true, "", "No Valid Slot available");
       } else {
         response(res, true, slot, "Slots Sent");
       }
@@ -147,12 +151,19 @@ const verifyslotTime = async (req, res) => {
   // NEED TO CHECK IF IT WORKS FOR DIFFERENT TIME ZONES TOO
   // AS OF NOW IT WORKS IF THE TIME SLOTS AND THE SERVER CLOCK ARE SYNCED
 
+  // CONIRM WILL THIS BE USED FOR ROUND2 MANAGEMENT TOO OR ONLY FOR BEFORE ROUND1
   roundModel
-    .findOne({ where: { regNo: req.body.regNo } })
+    .findOne({ where: { regNo: req.body.regNo, roundNo: req.body.roundNo } })
     .then((data) => {
+      if (data == null) {
+        throw new Error("Invalid Registration Number");
+      }
       slotModel
-        .findOne({ where: { suid: data.suid } })
+        .findOne({ where: { suid: data.suid, roundNo: req.body.roundNo } })
         .then((slot) => {
+          if (slot == null) {
+            throw new Error("Invalid Slot");
+          }
           const todayDate = new Date().toISOString().slice(0, 10);
           const todayTime = new Date().toLocaleTimeString("it-IT", {
             hour12: false,

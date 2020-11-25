@@ -112,7 +112,11 @@ const fetchAllAdmins = async (req, res) => {
       where: req.query,
     })
     .then((admins) => {
-      response(res, true, admins, "Admins Found");
+      if (admins.length == 0) {
+        response(res, true, admins, "No Admins Found");
+      } else {
+        response(res, true, admins, "Admins Found");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());

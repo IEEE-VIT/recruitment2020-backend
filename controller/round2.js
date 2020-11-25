@@ -32,7 +32,7 @@ const getSlots = async (req, res) => {
     })
     .then((slot) => {
       if (slot == "") {
-        response(res, true, "", "All Slots Filled");
+        response(res, true, "", "No Slots available");
       } else {
         response(res, true, slot, "Slots Sent");
       }
