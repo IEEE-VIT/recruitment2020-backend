@@ -5,7 +5,6 @@ const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const adminModel = require("../models/adminModel");
 const db = require("../utils/db");
-
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
@@ -163,8 +162,40 @@ const setGdp = async (req, res) => {
     });
 };
 
+const setGda = async (req, res) => {
+  const { candidates, auid } = req.body;
+
+  try {
+    await db.transaction(async (chain) => {
+      for (let i = 0; i < candidates.length; i += 1) {
+        // eslint-disable-next-line no-await-in-loop
+        const roundModelUpdate = await roundModel.update(
+          { auid },
+          {
+            where: {
+              roundNo: "2",
+              coreDomain: constants.Mgmt,
+              regNo: candidates[i],
+            },
+            transaction: chain,
+          }
+        );
+        if (roundModelUpdate == 0) {
+          throw Error(
+            `Unable to update gda for the candidate ${candidates[i]}`
+          );
+        }
+      }
+      response(res, true, "", "GDA Successfully set for Candidates!");
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
 module.exports = {
   setGdp,
+  setGda,
   getSlots,
   selectSlot,
   fetchGda,
