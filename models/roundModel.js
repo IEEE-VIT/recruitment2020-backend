@@ -3,13 +3,11 @@ const sequelize = require("../utils/db");
 
 const Round = sequelize.define("Round", {
   roundNo: {
-    primaryKey: true,
     type: DataTypes.ENUM,
     values: ["0", "1", "2", "3"],
   },
   regNo: {
     type: DataTypes.STRING(9),
-    primaryKey: true,
     allowNull: false,
     validate: {
       notEmpty: true,
@@ -20,7 +18,6 @@ const Round = sequelize.define("Round", {
   },
   suid: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     validate: {
       notEmpty: true,
     },
@@ -42,10 +39,29 @@ const Round = sequelize.define("Round", {
   },
   domain: {
     type: DataTypes.STRING,
-    primaryKey: true,
     allowNull: false,
     validate: {
       notEmpty: true,
+    },
+  },
+  domainType: {
+    type: DataTypes.ENUM,
+    values: ["TECH", "MGMT", "Unknown"],
+    defaultValue: null,
+    set(value) {
+      switch (value) {
+        case "APP":
+        case "WEB":
+        case "ML":
+        case "CYBERSECURITY":
+          this.setDataValue("domainType", "TECH");
+          break;
+        case "MGMT":
+          this.setDataValue("domainType", "MGMT");
+          break;
+        default:
+          this.setDataValue("domainType", "Unknown");
+      }
     },
   },
 });
