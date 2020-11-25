@@ -45,11 +45,15 @@ const Admin = sequelize.define(
       },
     },
   },
+<<<<<<< HEAD
   {
     defaultScope: {
       attributes: { exclude: ["password"] },
     },
   }
 );
+=======
+});
+>>>>>>> Updated Admin Model
 
 module.exports = Admin;
