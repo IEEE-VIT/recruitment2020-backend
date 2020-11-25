@@ -4,6 +4,7 @@ const slotModel = require("../models/slotModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const adminModel = require("../models/adminModel");
+const db = require("../utils/db");
 
 const response = require("../utils/genericResponse");
 
@@ -42,48 +43,59 @@ const getSlots = async (req, res) => {
 };
 
 const selectSlot = async (req, res) => {
-  userModel
-    .findOne({ where: { regNo: req.body.regNo } })
-    .then((user) => {
-      slotModel
-        .findOne({ where: { suid: req.body.suid } })
-        .then((slot) => {
-          if (slot.suid) {
-            slotModel
-              .update(
-                { count: slot.count + 1 },
-                { where: { suid: req.body.suid } }
-              )
-              .then(() => {
-                roundModel
-                  .create({
-                    roundNo: 2,
-                    regNo: user.regNo,
-                    suid: slot.suid,
-                    status: "PR",
-                    domain: "MGMT",
-                  })
-                  .then((round) => {
-                    response(res, true, round, "Added to Round 2");
-                  })
-                  .catch((err) => {
-                    response(res, false, "", err.toString());
-                  });
-              })
-              .catch((err) => {
-                response(res, false, "", err.toString());
-              });
-          } else {
-            response(res, false, "", "Error");
-          }
-        })
-        .catch((err) => {
-          response(res, false, "", err.toString());
-        });
-    })
-    .catch((err) => {
-      response(res, false, "", err.toString());
+  try {
+    const result = await db.transaction(async (t) => {
+      const userData = await userModel.findOne(
+        { where: { regNo: req.body.regNo } },
+        { transaction: t }
+      );
+
+      if (userData == null) {
+        throw new Error("No such User exists");
+      }
+
+      const slotData = await slotModel.findOne(
+        { where: { suid: req.body.suid, roundNo: "2" } },
+        { transaction: t }
+      );
+
+      if (slotData == null) {
+        throw new Error("No such Slot exists");
+      }
+
+      const roundData = await roundModel.findOne({
+        where: { roundNo: "2", regNo: req.body.regNo, domainType: "MGMT" },
+      });
+
+      if (roundData.suid) {
+        throw new Error("User already selected a slot");
+      }
+
+      await roundModel.update(
+        { suid: req.body.suid },
+        {
+          where: {
+            roundNo: "2",
+            regNo: userData.regNo,
+            domainType: "MGMT",
+          },
+        },
+        { transaction: t }
+      );
+
+      const updatedSlot = await slotModel.update(
+        { count: slotData.count + 1 },
+        { where: { suid: req.body.suid } },
+        { transaction: t }
+      );
+
+      return updatedSlot;
     });
+
+    response(res, true, result, "User added to slot");
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
 };
 
 const fetchGdp = (req, res) => {

@@ -3,9 +3,8 @@ const { Op } = require("sequelize");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
-const slotModel = require("../models/slotModel");
 const commentModel = require("../models/commentModel");
-
+const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 
 const readAdmin = async (req, res) => {
@@ -57,7 +56,7 @@ const fetchTechRound2Candidates = async (req, res) => {
           {
             roundNo: "2",
             meetingCompleted: false,
-            domain: "TECH",
+            domainType: "TECH",
           },
         ],
       },
@@ -75,44 +74,32 @@ const fetchTechRound2Candidates = async (req, res) => {
 };
 
 const fetchMgmtRound2Candidates = async (req, res) => {
-  slotModel
-    .findOne({ where: { suid: req.query.suid } })
-    .then(() => {
-      roundModel
-        .findAll({
-          attributes: ["regNo"],
-          include: userModel,
-          where: {
-            [Op.and]: [
-              req.query,
-              {
-                roundNo: "2",
-                meetingCompleted: false,
-                domain: "MGMT",
-              },
-            ],
+  roundModel
+    .findAll({
+      attributes: ["regNo"],
+      include: userModel,
+      where: {
+        [Op.and]: [
+          req.query,
+          {
+            roundNo: "2",
+            meetingCompleted: false,
+            domainType: "MGMT",
           },
-        })
-        .then((result) => {
-          if (result.length === 0) {
-            response(
-              res,
-              true,
-              result,
-              "No Ready candidates for Mgmt Round 2 found"
-            );
-          } else {
-            response(
-              res,
-              true,
-              result,
-              "Ready candidates for Mgmt Round 2 found"
-            );
-          }
-        })
-        .catch((err) => {
-          response(res, false, "", err.toString());
-        });
+        ],
+      },
+    })
+    .then((result) => {
+      if (result.length === 0) {
+        response(
+          res,
+          true,
+          result,
+          "No Ready candidates for Mgmt Round 2 found"
+        );
+      } else {
+        response(res, true, result, "Ready candidates for Mgmt Round 2 found");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());
@@ -131,7 +118,6 @@ const fetchAllAdmins = async (req, res) => {
       response(res, false, "", err.toString());
     });
 };
-
 const fetchExceptions = async (req, res) => {
   roundModel
     .findAll({
@@ -158,68 +144,89 @@ const fetchExceptions = async (req, res) => {
 };
 
 const resolveExceptions = async (req, res) => {
-  roundModel
-    .findOne({
-      where: {
-        roundNo: req.body.roundNo,
-        regNo: req.body.regNo,
-        domain: req.body.domain,
-      },
-    })
-    .then((roundData) => {
-      roundModel
-        .update(
-          {
-            exception: false,
+  try {
+    const result = await db.transaction(async (t) => {
+      const roundData = await roundModel.findOne(
+        {
+          where: {
+            roundNo: req.body.roundNo,
+            regNo: req.body.regNo,
+            domain: req.body.domain,
           },
-          {
-            where: {
-              roundNo: req.body.roundNo,
-              regNo: req.body.regNo,
-              domain: req.body.domain,
-            },
-          }
-        )
-        .then((updated) => {
-          if (updated == 1) {
-            commentModel
-              .findOne({ where: { cuid: roundData.cuid } })
-              .then((rawCommentData) => {
-                const newComment = rawCommentData.comment
-                  .concat("//exception resolved: ")
-                  .concat(req.body.reason);
-                commentModel
-                  .update(
-                    {
-                      comment: newComment,
-                    },
-                    { where: { cuid: roundData.cuid } }
-                  )
-                  .then((commentChanged) => {
-                    if (commentChanged == 1) {
-                      response(res, true, commentChanged, "Exception Resolved");
-                    } else {
-                      response(res, false, "", "Exception not found");
-                    }
-                  })
-                  .catch((err) => {
-                    response(res, false, "", err.toString());
-                  });
-              })
-              .catch((err) => {
-                response(res, false, "", err.toString());
-              });
-          } else {
-            response(res, false, "", "Exception not found");
-          }
-        })
-        .catch((err) => {
-          response(res, false, "", err.toString());
-        });
-    })
-    .catch((err) => {
-      response(res, false, "", err.toString());
+        },
+        { transaction: t }
+      );
+
+      if (roundData == null) {
+        throw new Error("No such User found in given round");
+      }
+
+      if (roundData.exception == false) {
+        throw new Error("No such Exception found");
+      }
+
+      const rawCommentData = await commentModel.findOne(
+        {
+          where: {
+            cuid: roundData.cuid,
+          },
+        },
+        { transaction: t }
+      );
+
+      if (rawCommentData == null) {
+        throw new Error("No such comment found");
+      }
+
+      const adminData = await adminModel.findOne(
+        {
+          where: {
+            auid: req.body.auid,
+          },
+        },
+        { transaction: t }
+      );
+
+      if (adminData == null) {
+        throw new Error("No such Admin found");
+      }
+
+      const updatedRoundData = await roundModel.update(
+        {
+          exception: false,
+        },
+        {
+          where: {
+            roundNo: req.body.roundNo,
+            regNo: req.body.regNo,
+            domain: req.body.domain,
+          },
+        },
+        { transaction: t }
+      );
+
+      const newComment = await rawCommentData.comment
+        .concat(" // exception resolved: ")
+        .concat(req.body.reason)
+        .concat(" // by: ")
+        .concat(adminData.name);
+
+      const newCommentBool = await commentModel.update(
+        {
+          comment: newComment,
+        },
+        { where: { cuid: roundData.cuid } },
+        { transaction: t }
+      );
+      if (newCommentBool == 0) {
+        throw new Error("Error Resolving Exception");
+      }
+      return updatedRoundData;
     });
+    response(res, true, result, "Exception resolved");
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
 };
 
 const fetchAllUsers = async (req, res) => {
