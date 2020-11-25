@@ -2,6 +2,10 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 const constants = require("../utils/constants");
 
+const TechDomains = constants.TechDomains();
+const MgmtDomains = constants.MgmtDomains();
+const DsnDomains = constants.DesignDomains();
+
 const Round = sequelize.define("Round", {
   roundNo: {
     type: DataTypes.ENUM,
@@ -55,14 +59,14 @@ const Round = sequelize.define("Round", {
     values: [constants.Tech, constants.Mgmt, constants.Unknown, constants.Dsn],
     defaultValue: null,
     set(value) {
-      switch (value) {
-        case value in constants.TechDomain:
+      switch (true) {
+        case TechDomains.includes(value):
           this.setDataValue("coreDomain", constants.Tech);
           break;
-        case value in constants.MgmtDomains:
+        case MgmtDomains.includes(value):
           this.setDataValue("coreDomain", constants.Mgmt);
           break;
-        case value in constants.DesignDomains:
+        case DsnDomains.includes(value):
           this.setDataValue("coreDomain", constants.Dsn);
           break;
         default:

@@ -7,22 +7,30 @@ module.exports = {
   RejectedReview: "RR",
   ExceptionReview: "ER",
   PendingReview: "PR",
-  ReviewTypes: [
-    this.AcceptedReview,
-    this.RejectedReview,
-    this.ExceptionReview,
-    this.PendingReview,
-  ],
+  ReviewTypes() {
+    return [
+      this.AcceptedReview,
+      this.RejectedReview,
+      this.ExceptionReview,
+      this.PendingReview,
+    ];
+  },
   App: "App",
   Web: "Web",
   Ml: "ML",
   Elec: "Electronics",
   CSec: "CyberSecurity",
   Game: "GameDev",
-  TechDomains: [this.App, this.Web, this.Ml, this.Elec, this.CSec, this.Game],
+  TechDomains() {
+    return [this.App, this.Web, this.Ml, this.Elec, this.CSec, this.Game];
+  },
   GDes: "GraphicDesign",
   Ui: "UI/UX",
   Vfx: "VFX",
-  DesignDomains: [this.GDes, this.Ui, this.Vfx],
-  MgmtDomains: [this.Mgmt],
+  DesignDomains() {
+    return [this.GDes, this.Ui, this.Vfx];
+  },
+  MgmtDomains() {
+    return [this.Mgmt];
+  },
 };

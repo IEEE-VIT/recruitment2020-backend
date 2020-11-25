@@ -92,8 +92,8 @@ const isReady = async (req, res) => {
           regNo: data.regNo,
           suid: data.suid,
           status: "PR",
-          domain: data.domain,
-          domainType: data.domainType,
+          specificDomain: data.specificDomain,
+          coreDomain: data.coreDomain,
         })
         .then((round) => {
           response(res, true, round, "Added to Round 1");

@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 const slotModel = require("../models/slotModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -77,6 +78,7 @@ const round1Amc = async (req, res) => {
         {
           meetingCompleted: true,
           status,
+          cuid: commentObj.cuid,
         },
         { where: { id }, transaction: chain }
       );
@@ -131,14 +133,13 @@ const round2Amc = async (req, res) => {
 
       const specificDomainUpdate = await roundModel.update(
         {
-          status: "RR",
+          status: constants.RejectedReview,
           meetingCompleted: true,
           cuid: commentObj.cuid,
         },
-        { transaction: chain, where: { coreDomain } }
+        { transaction: chain, where: { coreDomain, regNo } }
       );
-
-      if (specificDomainUpdate == null) {
+      if (specificDomainUpdate == 0) {
         throw Error(
           "Unable to update other entries in Round2 for the candidate in the same core domain"
         );
@@ -153,11 +154,13 @@ const round2Amc = async (req, res) => {
           },
           { where: { coreDomain, specificDomain }, transaction: chain }
         );
-        if (approvalDomainUpdate == null) {
+        if (approvalDomainUpdate == 0) {
           throw Error("Unable to approve candidate in the domain");
         }
         const round3Obj = await roundModel.create(
           {
+            roundNo: "3",
+            regNo,
             coreDomain,
             specificDomain,
           },
@@ -168,6 +171,7 @@ const round2Amc = async (req, res) => {
           throw Error("Unable to create Round3 Object for the candidate");
         }
       }
+      response(res, true, "", "Succesfully Reviewed Candidate for Round 2");
     });
   } catch (err) {
     response(res, false, "", err.toString());
@@ -177,7 +181,7 @@ const round2Amc = async (req, res) => {
 const postAmc = async (req, res) => {
   const { id } = req.body;
   roundModel
-    .findOne({ include: userModel, where: { id } })
+    .findOne({ where: { id } })
     .then((data) => {
       if (data != null) {
         if (data.meetingCompleted) {
