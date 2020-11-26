@@ -71,6 +71,10 @@ const selectSlot = async (req, res) => {
         },
       });
 
+      if (roundData == null) {
+        throw new Error("No such user exists in given round");
+      }
+
       if (roundData.suid) {
         throw new Error("User already selected a slot");
       }
@@ -92,6 +96,9 @@ const selectSlot = async (req, res) => {
         { where: { suid: req.body.suid } },
         { transaction: t }
       );
+      if (updatedSlot == 0) {
+        throw new Error("Error updating slot");
+      }
 
       return updatedSlot;
     });

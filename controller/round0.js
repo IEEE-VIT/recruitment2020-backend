@@ -12,12 +12,11 @@ const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
 const getQuestions = async (req, res) => {
-  const randomQuestionToBeSent = constants.NonMandatoryQuesions;
   questionModel
     .findAll({
       where: { mandatory: false },
       order: sequelize.literal("random()"),
-      limit: randomQuestionToBeSent,
+      limit: constants.NonMandatoryQuesions,
     })
     .then((ques) => {
       questionModel
@@ -85,7 +84,7 @@ const userForm = async (req, res) => {
       }
 
       const slot = await slotModel.findOne(
-        { where: { suid: req.body.suid } },
+        { where: { suid: req.body.suid, roundNo: "1" } },
         { transaction: t }
       );
       if (slot == null) {
@@ -128,7 +127,7 @@ const userForm = async (req, res) => {
           roundNo: 0,
           regNo: user.regNo,
           suid: slot.suid,
-          status: "PR",
+          status: constants.PendingReview,
           coreDomain: constants.Unknown,
           specificDomain: constants.Unknown,
         },
@@ -140,7 +139,7 @@ const userForm = async (req, res) => {
 
       await slotModel.update(
         { count: slotCount },
-        { where: { suid: req.body.suid } },
+        { where: { suid: req.body.suid, roundNo: "1" } },
         { transaction: t }
       );
       return round;
@@ -155,7 +154,6 @@ const verifyslotTime = async (req, res) => {
   // NEED TO CHECK IF IT WORKS FOR DIFFERENT TIME ZONES TOO
   // AS OF NOW IT WORKS IF THE TIME SLOTS AND THE SERVER CLOCK ARE SYNCED
 
-  // CONIRM WILL THIS BE USED FOR ROUND2 MANAGEMENT TOO OR ONLY FOR BEFORE ROUND1
   roundModel
     .findOne({ where: { regNo: req.body.regNo, roundNo: req.body.roundNo } })
     .then((data) => {

@@ -10,8 +10,6 @@ const createUser = async (req, res) => {
       phoneNo: req.body.phoneNo,
       email: req.body.email,
       password: req.body.password,
-      coreDomain: req.body.coreDomain,
-      specificDomains: req.body.specificDomains,
     })
     .then((user) => {
       response(res, true, user, "User created successfully");
@@ -23,7 +21,10 @@ const createUser = async (req, res) => {
 
 const readUser = async (req, res) => {
   userModel
-    .findOne({ where: { regNo: req.body.regNo } })
+    .findOne({
+      where: { regNo: req.query.regNo },
+      attributes: { exclude: ["password"] },
+    })
     .then((user) => {
       if (user === null) {
         response(res, true, user, "User doesn't exists");
