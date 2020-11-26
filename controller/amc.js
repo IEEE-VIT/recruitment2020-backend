@@ -78,7 +78,7 @@ const meetingCandidateHistory = async (req, res) => {
 };
 
 const round1Amc = async (req, res) => {
-  const { id, comment, status, eligibleDomains, auid, regNo, pid } = req.body;
+  const { id, comment, status, eligibleDomains, auid, regNo, puid } = req.body;
   try {
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
@@ -109,7 +109,7 @@ const round1Amc = async (req, res) => {
         for (let i = 0; i < eligibleDomains.length; i += 1) {
           // eslint-disable-next-line no-await-in-loop
           const userProjectIdUpdate = await userModel.update(
-            { pid },
+            { puid },
             { where: { regNo }, transaction: chain }
           );
           if (userProjectIdUpdate == 0) {

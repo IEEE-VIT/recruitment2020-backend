@@ -16,7 +16,7 @@ const login = async (req, res) => {
           authMiddlewaare.generateJwtToken(
             payload,
             res,
-            "",
+            user,
             "User Authenticated Successfully!"
           );
         } else {
