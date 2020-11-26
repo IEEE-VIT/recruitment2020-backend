@@ -12,7 +12,7 @@ const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
 const getQuestions = async (req, res) => {
-  const randomQuestionToBeSent = 3;
+  const randomQuestionToBeSent = constants.NonMandatoryQuesions;
   questionModel
     .findAll({
       where: { mandatory: false },
@@ -47,9 +47,13 @@ const getSlots = async (req, res) => {
     .findAll({
       where: {
         [Op.or]: [
-          { count: { [Op.lt]: 5 }, roundNo: "1", date: { [Op.gt]: todayDate } },
           {
-            count: { [Op.lt]: 5 },
+            count: { [Op.lt]: constants.round1MaxCandidatesPerSlot },
+            roundNo: "1",
+            date: { [Op.gt]: todayDate },
+          },
+          {
+            count: { [Op.lt]: constants.round1MaxCandidatesPerSlot },
             roundNo: "1",
             date: todayDate,
             timeFrom: { [Op.gte]: todayTime },

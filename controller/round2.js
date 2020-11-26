@@ -17,12 +17,12 @@ const getSlots = async (req, res) => {
       where: {
         [Op.or]: [
           {
-            count: { [Op.lt]: 20 },
+            count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
             roundNo: "2",
             date: { [Op.gt]: todayDate },
           },
           {
-            count: { [Op.lt]: 20 },
+            count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
             roundNo: "2",
             date: todayDate,
             timeFrom: { [Op.gte]: todayTime },
