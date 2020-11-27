@@ -17,12 +17,12 @@ const getSlots = async (req, res) => {
       where: {
         [Op.or]: [
           {
-            count: { [Op.lt]: 20 },
+            count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
             roundNo: "2",
             date: { [Op.gt]: todayDate },
           },
           {
-            count: { [Op.lt]: 20 },
+            count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
             roundNo: "2",
             date: todayDate,
             timeFrom: { [Op.gte]: todayTime },
@@ -32,7 +32,7 @@ const getSlots = async (req, res) => {
     })
     .then((slot) => {
       if (slot == "") {
-        response(res, true, "", "All Slots Filled");
+        response(res, true, "", "No Slots available");
       } else {
         response(res, true, slot, "Slots Sent");
       }
@@ -71,6 +71,10 @@ const selectSlot = async (req, res) => {
         },
       });
 
+      if (roundData == null) {
+        throw new Error("No such user exists in given round");
+      }
+
       if (roundData.suid) {
         throw new Error("User already selected a slot");
       }
@@ -92,6 +96,9 @@ const selectSlot = async (req, res) => {
         { where: { suid: req.body.suid } },
         { transaction: t }
       );
+      if (updatedSlot == 0) {
+        throw new Error("Error updating slot");
+      }
 
       return updatedSlot;
     });

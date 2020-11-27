@@ -12,19 +12,22 @@ const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
 const getQuestions = async (req, res) => {
-  const randomQuestionToBeSent = 3;
   questionModel
     .findAll({
       where: { mandatory: false },
       order: sequelize.literal("random()"),
-      limit: randomQuestionToBeSent,
+      limit: constants.NonMandatoryQuesions,
     })
     .then((ques) => {
       questionModel
         .findAll({ where: { mandatory: true } })
         .then((manQues) => {
           const all = manQues.concat(ques);
-          response(res, true, all, "Questions Sent");
+          if (all.length == 0) {
+            response(res, true, all, "No Questions Found");
+          } else {
+            response(res, true, all, "Questions Sent");
+          }
         })
         .catch((err) => {
           response(res, false, "", err.toString());
@@ -43,9 +46,13 @@ const getSlots = async (req, res) => {
     .findAll({
       where: {
         [Op.or]: [
-          { count: { [Op.lt]: 5 }, roundNo: "1", date: { [Op.gt]: todayDate } },
           {
-            count: { [Op.lt]: 5 },
+            count: { [Op.lt]: constants.round1MaxCandidatesPerSlot },
+            roundNo: "1",
+            date: { [Op.gt]: todayDate },
+          },
+          {
+            count: { [Op.lt]: constants.round1MaxCandidatesPerSlot },
             roundNo: "1",
             date: todayDate,
             timeFrom: { [Op.gte]: todayTime },
@@ -55,7 +62,7 @@ const getSlots = async (req, res) => {
     })
     .then((slot) => {
       if (slot == "") {
-        response(res, true, "", "All Slots Filled");
+        response(res, true, "", "No Valid Slot available");
       } else {
         response(res, true, slot, "Slots Sent");
       }
@@ -77,7 +84,7 @@ const userForm = async (req, res) => {
       }
 
       const slot = await slotModel.findOne(
-        { where: { suid: req.body.suid } },
+        { where: { suid: req.body.suid, roundNo: "1" } },
         { transaction: t }
       );
       if (slot == null) {
@@ -120,7 +127,7 @@ const userForm = async (req, res) => {
           roundNo: 0,
           regNo: user.regNo,
           suid: slot.suid,
-          status: "PR",
+          status: constants.PendingReview,
           coreDomain: constants.Unknown,
           specificDomain: constants.Unknown,
         },
@@ -132,7 +139,7 @@ const userForm = async (req, res) => {
 
       await slotModel.update(
         { count: slotCount },
-        { where: { suid: req.body.suid } },
+        { where: { suid: req.body.suid, roundNo: "1" } },
         { transaction: t }
       );
       return round;
@@ -148,11 +155,17 @@ const verifyslotTime = async (req, res) => {
   // AS OF NOW IT WORKS IF THE TIME SLOTS AND THE SERVER CLOCK ARE SYNCED
 
   roundModel
-    .findOne({ where: { regNo: req.body.regNo } })
+    .findOne({ where: { regNo: req.body.regNo, roundNo: req.body.roundNo } })
     .then((data) => {
+      if (data == null) {
+        throw new Error("Invalid Registration Number");
+      }
       slotModel
-        .findOne({ where: { suid: data.suid } })
+        .findOne({ where: { suid: data.suid, roundNo: req.body.roundNo } })
         .then((slot) => {
+          if (slot == null) {
+            throw new Error("Invalid Slot");
+          }
           const todayDate = new Date().toISOString().slice(0, 10);
           const todayTime = new Date().toLocaleTimeString("it-IT", {
             hour12: false,

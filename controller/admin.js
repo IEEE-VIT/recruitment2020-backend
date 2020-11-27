@@ -6,6 +6,7 @@ const userModel = require("../models/userModel");
 const commentModel = require("../models/commentModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
+const constants = require("../utils/constants");
 
 const readAdmin = async (req, res) => {
   adminModel
@@ -56,7 +57,7 @@ const fetchTechRound2Candidates = async (req, res) => {
           {
             roundNo: "2",
             meetingCompleted: false,
-            domainType: "TECH",
+            coreDomain: constants.Tech,
           },
         ],
       },
@@ -84,7 +85,7 @@ const fetchMgmtRound2Candidates = async (req, res) => {
           {
             roundNo: "2",
             meetingCompleted: false,
-            domainType: "MGMT",
+            coreDomain: constants.Mgmt,
           },
         ],
       },
@@ -112,7 +113,11 @@ const fetchAllAdmins = async (req, res) => {
       where: req.query,
     })
     .then((admins) => {
-      response(res, true, admins, "Admins Found");
+      if (admins.length == 0) {
+        response(res, true, admins, "No Admins Found");
+      } else {
+        response(res, true, admins, "Admins Found");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());
@@ -152,17 +157,14 @@ const resolveExceptions = async (req, res) => {
             roundNo: req.body.roundNo,
             regNo: req.body.regNo,
             coreDomain: req.body.coreDomain,
+            exception: true,
           },
         },
         { transaction: t }
       );
 
       if (roundData == null) {
-        throw new Error("No such User found in given round");
-      }
-
-      if (roundData.exception == false) {
-        throw new Error("No such Exception found");
+        throw new Error("No such User with Exception found in given round");
       }
 
       const rawCommentData = await commentModel.findOne(
@@ -200,6 +202,7 @@ const resolveExceptions = async (req, res) => {
             roundNo: req.body.roundNo,
             regNo: req.body.regNo,
             coreDomain: req.body.coreDomain,
+            exception: true,
           },
         },
         { transaction: t }

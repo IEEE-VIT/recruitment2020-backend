@@ -43,7 +43,7 @@ app.get("/", (req, res) => {
 });
 
 relations()
-  .sync({ force: true, logging: false })
+  .sync({ force: false, logging: false })
   .then(() => {
     console.log("Success connection to db");
     app.listen(port, () => console.log(`Server running on port ${port}`));

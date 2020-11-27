@@ -86,15 +86,16 @@ const isReady = async (req, res) => {
   roundModel
     .findOne({ where: { regNo: req.body.regNo, roundNo: "0" } })
     .then((data) => {
+      if (data == null) {
+        response(res, true, data, "Invalid Registration Number");
+      }
       roundModel
-        .create({
-          roundNo: "1",
-          regNo: data.regNo,
-          suid: data.suid,
-          status: "PR",
-          specificDomain: data.specificDomain,
-          coreDomain: data.coreDomain,
-        })
+        .update(
+          {
+            roundNo: "1",
+          },
+          { where: { regNo: req.body.regNo, roundNo: "0" } }
+        )
         .then((round) => {
           response(res, true, round, "Added to Round 1");
         })
