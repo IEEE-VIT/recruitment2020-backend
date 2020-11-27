@@ -1,0 +1,831 @@
+{
+	"info": {
+		"_postman_id": "854d0b93-8aa3-4972-a6c1-3365f85af0ca",
+		"name": "IEEE-VIT Recruitment API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "179cfa35-eaaa-4758-ae76-becb520d6bbd",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"if(jsonData.data.token) {",
+							"    pm.globals.set(\"jwt-token\", jsonData.data.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"regNo\":\"19BCI0209\",\n    \"name\":\"Shubham Palriwala\",\n    \"phoneNo\":\"1234565432\",\n    \"email\":\"abc@ma.cp\",\n    \"password\":\"abcd1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3c3ab37f-ade2-4a84-8f8b-3699e114176d",
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"if(jsonData.data.token) {",
+							"    pm.globals.set(\"jwt-token\", jsonData.data.token);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"regNo\":\"19BCI0209\",\n    \"password\":\"abcd1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Hello World",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Round0 form",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"regNo\":\"19BCI0209\",\n    \"suid\":\"1\",\n    \"coreDomains\":[\"TECH\",\"MANAGEMENT\"],\n    \"specificDomains\":[\"CYBERSECURITY\",\"MANAGEMENT\"],\n    \"questions\":[\n        {\n            \"quid\":1,\n            \"answer\":\"lok\"\n        },\n        {\n            \"quid\":4,\n            \"answer\":\"lmao\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/r0/form",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r0",
+						"form"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Questions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r0/question",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r0",
+						"question"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Round1 Slots",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r0/slots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r0",
+						"slots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check if User sends request in their  Slot Time ",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r0/verifyslotTime",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r0",
+						"verifyslotTime"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ready for Round 1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r1/ready",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r1",
+						"ready"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Project Link",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"projectLink\":\"myproj.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/r1/project",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r1",
+						"project"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Round2 Slots (Mgmt)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r2/slots",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r2",
+						"slots"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Select Round2 Slot (Mgmt)",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"suid\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/r2/selectslot",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r2",
+						"selectslot"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch GDP",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r2/fetchgdp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r2",
+						"fetchgdp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch GDA",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/r2/fetchgda",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"r2",
+						"fetchgda"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Round1 ready candidates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/r1/candidates",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"r1",
+						"candidates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Select Round1 Ready candidates for review",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"candidates\":[\"19BCI0209\"],\n    \"auid\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin/r1/candidates",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"r1",
+						"candidates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch R2 Tech Ready  Candidates",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin/r2/tech/candidates",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"r2",
+						"tech",
+						"candidates"
+					],
+					"query": [
+						{
+							"key": "regNo",
+							"value": "19BCI0208",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch R2 Mgmt Ready candidates by Slot",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/r2/mgmt/candidates",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"r2",
+						"mgmt",
+						"candidates"
+					],
+					"query": [
+						{
+							"key": "suid",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "regNo",
+							"value": "19BCI0208",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Admins",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/alladmins",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"alladmins"
+					],
+					"query": [
+						{
+							"key": "auid",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch All Candidates",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/allcandidates",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"allcandidates"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set GDP ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"gdpLink\":\"meet.fo.com\",\n    \"suid\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin//mgmt/r2/gdp",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"",
+						"mgmt",
+						"r2",
+						"gdp"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set GDA",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"candidates\":[\"19BCI0209\"],\n    \"auid\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin//mgmt/r2/gda",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"",
+						"mgmt",
+						"r2",
+						"gda"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Exceptions",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/exceptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"exceptions"
+					],
+					"query": [
+						{
+							"key": "coreDomain",
+							"value": "Management",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resolve Exception",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"regNo\":\"19BCI0209\",\n    \"reason\":\"Solved in VC\",\n    \"roundNo\":\"2\",\n    \"coreDomain\":\"Management\",\n    \"auid\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin/exceptions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"exceptions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read 1 Admin by auid",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin?auid=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin"
+					],
+					"query": [
+						{
+							"key": "auid",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Meetings by RegNo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/amc/candidate/meetings?regNo=19BCI0209",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"amc",
+						"candidate",
+						"meetings"
+					],
+					"query": [
+						{
+							"key": "regNo",
+							"value": "19BCI0209"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Fetch Candidate Meeting History by RegNo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:5000/api/admin/amc/candidate?regNo=19BCI0209",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"amc",
+						"candidate"
+					],
+					"query": [
+						{
+							"key": "regNo",
+							"value": "19BCI0209"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Round1 Interview  AMC ",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\":\"1\",\n    \"comment\":\"souunds good\",\n    \"status\":\"AR\",\n    \"eligibleDomains\":[\"Tech\",\"Management\"],\n    \"auid\":\"1\",\n    \"regNo\":\"19BCI0209\",\n    \"puid\":\"1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin/amc/interview",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"amc",
+						"interview"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Round2 Interview AMC",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\":\"4\",\n    \"comment\":\"souunds good for round 2\",\n    \"status\":\"AR\",\n    \"coreDomain\":\"Tech\",\n    \"specificDomain\":\"AppDev\",\n    \"auid\":\"1\",\n    \"regNo\":\"19BCI0209\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/admin/amc/interview",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"admin",
+						"amc",
+						"interview"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt-token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "e673b9a9-ceab-49c1-8ede-9447ce007a5d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "050edcbd-d3e3-4683-b4c9-3496f4cbd498",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

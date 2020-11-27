@@ -76,7 +76,7 @@ const userForm = async (req, res) => {
   try {
     const result = await db.transaction(async (t) => {
       const user = await userModel.findOne(
-        { where: { regNo: req.body.regNo } },
+        { where: { regNo: req.user.regNo } },
         { transaction: t }
       );
       if (user == null) {
@@ -155,13 +155,13 @@ const verifyslotTime = async (req, res) => {
   // AS OF NOW IT WORKS IF THE TIME SLOTS AND THE SERVER CLOCK ARE SYNCED
 
   roundModel
-    .findOne({ where: { regNo: req.body.regNo, roundNo: req.body.roundNo } })
+    .findOne({ where: { regNo: req.user.regNo, roundNo: "0" } })
     .then((data) => {
       if (data == null) {
-        throw new Error("Invalid Registration Number");
+        throw new Error("Invalid Registration Number in the given round");
       }
       slotModel
-        .findOne({ where: { suid: data.suid, roundNo: req.body.roundNo } })
+        .findOne({ where: { suid: data.suid, roundNo: "1" } })
         .then((slot) => {
           if (slot == null) {
             throw new Error("Invalid Slot");

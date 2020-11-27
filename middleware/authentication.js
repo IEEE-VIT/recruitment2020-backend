@@ -13,7 +13,6 @@ jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 jwtOptions.secretOrKey = process.env.JWT_SECRET;
 
 const strategy = new JwtStrategy(jwtOptions, (jwtPayload, next) => {
-  console.log("payload received", jwtPayload);
   userModel
     .findOne({
       where: { regNo: jwtPayload.regNo },

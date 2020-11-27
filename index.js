@@ -28,10 +28,12 @@ app.use(morgan("common"));
 
 app.use(passport.initialize());
 
+const userAuthMiddleware = passport.authenticate("jwt", { session: false });
+
 app.use("/api", userRoute);
-app.use("/api/r0", round0Route);
-app.use("/api/r1", round1Route);
-app.use("/api/r2", round2Route);
+app.use("/api/r0", userAuthMiddleware, round0Route);
+app.use("/api/r1", userAuthMiddleware, round1Route);
+app.use("/api/r2", userAuthMiddleware, round2Route);
 
 app.use("/api/admin", adminRoute);
 app.use("/api/admin/amc", amcRoute);

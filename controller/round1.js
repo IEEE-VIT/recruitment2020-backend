@@ -8,7 +8,7 @@ const updateProjectLink = async (req, res) => {
   userModel
     .update(
       { projectLink: req.body.projectLink },
-      { where: { regNo: req.body.regNo } }
+      { where: { regNo: req.user.regNo } }
     )
     .then((result) => {
       if (result == 0) {
@@ -84,23 +84,21 @@ const selectReadyCandidates = async (req, res) => {
 
 const isReady = async (req, res) => {
   roundModel
-    .findOne({ where: { regNo: req.body.regNo, roundNo: "0" } })
+    .findOne({ where: { regNo: req.user.regNo, roundNo: "0" } })
     .then((data) => {
       if (data == null) {
-        response(res, true, data, "Invalid Registration Number");
+        throw new Error("Registration Number does not exist in round 0");
+        // response(res, true, data, "Invalid Registration Number");
       }
       roundModel
         .update(
           {
             roundNo: "1",
           },
-          { where: { regNo: req.body.regNo, roundNo: "0" } }
+          { where: { regNo: req.user.regNo, roundNo: "0" } }
         )
         .then((round) => {
           response(res, true, round, "Added to Round 1");
-        })
-        .catch((err) => {
-          response(res, false, "", err.toString());
         });
     })
     .catch((err) => {

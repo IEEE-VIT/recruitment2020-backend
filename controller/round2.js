@@ -46,7 +46,7 @@ const selectSlot = async (req, res) => {
   try {
     const result = await db.transaction(async (t) => {
       const userData = await userModel.findOne(
-        { where: { regNo: req.body.regNo } },
+        { where: { regNo: req.user.regNo } },
         { transaction: t }
       );
 
@@ -66,17 +66,13 @@ const selectSlot = async (req, res) => {
       const roundData = await roundModel.findOne({
         where: {
           roundNo: "2",
-          regNo: req.body.regNo,
+          regNo: req.user.regNo,
           coreDomain: constants.Mgmt,
         },
       });
 
       if (roundData == null) {
         throw new Error("No such user exists in given round");
-      }
-
-      if (roundData.suid) {
-        throw new Error("User already selected a slot");
       }
 
       await roundModel.update(
@@ -115,7 +111,7 @@ const fetchGdp = (req, res) => {
       include: slotModel,
       where: {
         roundNo: "2",
-        regNo: req.body.regNo,
+        regNo: req.user.regNo,
         coreDomain: constants.Mgmt,
       },
     })
@@ -133,7 +129,7 @@ const fetchGda = async (req, res) => {
       include: adminModel,
       where: {
         roundNo: "2",
-        regNo: req.body.regNo,
+        regNo: req.user.regNo,
         coreDomain: constants.Mgmt,
       },
     })
