@@ -10,7 +10,7 @@ const constants = require("../utils/constants");
 
 const readAdmin = async (req, res) => {
   adminModel
-    .findOne({ where: { auid: req.query.auid } })
+    .findOne({ where: { auid: req.user.auid } })
     .then((admin) => {
       if (admin == null) {
         response(res, true, admin, "Admin ID invalid");
@@ -32,7 +32,7 @@ const updateAdmin = async (req, res) => {
         password: req.body.password,
         meetLink: req.body.meetLink,
       },
-      { where: { auid: req.body.auid } }
+      { where: { auid: req.user.auid } }
     )
     .then((result) => {
       if (result == 0) {
@@ -183,7 +183,7 @@ const resolveExceptions = async (req, res) => {
       const adminData = await adminModel.findOne(
         {
           where: {
-            auid: req.body.auid,
+            auid: req.user.auid,
           },
         },
         { transaction: t }

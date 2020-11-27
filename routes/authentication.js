@@ -4,7 +4,7 @@ const adminAuthController = require("../controller/adminAuthentication");
 
 router.post("/login", userAuthController.login);
 router.post("/register", userAuthController.register);
-router.post("/admin/login", adminAuthController.login);
-router.post("/admin/register", adminAuthController.register);
+router.post("/adminlogin", adminAuthController.login);
+router.post("/adminregister", adminAuthController.register);
 
 module.exports = router;

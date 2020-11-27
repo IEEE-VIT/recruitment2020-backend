@@ -78,12 +78,12 @@ const meetingCandidateHistory = async (req, res) => {
 };
 
 const round1Amc = async (req, res) => {
-  const { id, comment, status, eligibleDomains, auid, regNo, puid } = req.body;
+  const { id, comment, status, eligibleDomains, regNo, puid } = req.body;
   try {
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
-          auid,
+          auid: req.user.auid,
           regNo,
           comment,
         },
@@ -142,13 +142,13 @@ const round1Amc = async (req, res) => {
 };
 
 const round2Amc = async (req, res) => {
-  const { comment, status, specificDomain, coreDomain, auid, regNo } = req.body;
+  const { comment, status, specificDomain, coreDomain, regNo } = req.body;
 
   try {
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
-          auid,
+          auid: req.user.auid,
           regNo,
           comment,
         },
@@ -244,12 +244,12 @@ const postAmc = async (req, res) => {
 };
 
 const postException = async (req, res) => {
-  const { comment, auid, regNo, coreDomain, roundNo } = req.body;
+  const { comment, regNo, coreDomain, roundNo } = req.body;
   try {
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
-          auid,
+          auid: req.user.auid,
           regNo,
           comment,
         },
