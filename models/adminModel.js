@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
 const sequelize = require("../utils/db");
 
 const Admin = sequelize.define("Admin", {
@@ -34,6 +35,10 @@ const Admin = sequelize.define("Admin", {
     validate: {
       notEmpty: true,
     },
+    set(value) {
+      const hash = bcrypt.hashSync(value, 10);
+      this.setDataValue("password", hash);
+    },
   },
   meetLink: {
     type: DataTypes.STRING,
@@ -42,5 +47,12 @@ const Admin = sequelize.define("Admin", {
     },
   },
 });
+
+Admin.prototype.isValidPassword = function (password) {
+  return bcrypt
+    .compare(password, this.password)
+    .then((result) => result)
+    .catch(() => false);
+};
 
 module.exports = Admin;

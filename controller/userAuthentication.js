@@ -10,6 +10,9 @@ const login = async (req, res) => {
         where: { regNo },
       })
       .then(async (user) => {
+        if (user == null) {
+          throw new Error("Invalid User");
+        }
         const validPassword = await user.isValidPassword(password);
         if (validPassword) {
           const payload = { regNo: user.regNo };
@@ -31,7 +34,6 @@ const login = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  console.log(req.body);
   userModel
     .create({
       regNo: req.body.regNo,

@@ -166,14 +166,14 @@ const setGdp = async (req, res) => {
 };
 
 const setGda = async (req, res) => {
-  const { candidates, auid } = req.body;
+  const { candidates } = req.body;
 
   try {
     await db.transaction(async (chain) => {
       for (let i = 0; i < candidates.length; i += 1) {
         // eslint-disable-next-line no-await-in-loop
         const roundModelUpdate = await roundModel.update(
-          { auid },
+          { auid: req.user.auid },
           {
             where: {
               roundNo: "2",

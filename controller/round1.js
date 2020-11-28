@@ -48,7 +48,7 @@ const selectReadyCandidates = async (req, res) => {
   const chainTransaction = await db.transaction();
   try {
     const { candidates } = req.body;
-    const adminId = req.body.auid;
+    const adminId = req.user.auid;
 
     for (let i = 0; i < candidates.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
