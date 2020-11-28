@@ -4,6 +4,10 @@ const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 
 router.post("/login", validater(schemas.userLogin), authController.login);
-router.post("/register", authController.register);
+router.post(
+  "/register",
+  validater(schemas.userRegister),
+  authController.register
+);
 
 module.exports = router;

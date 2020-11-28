@@ -119,7 +119,7 @@ const userForm = async (req, res) => {
           coreDomains: req.body.coreDomains,
           specificDomains: req.body.specificDomains,
         },
-        { where: { regNo: req.body.regNo } }
+        { where: { regNo: req.user.regNo } }
       );
 
       const round = await roundModel.create(
