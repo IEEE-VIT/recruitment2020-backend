@@ -1,6 +1,5 @@
 const Joi = require("joi");
 
-// QUERY FILTER VALIDTION IS LEFT
 const schemas = {
   userLogin: Joi.object().keys({
     regNo: Joi.string()
