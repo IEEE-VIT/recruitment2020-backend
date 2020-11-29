@@ -1,4 +1,5 @@
 const Joi = require("joi");
+const constants = require("./constants");
 
 const schemas = {
   userLogin: Joi.object().keys({
@@ -40,15 +41,35 @@ const schemas = {
     suid: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
-    questions: Joi.required(),
-    coreDomains: Joi.required(),
-    specificDomains: Joi.required(),
+    questions: Joi.array()
+      .items({ quid: Joi.string().pattern(/^[0-9]+$/), answer: Joi.string() })
+      .required(),
+    specificDomains: Joi.array().items(
+      constants.App,
+      constants.Web,
+      constants.Ml,
+      constants.CSec,
+      constants.Game,
+      constants.GDes,
+      constants.Ui,
+      constants.Vfx,
+      constants.Mgmt,
+      constants.Unknown
+    ),
+    coreDomains: Joi.array().items(
+      constants.Mgmt,
+      constants.Tech,
+      constants.Dsn,
+      constants.Unknown
+    ),
   }),
   round1ProjectLink: Joi.object().keys({
-    projectLink: Joi.string().uri(),
+    projectLink: Joi.string().uri().required(),
   }),
   round1SelectCandidates: Joi.object().keys({
-    candidates: Joi.required(),
+    candidates: Joi.array().items(
+      Joi.string().pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
+    ),
   }),
   round2SelectSlot: Joi.object().keys({
     suid: Joi.string()
@@ -59,27 +80,71 @@ const schemas = {
     suid: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
-    gdpLink: Joi.string().uri(),
+    gdpLink: Joi.string().uri().required(),
   }),
   round2SetGda: Joi.object().keys({
-    candidates: Joi.required(),
+    candidates: Joi.array().items(
+      Joi.string().pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
+    ),
   }),
   resolveException: Joi.object().keys({
-    roundNo: Joi.string()
-      .pattern(/^[0-9]+$/)
-      .required(),
+    roundNo: Joi.string().valid("1", "2").required(),
     regNo: Joi.string()
       .alphanum()
       .length(9)
       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
       .required(),
-    coreDomain: Joi.required(),
+    coreDomain: Joi.string().valid(
+      constants.Mgmt,
+      constants.Tech,
+      constants.Dsn,
+      constants.Unknown
+    ),
     reason: Joi.string(),
   }),
   postAmc: Joi.object().keys({
     id: Joi.string().pattern(/^[0-9]+$/),
     comment: Joi.string(),
-    status: Joi.string().valid("AR", "ER", "RR", "PR"),
+    status: Joi.string().valid(
+      constants.AcceptedReview,
+      constants.PendingReview,
+      constants.RejectedReview,
+      constants.ExceptionReview
+    ),
+    eligibleDomains: Joi.array().items(
+      Joi.string().valid(
+        constants.App,
+        constants.Web,
+        constants.Ml,
+        constants.CSec,
+        constants.Game,
+        constants.GDes,
+        constants.Ui,
+        constants.Vfx,
+        constants.Mgmt,
+        constants.Tech,
+        constants.Dsn,
+        constants.Unknown
+      )
+    ),
+    specificDomain: Joi.string().valid(
+      constants.App,
+      constants.Web,
+      constants.Ml,
+      constants.CSec,
+      constants.Game,
+      constants.GDes,
+      constants.Ui,
+      constants.Vfx,
+      constants.Mgmt,
+      constants.Unknown
+    ),
+    coreDomain: Joi.string().valid(
+      constants.Mgmt,
+      constants.Tech,
+      constants.Dsn,
+      constants.Unknown
+    ),
     regNo: Joi.string()
       .alphanum()
       .length(9)
