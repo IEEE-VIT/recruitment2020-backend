@@ -35,7 +35,7 @@ const schemas = {
     name: Joi.string(),
     email: Joi.string().email(),
     password: Joi.string().min(8),
-    meetLink: Joi.string().uri(),
+    meetLink: Joi.string(),
   }),
   round0form: Joi.object().keys({
     suid: Joi.string()
@@ -44,32 +44,31 @@ const schemas = {
     questions: Joi.array()
       .items({ quid: Joi.string().pattern(/^[0-9]+$/), answer: Joi.string() })
       .required(),
-    specificDomains: Joi.array().items(
-      constants.App,
-      constants.Web,
-      constants.Ml,
-      constants.CSec,
-      constants.Game,
-      constants.GDes,
-      constants.Ui,
-      constants.Vfx,
-      constants.Mgmt,
-      constants.Unknown
-    ),
-    coreDomains: Joi.array().items(
-      constants.Mgmt,
-      constants.Tech,
-      constants.Dsn,
-      constants.Unknown
-    ),
+    specificDomains: Joi.array()
+      .items(
+        constants.App,
+        constants.Web,
+        constants.Ml,
+        constants.CSec,
+        constants.Game,
+        constants.GDes,
+        constants.Ui,
+        constants.Vfx,
+        constants.Mgmt,
+        constants.Unknown
+      )
+      .required(),
+    coreDomains: Joi.array()
+      .items(constants.Mgmt, constants.Tech, constants.Dsn, constants.Unknown)
+      .required(),
   }),
   round1ProjectLink: Joi.object().keys({
-    projectLink: Joi.string().uri().required(),
+    projectLink: Joi.string().required(),
   }),
   round1SelectCandidates: Joi.object().keys({
-    candidates: Joi.array().items(
-      Joi.string().pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
-    ),
+    candidates: Joi.array()
+      .items(Joi.string().pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/))
+      .required(),
   }),
   round2SelectSlot: Joi.object().keys({
     suid: Joi.string()
@@ -80,7 +79,7 @@ const schemas = {
     suid: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
-    gdpLink: Joi.string().uri().required(),
+    gdpLink: Joi.string().required(),
   }),
   round2SetGda: Joi.object().keys({
     candidates: Joi.array().items(
