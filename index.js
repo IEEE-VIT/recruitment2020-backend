@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
 
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 require("dotenv").config();
 const passport = require("passport");
 const relations = require("./utils/relations");
