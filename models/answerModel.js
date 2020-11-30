@@ -1,32 +1,24 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
-const Comment = sequelize.define("Comment", {
-  cuid: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-    unique: true,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
+const Answer = sequelize.define("Answer", {
   regNo: {
     type: DataTypes.STRING(9),
+    primaryKey: true,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
-  auid: {
+  quid: {
     type: DataTypes.INTEGER,
+    primaryKey: true,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
-  comment: {
+  answer: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
@@ -35,4 +27,4 @@ const Comment = sequelize.define("Comment", {
   },
 });
 
-module.exports = Comment;
+module.exports = Answer;

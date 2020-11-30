@@ -1,5 +1,5 @@
-const { DataTypes, Sequelize } = require("sequelize");
-const validator = require("validator");
+const { DataTypes } = require("sequelize");
+const bcrypt = require("bcrypt");
 const sequelize = require("../utils/db");
 
 const User = sequelize.define("User", {
@@ -20,7 +20,7 @@ const User = sequelize.define("User", {
     },
   },
   phoneNo: {
-    type: DataTypes.BIGINT(12),
+    type: DataTypes.BIGINT,
     allowNull: false,
     unique: true,
     validate: {
@@ -31,6 +31,7 @@ const User = sequelize.define("User", {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
     validate: {
       notEmpty: true,
       isEmail: true,
@@ -39,16 +40,21 @@ const User = sequelize.define("User", {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
-    validate: {
-      notEmpty: true,
+    set(value) {
+      const hash = bcrypt.hashSync(value, 10);
+      this.setDataValue("password", hash);
     },
   },
   coreDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: false,
+    allowNull: true,
   },
   specificDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
+    allowNull: true,
+  },
+  puid: {
+    type: DataTypes.INTEGER,
   },
   projectLink: {
     type: DataTypes.STRING,
@@ -57,5 +63,12 @@ const User = sequelize.define("User", {
     },
   },
 });
+
+User.prototype.isValidPassword = function (password) {
+  return bcrypt
+    .compare(password, this.password)
+    .then((result) => result)
+    .catch(() => false);
+};
 
 module.exports = User;

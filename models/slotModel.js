@@ -1,45 +1,59 @@
-const { DataTypes, Sequelize }   = require("sequelize");
-const validator = require("validator");
+const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
-const Slot=sequelize.define('Slot',{
-  suid:{
-    type: DataTypes.UUID,
-    primaryKey:true,
-    unique:true,
-    defaultValue: Sequelize.UUIDV4,
+const Slot = sequelize.define("Slot", {
+  suid: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    unique: true,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
+  },
+  roundNo: {
+    type: DataTypes.ENUM,
+    values: ["0", "1", "2", "3"],
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
   moderatorId: {
-    type: DataTypes.UUID
+    type: DataTypes.INTEGER,
   },
-  date:{
-    type:DataTypes.DATEONLY,
+  date: {
+    type: DataTypes.DATEONLY,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  timeRange:{
-    type:DataTypes.STRING,
+  timeFrom: {
+    type: DataTypes.TIME,
     allowNull: false,
-    validate:{
-      notEmpty:true
-    }
+    validate: {
+      notEmpty: true,
+    },
   },
-  count:{
-    type:DataTypes.INTEGER,
-    defaultValue:0
+  timeTo: {
+    type: DataTypes.TIME,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
   },
-  gdpLink:{
+  count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  gdpLink: {
     type: DataTypes.STRING,
-    validate:{
-      isUrl:true
-    }
-  }
+    validate: {
+      isUrl: true,
+    },
+  },
 });
 
-module.exports=Slot;
+module.exports = Slot;

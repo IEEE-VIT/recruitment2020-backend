@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../utils/db");
 
-const Comment = sequelize.define("Comment", {
-  cuid: {
+const Project = sequelize.define("Project", {
+  puid: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
@@ -12,21 +12,21 @@ const Comment = sequelize.define("Comment", {
       notEmpty: true,
     },
   },
-  regNo: {
-    type: DataTypes.STRING(9),
+  title: {
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
-  auid: {
-    type: DataTypes.INTEGER,
+  description: {
+    type: DataTypes.STRING,
     allowNull: false,
     validate: {
       notEmpty: true,
     },
   },
-  comment: {
+  domain: {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
@@ -35,4 +35,4 @@ const Comment = sequelize.define("Comment", {
   },
 });
 
-module.exports = Comment;
+module.exports = Project;
