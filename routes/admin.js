@@ -5,6 +5,7 @@ const round2Controller = require("../controller/round2");
 const queryFilter = require("../middleware/filter");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
+const isBoard = require("../middleware/boardAuth");
 
 router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
 router.post(
@@ -24,8 +25,13 @@ router.get(
   queryFilter,
   adminController.fetchMgmtRound2Candidates
 );
-router.get("/allAdmins", queryFilter, adminController.fetchAllAdmins);
-router.get("/allCandidates", queryFilter, adminController.fetchAllUsers);
+router.get("/allAdmins", queryFilter, isBoard, adminController.fetchAllAdmins);
+router.get(
+  "/allCandidates",
+  queryFilter,
+  isBoard,
+  adminController.fetchAllUsers
+);
 
 router.post(
   "/mgmt/r2/gdp",

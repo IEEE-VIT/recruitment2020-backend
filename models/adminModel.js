@@ -46,6 +46,10 @@ const Admin = sequelize.define("Admin", {
       isUrl: true,
     },
   },
+  superUser: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 Admin.prototype.isValidPassword = function (password) {
