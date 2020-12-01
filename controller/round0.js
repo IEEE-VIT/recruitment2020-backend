@@ -1,15 +1,17 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
+const moment = require("moment-timezone");
 const slotModel = require("../models/slotModel");
 const questionModel = require("../models/questionModel");
 const answerModel = require("../models/answerModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const db = require("../utils/db");
-
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
+
+moment.tz.setDefault("Asia/Calcutta");
 
 const getQuestions = async (req, res) => {
   questionModel
@@ -39,8 +41,8 @@ const getQuestions = async (req, res) => {
 };
 
 const getSlots = async (req, res) => {
-  const todayDate = new Date().toISOString().slice(0, 10);
-  const todayTime = new Date().toLocaleTimeString("it-IT", { hour12: false });
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
 
   slotModel
     .findAll({
@@ -119,7 +121,7 @@ const userForm = async (req, res) => {
           coreDomains: req.body.coreDomains,
           specificDomains: req.body.specificDomains,
         },
-        { where: { regNo: req.body.regNo } }
+        { where: { regNo: req.user.regNo } }
       );
 
       const round = await roundModel.create(
@@ -151,9 +153,6 @@ const userForm = async (req, res) => {
 };
 
 const verifyslotTime = async (req, res) => {
-  // NEED TO CHECK IF IT WORKS FOR DIFFERENT TIME ZONES TOO
-  // AS OF NOW IT WORKS IF THE TIME SLOTS AND THE SERVER CLOCK ARE SYNCED
-
   roundModel
     .findOne({ where: { regNo: req.user.regNo, roundNo: "0" } })
     .then((data) => {
@@ -166,16 +165,8 @@ const verifyslotTime = async (req, res) => {
           if (slot == null) {
             throw new Error("Invalid Slot");
           }
-          const todayDate = new Date().toISOString().slice(0, 10);
-          const todayTime = new Date().toLocaleTimeString("it-IT", {
-            hour12: false,
-          });
-
-          // console.log(todayDate);
-          // console.log(todayTime);
-          // console.log(slot.timeFrom);
-          // console.log(slot.timeTo);
-
+          const todayDate = moment().format("YYYY-MM-DD");
+          const todayTime = moment().format("HH:mm:ss");
           if (
             todayDate == slot.date &&
             todayTime >= slot.timeFrom &&
