@@ -40,10 +40,8 @@ const getQuestions = async (req, res) => {
 };
 
 const getSlots = async (req, res) => {
-  const todayDate = moment().format("YYYY-MM-DD");
-  const todayTime = moment().format("HH:mm:ss");
-  console.log(todayDate);
-  console.log(todayTime);
+  const todayDate = moment().utcOffset(330).format("YYYY-MM-DD");
+  const todayTime = moment().utcOffset(330).format("HH:mm:ss");
 
   slotModel
     .findAll({
@@ -166,8 +164,8 @@ const verifyslotTime = async (req, res) => {
           if (slot == null) {
             throw new Error("Invalid Slot");
           }
-          const todayDate = moment().format("YYYY-MM-DD");
-          const todayTime = moment().format("HH:mm:ss");
+          const todayDate = moment().utcOffset(330).format("YYYY-MM-DD");
+          const todayTime = moment().utcOffset(330).format("HH:mm:ss");
           if (
             todayDate == slot.date &&
             todayTime >= slot.timeFrom &&
