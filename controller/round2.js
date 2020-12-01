@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-const moment = require("moment");
+const moment = require("moment-timezone");
 const slotModel = require("../models/slotModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -9,9 +9,12 @@ const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
+moment.tz.setDefault("Asia/Calcutta");
+
 const getSlots = async (req, res) => {
-  const todayDate = moment().utcOffset(330).format("YYYY-MM-DD");
-  const todayTime = moment().utcOffset(330).format("HH:mm:ss");
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
+
   slotModel
     .findAll({
       where: {

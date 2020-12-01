@@ -1,16 +1,17 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
-const moment = require("moment");
+const moment = require("moment-timezone");
 const slotModel = require("../models/slotModel");
 const questionModel = require("../models/questionModel");
 const answerModel = require("../models/answerModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const db = require("../utils/db");
-
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
+
+moment.tz.setDefault("Asia/Calcutta");
 
 const getQuestions = async (req, res) => {
   questionModel
@@ -40,8 +41,8 @@ const getQuestions = async (req, res) => {
 };
 
 const getSlots = async (req, res) => {
-  const todayDate = moment().utcOffset(330).format("YYYY-MM-DD");
-  const todayTime = moment().utcOffset(330).format("HH:mm:ss");
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
 
   slotModel
     .findAll({
@@ -164,8 +165,8 @@ const verifyslotTime = async (req, res) => {
           if (slot == null) {
             throw new Error("Invalid Slot");
           }
-          const todayDate = moment().utcOffset(330).format("YYYY-MM-DD");
-          const todayTime = moment().utcOffset(330).format("HH:mm:ss");
+          const todayDate = moment().format("YYYY-MM-DD");
+          const todayTime = moment().format("HH:mm:ss");
           if (
             todayDate == slot.date &&
             todayTime >= slot.timeFrom &&
