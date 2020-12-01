@@ -39,7 +39,6 @@ app.use("/api", userRoute);
 app.use("/api/r0", userAuthMiddleware, round0Route);
 app.use("/api/r1", userAuthMiddleware, round1Route);
 app.use("/api/r2", userAuthMiddleware, round2Route);
-
 app.use("/api/admin", adminAuthMiddleware, adminRoute);
 app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 

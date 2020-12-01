@@ -2,6 +2,7 @@ const router = require("express").Router();
 const round1Controller = require("../controller/round1");
 const adminController = require("../controller/admin.js");
 const round2Controller = require("../controller/round2");
+const round3Controller = require("../controller/round3");
 const queryFilter = require("../middleware/filter");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
@@ -43,6 +44,7 @@ router.post(
   validater(schemas.round2SetGda),
   round2Controller.setGda
 );
+router.get("/r3/candidates", isBoard, round3Controller.candidates);
 
 router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 router.post(
