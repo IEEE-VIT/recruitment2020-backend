@@ -8,6 +8,8 @@ const adminModel = require("../models/adminModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
+const emailer = require("../utils/emailer");
+const templates = require("../utils/templates");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -199,6 +201,62 @@ const setGda = async (req, res) => {
   }
 };
 
+const selectTechCandidate = async (req, res) => {
+  const { regNo, suid } = req.body;
+  const { auid } = req.user;
+
+  try {
+    await db.transaction(async (chain) => {
+      const roundModelDetails = await roundModel.findOne({
+        include: [userModel, slotModel],
+        where: { regNo, roundNo: "2", coreDomain: constants.Tech },
+      });
+      if (roundModelDetails.length === 0) {
+        throw Error("No such candidate found!");
+      }
+      const roundUpdate = await roundModel.update(
+        {
+          auid,
+          suid,
+        },
+        {
+          where: {
+            regNo,
+            roundNo: "2",
+            coreDomain: constants.Tech,
+          },
+          transaction: chain,
+        }
+      );
+      if (roundUpdate == 0) {
+        throw Error("Unable to update the candidate with the data");
+      }
+      const admin = adminModel.findOne({ where: auid });
+      if (admin.length == 0) {
+        throw Error("No admin found with such auid");
+      }
+      const userDetails = roundModelDetails.User;
+      const slotDetails = roundModelDetails.Slots;
+      const candidateEmailId = [userDetails.email];
+      const template = templates.round2Interview(
+        userDetails.name,
+        slotDetails.date,
+        slotDetails.timeFrom,
+        admin.meetLink
+      );
+      const email = await emailer(template, candidateEmailId);
+      if (!email.success) {
+        throw Error(
+          `Unable to send the email to the candidate because: ${email.error}`
+        );
+      }
+      response(res, true, "", "Candidate Intrview Email Sent!");
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
 module.exports = {
   setGdp,
   setGda,
@@ -206,4 +264,5 @@ module.exports = {
   selectSlot,
   fetchGda,
   fetchGdp,
+  selectTechCandidate,
 };
