@@ -6,6 +6,7 @@ const forgotPasswordModel = require("../models/forgotPasswordModel");
 const emailer = require("../utils/emailer");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
+const templates = require("../utils/templates");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -72,9 +73,14 @@ const generateOtpAndTime = () => {
   };
 };
 
-const forgetPasswordEmailer = async (generatedOtpAndTime, emailId) => {
+const forgetPasswordEmailer = async (name, generatedCreds, emailId) => {
   const emailIdParsed = [emailId];
-  const template = "";
+  const formattedTime = generatedCreds.format("dddd, MMMM Do YYYY, h:mm:ss a");
+  const template = templates.forgotPasswordTempalate(
+    name,
+    generatedCreds.otp,
+    formattedTime
+  );
   const emailResult = await emailer(template, emailIdParsed);
   return emailResult;
 };
@@ -104,6 +110,7 @@ const forgotPassword = async (req, res) => {
           throw Error("Error generating OTP");
         }
         const emailResult = await forgetPasswordEmailer(
+          userData.name,
           generatedCreds,
           userData.emailId
         );
@@ -124,6 +131,7 @@ const forgotPassword = async (req, res) => {
           throw Error("Unable to updat forget password entry");
         }
         const emailResult = await forgetPasswordEmailer(
+          userData.name,
           generatedCreds,
           userData.emailId
         );
@@ -143,6 +151,7 @@ const forgotPassword = async (req, res) => {
             throw Error("Unable to resend OTP");
           }
           const emailResult = await forgetPasswordEmailer(
+            userData.name,
             generatedCreds,
             userData.emailId
           );
