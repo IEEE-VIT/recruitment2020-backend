@@ -46,7 +46,7 @@ app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 app.use("/api", authRoute);
 
 app.get("/", (req, res) => {
-  res.send("Hello World");
+  res.json({ success: true, status: "Runnning" });
 });
 
 relations()
