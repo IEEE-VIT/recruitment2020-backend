@@ -116,7 +116,7 @@ const round1Amc = async (req, res) => {
         { where: { regNo, roundNo: "1" }, transaction: chain }
       );
 
-      if (currentRoundUpdate == null) {
+      if (currentRoundUpdate == 0) {
         throw Error("Unable to update Round 1 Object.");
       }
 
@@ -241,6 +241,47 @@ const round2Amc = async (req, res) => {
   }
 };
 
+const round3Amc = async (req, res) => {
+  const { comment, status, regNo } = req.body;
+  try {
+    await db.transaction(async (chain) => {
+      const roundModelData = await roundModel.findAll({
+        where: { regNo, roundNo: "3" },
+      });
+      if (roundModelData.length == 0) {
+        throw Error("No Such candidate for round3 found!");
+      }
+
+      const commentObj = await commentsModel.create(
+        {
+          auid: req.user.auid,
+          regNo,
+          comment,
+        },
+        { transaction: chain }
+      );
+      if (commentObj == null) {
+        throw Error("Error in creating comment");
+      }
+      const currentRoundUpdate = await roundModel.update(
+        {
+          meetingCompleted: true,
+          status,
+          cuid: commentObj.cuid,
+        },
+        { where: { regNo, roundNo: "3" }, transaction: chain }
+      );
+
+      if (currentRoundUpdate == 0) {
+        throw Error("Unable to update Round 1 Object.");
+      }
+      response(res, true, "", "Round 3 Review for Candidate Succesful!");
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
 const postException = async (req, res) => {
   const { comment, regNo, coreDomain, roundNo } = req.body;
   try {
@@ -286,6 +327,7 @@ module.exports = {
   fetchMeetings,
   round1Amc,
   round2Amc,
+  round3Amc,
   fetchProjects,
   postException,
 };
