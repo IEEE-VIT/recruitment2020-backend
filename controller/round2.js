@@ -139,7 +139,11 @@ const fetchGda = async (req, res) => {
       },
     })
     .then((result) => {
-      response(res, true, result.Admin, "Found GDA");
+      if (result.length === 0) {
+        response(res, true, result.Admin, "No GDA Found!");
+      } else {
+        response(res, true, result.Admin, "Found GDA");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());

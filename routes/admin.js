@@ -57,5 +57,6 @@ router.post(
 router.post("/addslot", headerAuth.toAddSlot, adminController.addSlot);
 
 router.post("/setdeadline", isBoard, adminController.setDeadline);
+router.post("/emailr2candidate", round2Controller.selectR2TechDsnCandidate);
 
 module.exports = router;

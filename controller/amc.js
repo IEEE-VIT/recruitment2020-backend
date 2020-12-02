@@ -86,7 +86,7 @@ const round1Amc = async (req, res) => {
         roundNo: "1",
       },
     });
-    if (roundModelData.length == 0) {
+    if (roundModelData === null) {
       throw Error("Such entry does not exists!");
     }
     if (
@@ -104,7 +104,7 @@ const round1Amc = async (req, res) => {
         },
         { transaction: chain }
       );
-      if (commentObj == null) {
+      if (commentObj === null) {
         throw Error("Error in creating comment");
       }
       const currentRoundUpdate = await roundModel.update(
@@ -167,10 +167,10 @@ const round2Amc = async (req, res) => {
         coreDomain,
       },
     });
-    if (roundModelData.length == 0) {
+    if (roundModelData.length === 0) {
       throw Error("Such entries do no exists!");
     }
-    for (let i = 0; i <= roundModelData.length; i += 1) {
+    for (let i = 0; i < roundModelData.length; i += 1) {
       if (
         roundModelData[i].meetingCompleted &&
         roundModelData[i].status != constants.PendingReview
@@ -198,6 +198,7 @@ const round2Amc = async (req, res) => {
           status: constants.RejectedReview,
           meetingCompleted: true,
           cuid: commentObj.cuid,
+          auid: req.user.auid,
         },
         { transaction: chain, where: { coreDomain, regNo } }
       );
@@ -213,6 +214,7 @@ const round2Amc = async (req, res) => {
             status,
             meetingCompleted: true,
             cuid: commentObj.cuid,
+            auid: req.user.auid,
           },
           { where: { coreDomain, specificDomain }, transaction: chain }
         );
@@ -268,6 +270,7 @@ const round3Amc = async (req, res) => {
           meetingCompleted: true,
           status,
           cuid: commentObj.cuid,
+          auid: req.user.auid,
         },
         { where: { regNo, roundNo: "3" }, transaction: chain }
       );
