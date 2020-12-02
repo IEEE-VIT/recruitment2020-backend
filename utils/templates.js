@@ -4,4 +4,11 @@ const forgotPasswordTempalate = (name, otp, time) => {
     OTP is valid only valid till ${time}`;
 };
 
-module.exports = { forgotPasswordTempalate };
+const round2Interview = (name, date, time, meetlink) => {
+  return `Hey ${name},
+    Congratualtaions!, Your IEEE Round 2 Interview is scheduled on ${date} at ${time}
+    Please make sure to join this ${meetlink} on time!
+    `;
+};
+
+module.exports = { round2Interview, forgotPasswordTempalate };
