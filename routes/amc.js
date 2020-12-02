@@ -15,5 +15,6 @@ router.post(
   validater(schemas.postAmc),
   amcController.round2Amc
 );
+router.post("/round3Interview", amcController.round3Amc);
 
 module.exports = router;
