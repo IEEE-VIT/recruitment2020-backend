@@ -78,8 +78,23 @@ const meetingCandidateHistory = async (req, res) => {
 };
 
 const round1Amc = async (req, res) => {
-  const { id, comment, status, eligibleDomains, regNo, puid } = req.body;
+  const { comment, status, eligibleDomains, regNo, puid } = req.body;
   try {
+    const roundModelData = await roundModel.findOne({
+      where: {
+        regNo,
+        roundNo: "1",
+      },
+    });
+    if (roundModelData.length == 0) {
+      throw Error("Such entry does not exists!");
+    }
+    if (
+      roundModelData.meetingCompleted &&
+      roundModelData.status != constants.PendingReview
+    ) {
+      throw Error("Candidate's Round 1 interview has already been taken!");
+    }
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
@@ -98,7 +113,7 @@ const round1Amc = async (req, res) => {
           status,
           cuid: commentObj.cuid,
         },
-        { where: { id }, transaction: chain }
+        { where: { regNo, roundNo: "1" }, transaction: chain }
       );
 
       if (currentRoundUpdate == null) {
@@ -145,6 +160,26 @@ const round2Amc = async (req, res) => {
   const { comment, status, specificDomain, coreDomain, regNo } = req.body;
 
   try {
+    const roundModelData = await roundModel.findAll({
+      where: {
+        regNo,
+        roundNo: "2",
+        coreDomain,
+      },
+    });
+    if (roundModelData.length == 0) {
+      throw Error("Such entries do no exists!");
+    }
+    for (let i = 0; i <= roundModelData.length; i += 1) {
+      if (
+        roundModelData[i].meetingCompleted &&
+        roundModelData[i].status != constants.PendingReview
+      ) {
+        throw Error(
+          "Candidate's Round 2 Interview for this coreDomain has already been taken!"
+        );
+      }
+    }
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
@@ -206,43 +241,6 @@ const round2Amc = async (req, res) => {
   }
 };
 
-const postAmc = async (req, res) => {
-  const { id } = req.body;
-  roundModel
-    .findOne({ where: { id } })
-    .then((data) => {
-      if (data != null) {
-        if (data.meetingCompleted) {
-          response(
-            res,
-            true,
-            "",
-            "Candidate's Round 1 Interview Has already been taken!"
-          );
-          return;
-        }
-        switch (data.roundNo) {
-          case "1":
-            round1Amc(req, res);
-            break;
-          case "2":
-            round2Amc(req, res);
-            break;
-          default:
-            response(
-              res,
-              true,
-              "",
-              "Something happened that's not supposed to happen, contact Hemanth or Shhubham ASAP!"
-            );
-        }
-      } else {
-        response(res, true, "", "Invalid id parsed");
-      }
-    })
-    .catch((err) => response(res, false, "", err.toString()));
-};
-
 const postException = async (req, res) => {
   const { comment, regNo, coreDomain, roundNo } = req.body;
   try {
@@ -286,7 +284,8 @@ const postException = async (req, res) => {
 module.exports = {
   meetingCandidateHistory,
   fetchMeetings,
-  postAmc,
+  round1Amc,
+  round2Amc,
   fetchProjects,
   postException,
 };
