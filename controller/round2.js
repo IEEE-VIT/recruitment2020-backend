@@ -201,6 +201,7 @@ const setGda = async (req, res) => {
   }
 };
 
+// TODO: INCLUDE DESIGN CANDIDATES
 const selectTechCandidate = async (req, res) => {
   const { regNo, suid } = req.body;
   const { auid } = req.user;
