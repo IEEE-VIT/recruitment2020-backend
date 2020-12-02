@@ -13,6 +13,7 @@ const amcRoute = require("./routes/amc");
 const round0Route = require("./routes/round0");
 const round1Route = require("./routes/round1");
 const round2Route = require("./routes/round2");
+const round3Route = require("./routes/round3");
 const authRoute = require("./routes/authentication");
 
 const app = express();
@@ -39,6 +40,7 @@ app.use("/api/user", userAuthMiddleware, userRoute);
 app.use("/api/r0", userAuthMiddleware, round0Route);
 app.use("/api/r1", userAuthMiddleware, round1Route);
 app.use("/api/r2", userAuthMiddleware, round2Route);
+app.use("/api/r3", userAuthMiddleware, round3Route);
 app.use("/api/admin", adminAuthMiddleware, adminRoute);
 app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 

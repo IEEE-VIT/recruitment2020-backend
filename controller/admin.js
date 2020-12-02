@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-const moment = require("moment-timezone");
+
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -9,8 +9,6 @@ const deadlineModel = require("../models/deadlineModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
-
-moment.tz.setDefault("Asia/Calcutta");
 
 const readAdmin = async (req, res) => {
   adminModel
