@@ -6,6 +6,7 @@ const cors = require("cors");
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 const passport = require("passport");
+const logger = require("./configs/winston");
 const relations = require("./utils/relations");
 const userRoute = require("./routes/user");
 const adminRoute = require("./routes/admin");
@@ -24,7 +25,7 @@ app.use(
 
 app.use(cors());
 app.use(helmet());
-app.use(morgan("common"));
+app.use(morgan("common", { stream: logger.stream }));
 
 app.use(passport.initialize());
 
@@ -51,9 +52,9 @@ app.get("/", (req, res) => {
 relations()
   .sync({ force: false, logging: false })
   .then(() => {
-    console.log("Success connection to db");
-    app.listen(port, () => console.log(`Server running on port ${port}`));
+    logger.info("Success connection to db");
+    app.listen(port, () => logger.info(`Server running on port ${port}`));
   })
   .catch((err) => {
-    console.log(`Failure to connect to db due to ${err}`);
+    logger.error(`Failure to connect to db due to ${err}`);
   });
