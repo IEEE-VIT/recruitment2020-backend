@@ -9,14 +9,8 @@ const schemas = require("../utils/schemas");
 const isBoard = require("../middleware/boardAuth");
 const headerAuth = require("../middleware/headerAuth");
 
-router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
-router.post(
-  "/r1/candidates",
-  validater(schemas.round1SelectCandidates),
-  round1Controller.selectReadyCandidates
-);
 router.get("/", adminController.readAdmin);
-router.put("/", validater(schemas.adminUpdate), adminController.updateAdmin);
+router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
 router.get(
   "/r2/tech/candidates",
   queryFilter,
@@ -34,7 +28,14 @@ router.get(
   isBoard,
   adminController.fetchAllUsers
 );
+router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
+router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 
+router.post(
+  "/exceptions",
+  validater(schemas.resolveException),
+  adminController.resolveExceptions
+);
 router.post(
   "/mgmt/r2/gdp",
   validater(schemas.round2SetGdp),
@@ -45,18 +46,15 @@ router.post(
   validater(schemas.round2SetGda),
   round2Controller.setGda
 );
-router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
-
-router.get("/exceptions", queryFilter, adminController.fetchExceptions);
-router.post(
-  "/exceptions",
-  validater(schemas.resolveException),
-  adminController.resolveExceptions
-);
-
 router.post("/addslot", headerAuth.toAddSlot, adminController.addSlot);
-
 router.post("/setdeadline", isBoard, adminController.setDeadline);
 router.post("/r2/emailCandidate", round2Controller.selectR2TechDsnCandidate);
+router.post(
+  "/r1/candidates",
+  validater(schemas.round1SelectCandidates),
+  round1Controller.selectReadyCandidates
+);
+
+router.put("/", validater(schemas.adminUpdate), adminController.updateAdmin);
 
 module.exports = router;

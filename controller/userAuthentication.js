@@ -206,7 +206,7 @@ const resetPassword = async (req, res) => {
         throw Error("Unable to reset password!");
       }
     });
-    response(res, false, "", "Password updated successfully!");
+    response(res, true, "", "Password updated successfully!");
   } catch (err) {
     response(res, false, "", err.toString());
   }

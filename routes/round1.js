@@ -4,6 +4,7 @@ const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 
 router.get("/ready", round1Controller.isReady);
+
 router.post(
   "/project",
   validater(schemas.round1ProjectLink),
