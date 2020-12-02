@@ -235,12 +235,15 @@ const selectR2TechDsnCandidate = async (req, res) => {
       if (roundUpdate == 0) {
         throw Error("Unable to update the candidate with the data");
       }
-      const admin = adminModel.findOne({ where: auid });
+      const admin = await adminModel.findOne({ where: auid });
       if (admin.length == 0) {
         throw Error("No admin found with such auid");
       }
+      const slotDetails = await slotModel.findOne({ where: { suid } });
+      if (slotDetails.length === 0) {
+        throw Error("Unable to find such slots ");
+      }
       const userDetails = roundModelDetails.User;
-      const slotDetails = roundModelDetails.Slots;
       const candidateEmailId = [userDetails.email];
       const template = templates.round2Interview(
         userDetails.name,
@@ -249,6 +252,7 @@ const selectR2TechDsnCandidate = async (req, res) => {
         admin.meetLink
       );
       const email = await emailer(template, candidateEmailId);
+      console.log(email);
       if (!email.success) {
         throw Error(
           `Unable to send the email to the candidate because: ${email.error}`

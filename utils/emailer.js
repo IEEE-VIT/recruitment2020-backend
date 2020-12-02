@@ -1,34 +1,34 @@
 const axios = require("axios");
 
-// eslint-disable-next-line consistent-return
-const emailer = async (template, emailIds) => {
-  const config = {
-    headers: {
-      Authorization: process.env.EMAIL_TOKEN,
-    },
-  };
+const config = {
+  headers: {
+    Authorization: process.env.EMAIL_TOKEN,
+  },
+};
 
+const emailer = async (template, emailIds) => {
   if (template === undefined) {
     return { success: false, error: "Empty Template!" };
   }
 
-  const data = {
-    from_mail: "IEEE-VIT",
+  const data = JSON.stringify({
+    from_mail: "outreach@ieeevit.org",
     to_mails: emailIds,
     subject: template.subject,
     body: template.body,
-  };
-  axios
-    .post("", data, config)
+  });
+  const emailerApi = await axios
+    .post("https://ieee-mailer.herokuapp.com/send", data, config)
     .then((response) => {
-      if (response.success) {
+      if (response.data.success) {
         return { success: true, error: "" };
       }
-      return { success: false, error: data.error };
+      return { success: false, error: response.error };
     })
     .catch((err) => {
       return { success: false, error: err.toString() };
     });
+  return emailerApi;
 };
 
-module.exports = { emailer };
+module.exports = emailer;
