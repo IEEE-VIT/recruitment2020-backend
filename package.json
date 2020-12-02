@@ -8,7 +8,8 @@
   "scripts": {
     "pretest": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "prod": "node index.js"
   },
   "dependencies": {
     "axios": "^0.21.0",
