@@ -1,6 +1,11 @@
 /* eslint-disable eqeqeq */
+const moment = require("moment-timezone");
 const userModel = require("../models/userModel");
+const deadlineModel = require("../models/deadlineModel");
+const roundModel = require("../models/roundModel");
 const response = require("../utils/genericResponse");
+
+moment.tz.setDefault("Asia/Calcutta");
 
 const createUser = async (req, res) => {
   userModel
@@ -78,9 +83,99 @@ const deleteUser = async (req, res) => {
     });
 };
 
+const userStatus = async (req, res) => {
+  roundModel
+    .findAll({
+      order: ["roundNo"],
+      where: {
+        regNo: req.user.regNo,
+      },
+    })
+    .then((data) => {
+      const latestRound = data[0].roundNo;
+      const resultformed = {};
+      const round2Data = [];
+      resultformed.latestRound = latestRound;
+      switch (latestRound) {
+        case "2":
+          data.forEach((roundData) => {
+            if (roundData.roundNo === "2") {
+              round2Data.push(roundData);
+            }
+          });
+          resultformed.roundsData = round2Data;
+          break;
+        case "1":
+        case "0":
+          resultformed.roundData = data;
+          break;
+        case "3":
+          resultformed.roundData = [];
+          break;
+        default:
+          resultformed.latestRound = "Unkown Round";
+      }
+      if (data.length === 0) {
+        response(res, true, data, "User does not exists");
+      } else {
+        response(res, true, resultformed, "History found for the candidate!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+const getResults = async (req, res) => {
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
+
+  await deadlineModel
+    .findOne({ where: { roundNo: req.query.roundNo } })
+    .then((roundDeadline) => {
+      if (
+        todayDate > roundDeadline.date ||
+        (todayDate == roundDeadline.date && todayTime >= roundDeadline.time)
+      ) {
+        roundModel
+          .findAll({
+            where: { roundNo: req.query.roundNo, regNo: req.user.regNo },
+          })
+          .then((roundData) => {
+            if (roundData == "") {
+              throw new Error("User not found in given round");
+            }
+            response(res, true, roundData, "Results are out");
+          })
+          .catch((err) => {
+            response(res, false, "", err.toString());
+          });
+      } else {
+        roundModel
+          .findAll({
+            attributes: { exclude: ["status"] },
+            where: { roundNo: req.query.roundNo, regNo: req.user.regNo },
+          })
+          .then((roundData) => {
+            if (roundData == "") {
+              throw new Error("User not found in given round");
+            }
+            response(res, true, roundData, "Results are not out yet");
+          })
+          .catch((err) => {
+            response(res, false, "", err.toString());
+          });
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   createUser,
   updateUser,
   readUser,
   deleteUser,
+  userStatus,
+  getResults,
 };

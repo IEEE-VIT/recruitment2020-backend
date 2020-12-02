@@ -1,9 +1,13 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
+
+const moment = require("moment-timezone");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const commentModel = require("../models/commentModel");
+const slotModel = require("../models/slotModel");
+const deadlineModel = require("../models/deadlineModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
@@ -254,6 +258,63 @@ const fetchAllUsers = async (req, res) => {
     });
 };
 
+const setDeadline = async (req, res) => {
+  await deadlineModel
+    .findOne({ where: { roundNo: req.body.roundNo } })
+    .then((data) => {
+      if (data == null) {
+        deadlineModel
+          .create({
+            roundNo: req.body.roundNo,
+            // SEND DATE IN DD MMM YYYY FOR EG:(12 DEC 2020) TO PREVENT DD-MM & MM-DD CONFUSION
+            date: moment(new Date(req.body.date)),
+            time: req.body.time,
+          })
+          .then((newDeadline) => {
+            response(res, true, newDeadline, "Deadline Set");
+          })
+          .catch((err) => {
+            response(res, false, "", err.toString());
+          });
+      } else {
+        deadlineModel
+          .update(
+            {
+              date: req.body.date,
+              time: req.body.time,
+            },
+            { where: { roundNo: req.body.roundNo } }
+          )
+          .then((updatedDeadline) => {
+            response(res, true, updatedDeadline, "Deadline Set");
+          })
+          .catch((err) => {
+            response(res, false, "", err.toString());
+          });
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
+const addSlot = async (req, res) => {
+  await slotModel
+    .create({
+      roundNo: req.body.roundNo,
+      // SEND DATE IN DD MMM YYYY FOR EG:(12 DEC 2020) TO PREVENT DD-MM & MM-DD CONFUSION
+      date: moment(new Date(req.body.date)),
+      timeFrom: req.body.timeFrom,
+      timeTo: req.body.timeTo,
+    })
+    .then((slot) => {
+      response(res, true, slot, "Slot Added");
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -263,4 +324,6 @@ module.exports = {
   fetchAllAdmins,
   fetchExceptions,
   resolveExceptions,
+  setDeadline,
+  addSlot,
 };

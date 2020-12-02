@@ -26,7 +26,6 @@ passport.use(
       .catch((_err) => {
         console.log("Middelware Error", _err);
         next(null, false);
-        next(null, false);
       });
   })
 );
@@ -43,7 +42,6 @@ passport.use(
       })
       .catch((_err) => {
         console.log("Middelware Error", _err);
-        next(null, false);
         next(null, false);
       });
   })

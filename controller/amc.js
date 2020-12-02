@@ -78,8 +78,23 @@ const meetingCandidateHistory = async (req, res) => {
 };
 
 const round1Amc = async (req, res) => {
-  const { id, comment, status, eligibleDomains, regNo, puid } = req.body;
+  const { comment, status, eligibleDomains, regNo, puid } = req.body;
   try {
+    const roundModelData = await roundModel.findOne({
+      where: {
+        regNo,
+        roundNo: "1",
+      },
+    });
+    if (roundModelData === null) {
+      throw Error("Such entry does not exists!");
+    }
+    if (
+      roundModelData.meetingCompleted &&
+      roundModelData.status != constants.PendingReview
+    ) {
+      throw Error("Candidate's Round 1 interview has already been taken!");
+    }
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
@@ -89,7 +104,7 @@ const round1Amc = async (req, res) => {
         },
         { transaction: chain }
       );
-      if (commentObj == null) {
+      if (commentObj === null) {
         throw Error("Error in creating comment");
       }
       const currentRoundUpdate = await roundModel.update(
@@ -98,10 +113,10 @@ const round1Amc = async (req, res) => {
           status,
           cuid: commentObj.cuid,
         },
-        { where: { id }, transaction: chain }
+        { where: { regNo, roundNo: "1" }, transaction: chain }
       );
 
-      if (currentRoundUpdate == null) {
+      if (currentRoundUpdate == 0) {
         throw Error("Unable to update Round 1 Object.");
       }
 
@@ -145,6 +160,26 @@ const round2Amc = async (req, res) => {
   const { comment, status, specificDomain, coreDomain, regNo } = req.body;
 
   try {
+    const roundModelData = await roundModel.findAll({
+      where: {
+        regNo,
+        roundNo: "2",
+        coreDomain,
+      },
+    });
+    if (roundModelData.length === 0) {
+      throw Error("Such entries do no exists!");
+    }
+    for (let i = 0; i < roundModelData.length; i += 1) {
+      if (
+        roundModelData[i].meetingCompleted &&
+        roundModelData[i].status != constants.PendingReview
+      ) {
+        throw Error(
+          "Candidate's Round 2 Interview for this coreDomain has already been taken!"
+        );
+      }
+    }
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
         {
@@ -163,6 +198,7 @@ const round2Amc = async (req, res) => {
           status: constants.RejectedReview,
           meetingCompleted: true,
           cuid: commentObj.cuid,
+          auid: req.user.auid,
         },
         { transaction: chain, where: { coreDomain, regNo } }
       );
@@ -178,6 +214,7 @@ const round2Amc = async (req, res) => {
             status,
             meetingCompleted: true,
             cuid: commentObj.cuid,
+            auid: req.user.auid,
           },
           { where: { coreDomain, specificDomain }, transaction: chain }
         );
@@ -206,41 +243,46 @@ const round2Amc = async (req, res) => {
   }
 };
 
-const postAmc = async (req, res) => {
-  const { id } = req.body;
-  roundModel
-    .findOne({ where: { id } })
-    .then((data) => {
-      if (data != null) {
-        if (data.meetingCompleted) {
-          response(
-            res,
-            true,
-            "",
-            "Candidate's Round 1 Interview Has already been taken!"
-          );
-          return;
-        }
-        switch (data.roundNo) {
-          case "1":
-            round1Amc(req, res);
-            break;
-          case "2":
-            round2Amc(req, res);
-            break;
-          default:
-            response(
-              res,
-              true,
-              "",
-              "Something happened that's not supposed to happen, contact Hemanth or Shhubham ASAP!"
-            );
-        }
-      } else {
-        response(res, true, "", "Invalid id parsed");
+const round3Amc = async (req, res) => {
+  const { comment, status, regNo } = req.body;
+  try {
+    await db.transaction(async (chain) => {
+      const roundModelData = await roundModel.findAll({
+        where: { regNo, roundNo: "3" },
+      });
+      if (roundModelData.length == 0) {
+        throw Error("No Such candidate for round3 found!");
       }
-    })
-    .catch((err) => response(res, false, "", err.toString()));
+
+      const commentObj = await commentsModel.create(
+        {
+          auid: req.user.auid,
+          regNo,
+          comment,
+        },
+        { transaction: chain }
+      );
+      if (commentObj == null) {
+        throw Error("Error in creating comment");
+      }
+      const currentRoundUpdate = await roundModel.update(
+        {
+          meetingCompleted: true,
+          status,
+          cuid: commentObj.cuid,
+          auid: req.user.auid,
+        },
+        { where: { regNo, roundNo: "3" }, transaction: chain }
+      );
+
+      if (currentRoundUpdate == 0) {
+        throw Error("Unable to update Round 1 Object.");
+      }
+      response(res, true, "", "Round 3 Review for Candidate Succesful!");
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
 };
 
 const postException = async (req, res) => {
@@ -286,7 +328,9 @@ const postException = async (req, res) => {
 module.exports = {
   meetingCandidateHistory,
   fetchMeetings,
-  postAmc,
+  round1Amc,
+  round2Amc,
+  round3Amc,
   fetchProjects,
   postException,
 };

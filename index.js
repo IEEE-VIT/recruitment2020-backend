@@ -6,6 +6,7 @@ const cors = require("cors");
 const port = process.env.PORT || 5000;
 require("dotenv").config();
 const passport = require("passport");
+const logger = require("./configs/winston");
 const relations = require("./utils/relations");
 const userRoute = require("./routes/user");
 const adminRoute = require("./routes/admin");
@@ -24,7 +25,7 @@ app.use(
 
 app.use(cors());
 app.use(helmet());
-app.use(morgan("common"));
+app.use(morgan("common", { stream: logger.stream }));
 
 app.use(passport.initialize());
 
@@ -35,11 +36,10 @@ const adminAuthMiddleware = passport.authenticate("adminStrategy", {
   session: false,
 });
 
-app.use("/api", userRoute);
+app.use("/api/user", userAuthMiddleware, userRoute);
 app.use("/api/r0", userAuthMiddleware, round0Route);
 app.use("/api/r1", userAuthMiddleware, round1Route);
 app.use("/api/r2", userAuthMiddleware, round2Route);
-
 app.use("/api/admin", adminAuthMiddleware, adminRoute);
 app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 
@@ -52,9 +52,9 @@ app.get("/", (req, res) => {
 relations()
   .sync({ force: false, logging: false })
   .then(() => {
-    console.log("Success connection to db");
-    app.listen(port, () => console.log(`Server running on port ${port}`));
+    logger.info("Success connection to db");
+    app.listen(port, () => logger.info(`Server running on port ${port}`));
   })
   .catch((err) => {
-    console.log(`Failure to connect to db due to ${err}`);
+    logger.error(`Failure to connect to db due to ${err}`);
   });

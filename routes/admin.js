@@ -2,9 +2,12 @@ const router = require("express").Router();
 const round1Controller = require("../controller/round1");
 const adminController = require("../controller/admin.js");
 const round2Controller = require("../controller/round2");
+const round3Controller = require("../controller/round3");
 const queryFilter = require("../middleware/filter");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
+const isBoard = require("../middleware/boardAuth");
+const headerAuth = require("../middleware/headerAuth");
 
 router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
 router.post(
@@ -24,8 +27,13 @@ router.get(
   queryFilter,
   adminController.fetchMgmtRound2Candidates
 );
-router.get("/allAdmins", queryFilter, adminController.fetchAllAdmins);
-router.get("/allCandidates", queryFilter, adminController.fetchAllUsers);
+router.get("/allAdmins", queryFilter, isBoard, adminController.fetchAllAdmins);
+router.get(
+  "/allCandidates",
+  queryFilter,
+  isBoard,
+  adminController.fetchAllUsers
+);
 
 router.post(
   "/mgmt/r2/gdp",
@@ -37,6 +45,7 @@ router.post(
   validater(schemas.round2SetGda),
   round2Controller.setGda
 );
+router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
 
 router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 router.post(
@@ -44,5 +53,10 @@ router.post(
   validater(schemas.resolveException),
   adminController.resolveExceptions
 );
+
+router.post("/addslot", headerAuth.toAddSlot, adminController.addSlot);
+
+router.post("/setdeadline", isBoard, adminController.setDeadline);
+router.post("/r2/emailCandidate", round2Controller.selectR2TechDsnCandidate);
 
 module.exports = router;

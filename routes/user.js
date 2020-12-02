@@ -9,4 +9,7 @@ router.put("/user", userController.updateUser);
 
 router.delete("/user", userController.deleteUser);
 
+router.get("/userStatus", userController.userStatus);
+router.get("/getresults", userController.getResults);
+
 module.exports = router;

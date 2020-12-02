@@ -8,6 +8,8 @@ const adminModel = require("../models/adminModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
+const emailer = require("../utils/emailer");
+const templates = require("../utils/templates");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -137,7 +139,11 @@ const fetchGda = async (req, res) => {
       },
     })
     .then((result) => {
-      response(res, true, result.Admin, "Found GDA");
+      if (result.length === 0) {
+        response(res, true, result.Admin, "No GDA Found!");
+      } else {
+        response(res, true, result.Admin, "Found GDA");
+      }
     })
     .catch((err) => {
       response(res, false, "", err.toString());
@@ -199,6 +205,66 @@ const setGda = async (req, res) => {
   }
 };
 
+const selectR2TechDsnCandidate = async (req, res) => {
+  const { regNo, suid, coreDomain } = req.body;
+  const { auid } = req.user;
+
+  try {
+    await db.transaction(async (chain) => {
+      const roundModelDetails = await roundModel.findOne({
+        include: [userModel, slotModel],
+        where: { regNo, roundNo: "2", coreDomain },
+      });
+      if (roundModelDetails.length === 0) {
+        throw Error("No such candidate found!");
+      }
+      const roundUpdate = await roundModel.update(
+        {
+          auid,
+          suid,
+        },
+        {
+          where: {
+            regNo,
+            roundNo: "2",
+            coreDomain,
+          },
+          transaction: chain,
+        }
+      );
+      if (roundUpdate == 0) {
+        throw Error("Unable to update the candidate with the data");
+      }
+      const admin = await adminModel.findOne({ where: auid });
+      if (admin.length == 0) {
+        throw Error("No admin found with such auid");
+      }
+      const slotDetails = await slotModel.findOne({ where: { suid } });
+      if (slotDetails.length === 0) {
+        throw Error("Unable to find such slots ");
+      }
+      const userDetails = roundModelDetails.User;
+      const candidateEmailId = [userDetails.email];
+      const template = templates.round2Interview(
+        userDetails.name,
+        slotDetails.date,
+        slotDetails.timeFrom,
+        admin.meetLink
+      );
+      const email = await emailer(template, candidateEmailId);
+      console.log(email);
+      if (!email.success) {
+        throw Error(
+          `Unable to send the email to the candidate because: ${email.error}`
+        );
+      }
+      response(res, true, "", "Candidate Intrview Email Sent!");
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
 module.exports = {
   setGdp,
   setGda,
@@ -206,4 +272,5 @@ module.exports = {
   selectSlot,
   fetchGda,
   fetchGdp,
+  selectR2TechDsnCandidate,
 };

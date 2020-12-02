@@ -61,6 +61,10 @@ const getSlots = async (req, res) => {
           },
         ],
       },
+      order: [
+        ["date", "ASC"],
+        ["timeFrom", "ASC"],
+      ],
     })
     .then((slot) => {
       if (slot == "") {
@@ -186,9 +190,31 @@ const verifyslotTime = async (req, res) => {
     });
 };
 
+const getAllSlots = async (req, res) => {
+  await slotModel
+    .findAll({
+      where: req.query,
+      order: [
+        ["date", "ASC"],
+        ["timeFrom", "ASC"],
+      ],
+    })
+    .then((slots) => {
+      if (slots == "") {
+        response(res, true, slots, "No such Slots available");
+      } else {
+        response(res, true, slots, "All Slots accordlingly sent");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   getQuestions,
   getSlots,
   userForm,
   verifyslotTime,
+  getAllSlots,
 };
