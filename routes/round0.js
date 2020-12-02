@@ -7,5 +7,6 @@ router.post("/form", validater(schemas.round0form), round0Controller.userForm);
 router.get("/slots", round0Controller.getSlots);
 router.get("/question", round0Controller.getQuestions);
 router.get("/verifyslotTime", round0Controller.verifyslotTime);
+router.get("/allslots", round0Controller.getAllSlots);
 
 module.exports = router;
