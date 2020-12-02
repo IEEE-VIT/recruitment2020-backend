@@ -34,8 +34,7 @@ const login = async (req, res) => {
           response(res, true, "", "Incorrect Password!");
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         response(res, false, "", "Invalid User!");
       });
   }
@@ -75,7 +74,9 @@ const generateOtpAndTime = () => {
 
 const forgetPasswordEmailer = async (name, generatedCreds, emailId) => {
   const emailIdParsed = [emailId];
-  const formattedTime = generatedCreds.format("dddd, MMMM Do YYYY, h:mm:ss a");
+  const formattedTime = moment(generatedCreds.time).format(
+    "dddd, MMMM Do YYYY, h:mm:ss a"
+  );
   const template = templates.forgotPasswordTempalate(
     name,
     generatedCreds.otp,
@@ -89,14 +90,14 @@ const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     const userData = await userModel.findOne({ where: { email } });
-    if (userData.length === 0) {
+    if (userData === null) {
       throw Error("No such email registered!");
     }
     const forgotPasswordData = await forgotPasswordModel.findOne({
       where: { regNo: userData.regNo },
     });
     await db.transaction(async (chain) => {
-      if (forgotPasswordData.length === 0) {
+      if (forgotPasswordData === null) {
         const generatedCreds = generateOtpAndTime();
         const newForgotPasswordData = await forgotPasswordModel.create(
           {
@@ -112,7 +113,7 @@ const forgotPassword = async (req, res) => {
         const emailResult = await forgetPasswordEmailer(
           userData.name,
           generatedCreds,
-          userData.emailId
+          userData.email
         );
         if (!emailResult) {
           throw Error("Unable to send Email, hence aborted operation.");
@@ -133,7 +134,7 @@ const forgotPassword = async (req, res) => {
         const emailResult = await forgetPasswordEmailer(
           userData.name,
           generatedCreds,
-          userData.emailId
+          userData.email
         );
         if (!emailResult) {
           throw Error("Unable to send Email, hence aborted operation.");
@@ -153,14 +154,15 @@ const forgotPassword = async (req, res) => {
           const emailResult = await forgetPasswordEmailer(
             userData.name,
             generatedCreds,
-            userData.emailId
+            userData.email
           );
-          if (!emailResult) {
+          if (!emailResult.success) {
             throw Error("Unable to send Email, hence aborted operation.");
           }
         }
       }
     });
+    response(res, true, "", "Email has been sent to candidate!");
   } catch (err) {
     response(res, false, "", err.toString());
   }
@@ -168,16 +170,17 @@ const forgotPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { otp, emailId, password } = req.body;
-  const userData = userModel.findOne({ where: { email: emailId } });
-  if (userData.length === 0) {
+  const userData = await userModel.findOne({ where: { email: emailId } });
+  if (userData === null) {
     response(res, false, "", "No such user exists!");
   }
   try {
     await db.transaction(async (chain) => {
       const forgotPasswordData = await forgotPasswordModel.findOne({
+        transaction: chain,
         where: { regNo: userData.regNo },
       });
-      if (forgotPasswordData.length === 0) {
+      if (forgotPasswordData === null) {
         throw Error("OTP Expired!");
       }
       if (forgotPasswordData.expiry < moment()) {
@@ -186,7 +189,7 @@ const resetPassword = async (req, res) => {
       if (forgotPasswordData.otp !== otp) {
         throw Error("Invalid OTP!");
       }
-      const updateUserModel = userModel.update(
+      const updateUserModel = await userModel.update(
         {
           password,
         },
@@ -195,7 +198,7 @@ const resetPassword = async (req, res) => {
       if (updateUserModel == 0) {
         throw Error("Unable to reset password");
       }
-      const forgetPasswordDestroy = forgotPasswordModel.destroy({
+      const forgetPasswordDestroy = await forgotPasswordModel.destroy({
         where: { regNo: userData.regNo },
         transaction: chain,
       });
@@ -203,6 +206,7 @@ const resetPassword = async (req, res) => {
         throw Error("Unable to reset password!");
       }
     });
+    response(res, false, "", "Password updated successfully!");
   } catch (err) {
     response(res, false, "", err.toString());
   }

@@ -11,7 +11,7 @@ const ForgotPassword = sequelize.define("ForgotPassword", {
     },
   },
   expiry: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DATE,
     primaryKey: true,
     allowNull: false,
     validate: {
