@@ -7,6 +7,7 @@ const queryFilter = require("../middleware/filter");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 const isBoard = require("../middleware/boardAuth");
+const headerAuth = require("../middleware/headerAuth");
 
 router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
 router.post(
@@ -52,6 +53,8 @@ router.post(
   validater(schemas.resolveException),
   adminController.resolveExceptions
 );
+
+router.post("/addslot", headerAuth.toAddSlot, adminController.addSlot);
 
 router.post("/setdeadline", isBoard, adminController.setDeadline);
 

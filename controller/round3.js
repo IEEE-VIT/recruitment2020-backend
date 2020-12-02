@@ -1,9 +1,12 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
+const moment = require("moment-timezone");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const commentModel = require("../models/commentModel");
 const response = require("../utils/genericResponse");
+
+moment.tz.setDefault("Asia/Calcutta");
 
 const candidates = async (req, res) => {
   await roundModel

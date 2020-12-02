@@ -1,10 +1,12 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
 
+const moment = require("moment-timezone");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const commentModel = require("../models/commentModel");
+const slotModel = require("../models/slotModel");
 const deadlineModel = require("../models/deadlineModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
@@ -265,7 +267,7 @@ const setDeadline = async (req, res) => {
           .create({
             roundNo: req.body.roundNo,
             // SEND DATE IN DD MMM YYYY FOR EG:(12 DEC 2020) TO PREVENT DD-MM & MM-DD CONFUSION
-            date: req.body.date,
+            date: moment(new Date(req.body.date)),
             time: req.body.time,
           })
           .then((newDeadline) => {
@@ -296,6 +298,23 @@ const setDeadline = async (req, res) => {
     });
 };
 
+const addSlot = async (req, res) => {
+  await slotModel
+    .create({
+      roundNo: req.body.roundNo,
+      // SEND DATE IN DD MMM YYYY FOR EG:(12 DEC 2020) TO PREVENT DD-MM & MM-DD CONFUSION
+      date: moment(new Date(req.body.date)),
+      timeFrom: req.body.timeFrom,
+      timeTo: req.body.timeTo,
+    })
+    .then((slot) => {
+      response(res, true, slot, "Slot Added");
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -306,4 +325,5 @@ module.exports = {
   fetchExceptions,
   resolveExceptions,
   setDeadline,
+  addSlot,
 };
