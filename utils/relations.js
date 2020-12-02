@@ -6,6 +6,7 @@ const slot = require("../models/slotModel");
 const answerModel = require("../models/answerModel");
 const questionModel = require("../models/questionModel");
 const project = require("../models/projectModel");
+const forgotPassword = require("../models/forgotPasswordModel");
 const sequelize = require("./db");
 
 const relations = () => {
@@ -14,6 +15,7 @@ const relations = () => {
   comment.hasMany(round, { foreignKey: "cuid" });
   user.hasMany(round, { foreignKey: "regNo" });
   user.belongsTo(project, { foreignKey: "puid" });
+  user.hasMany(forgotPassword, { foreignKey: "regNo" });
   round.belongsTo(user, { foreignKey: "regNo" });
   round.belongsTo(admin, { foreignKey: "auid" });
   round.belongsTo(slot, { foreignKey: "suid" });
