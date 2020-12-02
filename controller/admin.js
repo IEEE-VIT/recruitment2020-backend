@@ -1,6 +1,6 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-const moment = require("moment-timezone");
+
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -9,8 +9,6 @@ const deadlineModel = require("../models/deadlineModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
-
-moment.tz.setDefault("Asia/Calcutta");
 
 const readAdmin = async (req, res) => {
   adminModel
@@ -298,44 +296,6 @@ const setDeadline = async (req, res) => {
     });
 };
 
-const getResults = async (req, res) => {
-  const todayDate = moment().format("YYYY-MM-DD");
-  const todayTime = moment().format("HH:mm:ss");
-
-  await deadlineModel
-    .findOne({ where: { roundNo: req.query.roundNo } })
-    .then((roundDeadline) => {
-      if (
-        todayDate >= roundDeadline.date ||
-        (todayDate == roundDeadline.date && todayTime >= roundDeadline.time)
-      ) {
-        roundModel
-          .findAll({ where: { roundNo: req.query.roundNo } })
-          .then((roundData) => {
-            response(res, true, roundData, "Results are out");
-          })
-          .catch((err) => {
-            response(res, false, "", err.toString());
-          });
-      } else {
-        roundModel
-          .findAll({
-            attributes: { exclude: ["status"] },
-            where: { roundNo: req.query.roundNo },
-          })
-          .then((roundData) => {
-            response(res, true, roundData, "Results are out");
-          })
-          .catch((err) => {
-            response(res, false, "", err.toString());
-          });
-      }
-    })
-    .catch((err) => {
-      response(res, false, "", err.toString());
-    });
-};
-
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -346,5 +306,4 @@ module.exports = {
   fetchExceptions,
   resolveExceptions,
   setDeadline,
-  getResults,
 };
