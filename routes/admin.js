@@ -53,4 +53,7 @@ router.post(
   adminController.resolveExceptions
 );
 
+router.post("/setdeadline", adminController.setDeadline);
+router.get("/getresults", adminController.getResults);
+
 module.exports = router;
