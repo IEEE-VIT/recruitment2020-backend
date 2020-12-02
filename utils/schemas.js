@@ -102,7 +102,6 @@ const schemas = {
     reason: Joi.string(),
   }),
   postAmc: Joi.object().keys({
-    id: Joi.string().pattern(/^[0-9]+$/),
     comment: Joi.string(),
     status: Joi.string().valid(
       constants.AcceptedReview,

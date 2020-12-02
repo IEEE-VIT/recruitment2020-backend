@@ -5,6 +5,15 @@ const schemas = require("../utils/schemas");
 
 router.get("/candidate/meetings", amcController.fetchMeetings);
 router.get("/candidate", amcController.meetingCandidateHistory);
-router.post("/interview", validater(schemas.postAmc), amcController.postAmc);
+router.post(
+  "/round1Interview",
+  validater(schemas.postAmc),
+  amcController.round1Amc
+);
+router.post(
+  "/round2Interview",
+  validater(schemas.postAmc),
+  amcController.round2Amc
+);
 
 module.exports = router;
