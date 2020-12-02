@@ -157,4 +157,46 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-module.exports = { login, register, forgotPassword };
+const resetPassword = async (req, res) => {
+  const { otp, emailId, password } = req.body;
+  const userData = userModel.findOne({ where: { email: emailId } });
+  if (userData.length === 0) {
+    response(res, false, "", "No such user exists!");
+  }
+  try {
+    await db.transaction(async (chain) => {
+      const forgotPasswordData = await forgotPasswordModel.findOne({
+        where: { regNo: userData.regNo },
+      });
+      if (forgotPasswordData.length === 0) {
+        throw Error("OTP Expired!");
+      }
+      if (forgotPasswordData.expiry < moment()) {
+        throw Error("OTP Expired!");
+      }
+      if (forgotPasswordData.otp !== otp) {
+        throw Error("Invalid OTP!");
+      }
+      const updateUserModel = userModel.update(
+        {
+          password,
+        },
+        { where: { regNo: userData.regNo }, transaction: chain }
+      );
+      if (updateUserModel == 0) {
+        throw Error("Unable to reset password");
+      }
+      const forgetPasswordDestroy = forgotPasswordModel.destroy({
+        where: { regNo: userData.regNo },
+        transaction: chain,
+      });
+      if (forgetPasswordDestroy == 0) {
+        throw Error("Unable to reset password!");
+      }
+    });
+  } catch (err) {
+    response(res, false, "", err.toString());
+  }
+};
+
+module.exports = { login, register, forgotPassword, resetPassword };
