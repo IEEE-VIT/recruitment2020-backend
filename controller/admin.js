@@ -318,7 +318,6 @@ const getResults = async (req, res) => {
             response(res, false, "", err.toString());
           });
       } else {
-        // no result
         roundModel
           .findAll({
             attributes: { exclude: ["status"] },
