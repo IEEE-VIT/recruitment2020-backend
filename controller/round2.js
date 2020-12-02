@@ -201,16 +201,15 @@ const setGda = async (req, res) => {
   }
 };
 
-// TODO: INCLUDE DESIGN CANDIDATES
-const selectTechCandidate = async (req, res) => {
-  const { regNo, suid } = req.body;
+const selectR2TechDsnCandidate = async (req, res) => {
+  const { regNo, suid, coreDomain } = req.body;
   const { auid } = req.user;
 
   try {
     await db.transaction(async (chain) => {
       const roundModelDetails = await roundModel.findOne({
         include: [userModel, slotModel],
-        where: { regNo, roundNo: "2", coreDomain: constants.Tech },
+        where: { regNo, roundNo: "2", coreDomain },
       });
       if (roundModelDetails.length === 0) {
         throw Error("No such candidate found!");
@@ -224,7 +223,7 @@ const selectTechCandidate = async (req, res) => {
           where: {
             regNo,
             roundNo: "2",
-            coreDomain: constants.Tech,
+            coreDomain,
           },
           transaction: chain,
         }
@@ -265,5 +264,5 @@ module.exports = {
   selectSlot,
   fetchGda,
   fetchGdp,
-  selectTechCandidate,
+  selectR2TechDsnCandidate,
 };

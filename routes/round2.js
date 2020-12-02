@@ -11,6 +11,6 @@ router.post(
 );
 router.get("/fetchgdp", round2Controller.fetchGdp);
 router.get("/fetchgda", round2Controller.fetchGda);
-router.post("/emailr2candidates", round2Controller.selectTechCandidate);
+router.post("/emailr2candidate", round2Controller.selectR2TechDsnCandidate);
 
 module.exports = router;
