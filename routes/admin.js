@@ -44,7 +44,7 @@ router.post(
   validater(schemas.round2SetGda),
   round2Controller.setGda
 );
-router.get("/r3/candidates", isBoard, round3Controller.candidates);
+router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
 
 router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 router.post(
@@ -52,5 +52,7 @@ router.post(
   validater(schemas.resolveException),
   adminController.resolveExceptions
 );
+
+router.post("/setdeadline", isBoard, adminController.setDeadline);
 
 module.exports = router;

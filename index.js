@@ -35,7 +35,7 @@ const adminAuthMiddleware = passport.authenticate("adminStrategy", {
   session: false,
 });
 
-app.use("/api", userRoute);
+app.use("/api/user", userAuthMiddleware, userRoute);
 app.use("/api/r0", userAuthMiddleware, round0Route);
 app.use("/api/r1", userAuthMiddleware, round1Route);
 app.use("/api/r2", userAuthMiddleware, round2Route);
