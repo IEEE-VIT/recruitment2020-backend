@@ -133,7 +133,7 @@ const getResults = async (req, res) => {
     .findOne({ where: { roundNo: req.query.roundNo } })
     .then((roundDeadline) => {
       if (
-        todayDate >= roundDeadline.date ||
+        todayDate > roundDeadline.date ||
         (todayDate == roundDeadline.date && todayTime >= roundDeadline.time)
       ) {
         roundModel
