@@ -50,6 +50,10 @@ const Admin = sequelize.define("Admin", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
 });
 
 Admin.prototype.isValidPassword = function (password) {

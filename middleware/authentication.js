@@ -39,7 +39,11 @@ passport.use(
         where: { email: jwtPayload.email, auid: jwtPayload.auid },
       })
       .then((admin) => {
-        next(null, admin);
+        if (admin.isActive) {
+          next(null, admin);
+        } else {
+          next(null, false);
+        }
       })
       .catch((_err) => {
         logger.error("Middleware Error", _err.toString());
