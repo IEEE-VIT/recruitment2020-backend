@@ -1,12 +1,10 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-const moment = require("moment-timezone");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const commentModel = require("../models/commentModel");
 const response = require("../utils/genericResponse");
-
-moment.tz.setDefault("Asia/Calcutta");
+const logger = require("../configs/winston");
 
 const candidates = async (req, res) => {
   await roundModel
@@ -29,6 +27,7 @@ const candidates = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchRound3candidates due to ${err}`);
       response(res, false, "", err.toString());
     });
 };

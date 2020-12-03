@@ -4,6 +4,7 @@ const userModel = require("../models/userModel");
 const deadlineModel = require("../models/deadlineModel");
 const roundModel = require("../models/roundModel");
 const response = require("../utils/genericResponse");
+const logger = require("../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -20,6 +21,7 @@ const createUser = async (req, res) => {
       response(res, true, user, "User created successfully");
     })
     .catch((err) => {
+      logger.error(`Failure to createUser due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -38,6 +40,7 @@ const readUser = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to readUser due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -64,6 +67,7 @@ const updateUser = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to updateUser due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -79,6 +83,7 @@ const deleteUser = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to deleteUser due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -122,6 +127,7 @@ const userStatus = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to getUserStatus due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -147,6 +153,7 @@ const getResults = async (req, res) => {
             response(res, true, roundData, "Results are out");
           })
           .catch((err) => {
+            logger.error(`Failure to getResults due to ${err}`);
             response(res, false, "", err.toString());
           });
       } else {
@@ -162,11 +169,13 @@ const getResults = async (req, res) => {
             response(res, true, roundData, "Results are not out yet");
           })
           .catch((err) => {
+            logger.error(`Failure to getResults due to ${err}`);
             response(res, false, "", err.toString());
           });
       }
     })
     .catch((err) => {
+      logger.error(`Failure to getResults due to ${err}`);
       response(res, false, "", err.toString());
     });
 };

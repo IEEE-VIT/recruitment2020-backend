@@ -7,6 +7,7 @@ const projectsModel = require("../models/projectModel");
 const response = require("../utils/genericResponse");
 const db = require("../utils/db");
 const constants = require("../utils/constants");
+const logger = require("../configs/winston");
 
 const fetchProjects = async (req, res) => {
   projectsModel
@@ -20,7 +21,10 @@ const fetchProjects = async (req, res) => {
         response(res, true, data, "Projects Found!");
       }
     })
-    .catch((err) => response(res, false, "", err.toString()));
+    .catch((err) => {
+      logger.error(`Failure to fetchProjects due to ${err}`);
+      response(res, false, "", err.toString());
+    });
 };
 
 const fetchMeetings = async (req, res) => {
@@ -52,6 +56,7 @@ const fetchMeetings = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchMeetings due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -73,6 +78,7 @@ const meetingCandidateHistory = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to meetingCandidateHistory due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -152,6 +158,7 @@ const round1Amc = async (req, res) => {
       response(res, true, "", "Succesfully Reviewed Candidate for Round 1");
     });
   } catch (err) {
+    logger.error(`Failure to round1Amc due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -239,6 +246,7 @@ const round2Amc = async (req, res) => {
       response(res, true, "", "Succesfully Reviewed Candidate for Round 2");
     });
   } catch (err) {
+    logger.error(`Failure to round2Amc due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -281,6 +289,7 @@ const round3Amc = async (req, res) => {
       response(res, true, "", "Round 3 Review for Candidate Succesful!");
     });
   } catch (err) {
+    logger.error(`Failure to round3Amc due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -321,6 +330,7 @@ const postException = async (req, res) => {
       );
     });
   } catch (err) {
+    logger.error(`Failure to postException due to ${err}`);
     response(res, false, "", err.toString());
   }
 };

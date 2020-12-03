@@ -4,6 +4,7 @@ const passportJWT = require("passport-jwt");
 const userModel = require("../models/userModel");
 const adminModel = require("../models/adminModel");
 const response = require("../utils/genericResponse");
+const logger = require("../configs/winston");
 
 const { ExtractJwt } = passportJWT;
 
@@ -24,7 +25,7 @@ passport.use(
         next(null, user);
       })
       .catch((_err) => {
-        console.log("Middelware Error", _err);
+        logger.error("Middleware Error", _err.toString());
         next(null, false);
       });
   })
@@ -41,7 +42,7 @@ passport.use(
         next(null, admin);
       })
       .catch((_err) => {
-        console.log("Middelware Error", _err);
+        logger.error("Middleware Error", _err.toString());
         next(null, false);
       });
   })

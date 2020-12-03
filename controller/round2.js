@@ -10,6 +10,7 @@ const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 const emailer = require("../utils/emailer");
 const templates = require("../utils/templates");
+const logger = require("../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -43,6 +44,7 @@ const getSlots = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to getSlots due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -106,6 +108,7 @@ const selectSlot = async (req, res) => {
 
     response(res, true, result, "User added to slot");
   } catch (err) {
+    logger.error(`Failure to selectSlot due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -124,6 +127,7 @@ const fetchGdp = (req, res) => {
       response(res, true, result.Slot, "Found GDP");
     })
     .catch((err) => {
+      logger.error(`Failure to fetchGdp due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -146,6 +150,7 @@ const fetchGda = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchGda due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -170,6 +175,7 @@ const setGdp = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to setGdp due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -201,6 +207,7 @@ const setGda = async (req, res) => {
       response(res, true, "", "GDA Successfully set for Candidates!");
     });
   } catch (err) {
+    logger.error(`Failure to setGda due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -261,6 +268,7 @@ const selectR2TechDsnCandidate = async (req, res) => {
       response(res, true, "", "Candidate Intrview Email Sent!");
     });
   } catch (err) {
+    logger.error(`Failure to selectR2TechDsnCandidate due to ${err}`);
     response(res, false, "", err.toString());
   }
 };

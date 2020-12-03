@@ -3,6 +3,7 @@ const userModel = require("../models/userModel");
 const roundModel = require("../models/roundModel");
 const response = require("../utils/genericResponse");
 const db = require("../utils/db");
+const logger = require("../configs/winston");
 
 const updateProjectLink = async (req, res) => {
   userModel
@@ -18,6 +19,7 @@ const updateProjectLink = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to updateProjectLink due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -40,6 +42,7 @@ const fetchReadyCandidates = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchReadyCandidates due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -77,6 +80,7 @@ const selectReadyCandidates = async (req, res) => {
       "Candidates Selected to interview!"
     );
   } catch (err) {
+    logger.error(`Failure to selectReadyCandidates due to ${err}`);
     await chainTransaction.rollback();
     response(res, false, "", err.toString());
   }
@@ -102,6 +106,7 @@ const isReady = async (req, res) => {
         });
     })
     .catch((err) => {
+      logger.error(`Failure to isReady due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
