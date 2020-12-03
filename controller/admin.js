@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const moment = require("moment-timezone");
 const logger = require("../configs/winston");
 const adminModel = require("../models/adminModel");
@@ -358,6 +358,35 @@ const getAllMeetings = async (req, res) => {
     });
 };
 
+const fetchOnGoingMeetings = async (req, res) => {
+  roundModel
+    .findAll({
+      include: [userModel, adminModel, slotModel],
+      attributes: [
+        [Sequelize.fn("DISTINCT", Sequelize.col("User.regNo")), "User.regNo"],
+      ].concat(Object.keys(roundModel.rawAttributes)),
+      where: {
+        [Op.and]: [
+          {
+            meetingCompleted: false,
+            auid: { [Op.ne]: null },
+          },
+          req.query,
+        ],
+      },
+    })
+    .then((data) => {
+      if (data.length === 0) {
+        response(res, true, false, "Unable to find any ongoing meetings");
+      } else {
+        response(res, true, data, "Meetings Found!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, false, err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -370,4 +399,5 @@ module.exports = {
   setDeadline,
   addSlot,
   getAllMeetings,
+  fetchOnGoingMeetings,
 };
