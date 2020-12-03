@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+const { Op } = require("sequelize");
 const userModel = require("../models/userModel");
 const roundModel = require("../models/roundModel");
 const response = require("../utils/genericResponse");
@@ -32,6 +33,7 @@ const fetchReadyCandidates = async (req, res) => {
       where: {
         roundNo: "1",
         meetingCompleted: false,
+        auid: { [Op.eq]: null },
       },
     })
     .then((result) => {
