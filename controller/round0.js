@@ -10,6 +10,7 @@ const userModel = require("../models/userModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
+const logger = require("../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -32,10 +33,12 @@ const getQuestions = async (req, res) => {
           }
         })
         .catch((err) => {
+          logger.error(`Failure to getQuestions due to ${err}`);
           response(res, false, "", err.toString());
         });
     })
     .catch((err) => {
+      logger.error(`Failure to getQuestions due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -74,6 +77,7 @@ const getSlots = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to getSlots due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -151,8 +155,9 @@ const userForm = async (req, res) => {
       return round;
     });
     response(res, true, result, "Added to Round 0");
-  } catch (error) {
-    response(res, false, "", error.toString());
+  } catch (err) {
+    logger.error(`Failure to userForm due to ${err}`);
+    response(res, false, "", err.toString());
   }
 };
 
@@ -182,10 +187,12 @@ const verifyslotTime = async (req, res) => {
           }
         })
         .catch((err) => {
+          logger.error(`Failure to verifyslotTime due to ${err}`);
           response(res, false, "", err.toString());
         });
     })
     .catch((err) => {
+      logger.error(`Failure to verifyslotTime due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -207,6 +214,7 @@ const getAllSlots = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to getAllSlots due to ${err}`);
       response(res, false, "", err.toString());
     });
 };

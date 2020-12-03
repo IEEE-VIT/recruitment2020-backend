@@ -7,6 +7,7 @@ const emailer = require("../utils/emailer");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const templates = require("../utils/templates");
+const logger = require("../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -34,7 +35,8 @@ const login = async (req, res) => {
           response(res, true, "", "Incorrect Password!");
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        logger.error(`Failure to userLogin due to ${err}`);
         response(res, false, "", "Invalid User!");
       });
   }
@@ -61,6 +63,7 @@ const register = async (req, res) => {
       );
     })
     .catch((err) => {
+      logger.error(`Failure to userRegister due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -164,6 +167,7 @@ const forgotPassword = async (req, res) => {
     });
     response(res, true, "", "Email has been sent to candidate!");
   } catch (err) {
+    logger.error(`Failure to forgotPassword due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -208,6 +212,7 @@ const resetPassword = async (req, res) => {
     });
     response(res, true, "", "Password updated successfully!");
   } catch (err) {
+    logger.error(`Failure to resetPassword due to ${err}`);
     response(res, false, "", err.toString());
   }
 };

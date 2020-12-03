@@ -1,7 +1,7 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-
 const moment = require("moment-timezone");
+const logger = require("../configs/winston");
 const adminModel = require("../models/adminModel");
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
@@ -23,6 +23,7 @@ const readAdmin = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to readAdmin due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -46,6 +47,7 @@ const updateAdmin = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to updateAdmin due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -84,6 +86,7 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchTechDsnRound2Candidates due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -117,6 +120,7 @@ const fetchMgmtRound2Candidates = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchMgmtRound2Candidates due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -134,6 +138,7 @@ const fetchAllAdmins = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchAllAdmins due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -158,6 +163,7 @@ const fetchExceptions = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchExceptions due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -242,6 +248,7 @@ const resolveExceptions = async (req, res) => {
     });
     response(res, true, result, "Exception resolved");
   } catch (err) {
+    logger.error(`Failure to resolveExceptions due to ${err}`);
     response(res, false, "", err.toString());
   }
 };
@@ -264,6 +271,7 @@ const fetchAllUsers = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to fetchAllUsers due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -284,6 +292,7 @@ const setDeadline = async (req, res) => {
             response(res, true, newDeadline, "Deadline Set");
           })
           .catch((err) => {
+            logger.error(`Failure to setDeadline due to ${err}`);
             response(res, false, "", err.toString());
           });
       } else {
@@ -299,11 +308,13 @@ const setDeadline = async (req, res) => {
             response(res, true, updatedDeadline, "Deadline Set");
           })
           .catch((err) => {
+            logger.error(`Failure to setDeadline due to ${err}`);
             response(res, false, "", err.toString());
           });
       }
     })
     .catch((err) => {
+      logger.error(`Failure to setDeadline due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -321,6 +332,7 @@ const addSlot = async (req, res) => {
       response(res, true, slot, "Slot Added");
     })
     .catch((err) => {
+      logger.error(`Failure to addSlot due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -340,6 +352,7 @@ const getAllMeetings = async (req, res) => {
       }
     })
     .catch((err) => {
+      logger.error(`Failure to getAllMeetings due to ${err}`);
       response(res, false, "", err.toString());
     });
 };

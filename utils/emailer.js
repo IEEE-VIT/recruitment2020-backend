@@ -1,4 +1,5 @@
 const axios = require("axios");
+const logger = require("../configs/winston");
 
 const config = {
   headers: {
@@ -26,6 +27,7 @@ const emailer = async (template, emailIds) => {
       return { success: false, error: response.error };
     })
     .catch((err) => {
+      logger.error(`Failure to psotEmailerApi due to ${err}`);
       return { success: false, error: err.toString() };
     });
   return emailerApi;

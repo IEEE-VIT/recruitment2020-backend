@@ -1,6 +1,7 @@
 const authMiddlewaare = require("../middleware/authentication");
 const adminModel = require("../models/adminModel");
 const response = require("../utils/genericResponse");
+const logger = require("../configs/winston");
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -24,7 +25,7 @@ const login = async (req, res) => {
         }
       })
       .catch((err) => {
-        console.log(err);
+        logger.error(`Failure to loginAdmin due to ${err}`);
         response(res, false, "", "Invalid admin!");
       });
   }
@@ -47,6 +48,7 @@ const register = async (req, res) => {
       );
     })
     .catch((err) => {
+      logger.error(`Failure to registerAdmin due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
