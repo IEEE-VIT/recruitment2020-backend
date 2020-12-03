@@ -6,6 +6,7 @@ const schemas = require("../utils/schemas");
 router.get("/slots", round2Controller.getSlots);
 router.get("/fetchgdp", round2Controller.fetchGdp);
 router.get("/fetchgda", round2Controller.fetchGda);
+router.get("/verifyslotTime", round2Controller.verifyslotTime);
 
 router.post(
   "/selectslot",

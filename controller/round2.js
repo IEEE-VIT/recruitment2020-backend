@@ -273,6 +273,48 @@ const selectR2TechDsnCandidate = async (req, res) => {
   }
 };
 
+const verifyslotTime = async (req, res) => {
+  roundModel
+    .findOne({
+      where: {
+        regNo: req.user.regNo,
+        roundNo: "2",
+        coreDomain: constants.Mgmt,
+      },
+    })
+    .then((data) => {
+      if (data == null) {
+        throw new Error("Invalid Registration Number in the given round");
+      }
+      slotModel
+        .findOne({ where: { suid: data.suid, roundNo: "2" } })
+        .then((slot) => {
+          if (slot == null) {
+            throw new Error("Invalid Slot");
+          }
+          const todayDate = moment().format("YYYY-MM-DD");
+          const todayTime = moment().format("HH:mm:ss");
+          if (
+            todayDate == slot.date &&
+            todayTime >= slot.timeFrom &&
+            todayTime <= slot.timeTo
+          ) {
+            response(res, true, true, "Slot Time Verified");
+          } else {
+            response(res, true, false, "Slot Time Incorrect");
+          }
+        })
+        .catch((err) => {
+          logger.error(`Failure to verifyslotTime Round2 Mgmt due to ${err}`);
+          response(res, false, "", err.toString());
+        });
+    })
+    .catch((err) => {
+      logger.error(`Failure to verifyslotTime Round2 due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   setGdp,
   setGda,
@@ -281,4 +323,5 @@ module.exports = {
   fetchGda,
   fetchGdp,
   selectR2TechDsnCandidate,
+  verifyslotTime,
 };
