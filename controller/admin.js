@@ -50,7 +50,7 @@ const updateAdmin = async (req, res) => {
     });
 };
 
-const fetchTechRound2Candidates = async (req, res) => {
+const fetchTechDsnRound2Candidates = async (req, res) => {
   roundModel
     .findAll({
       attributes: ["regNo"],
@@ -61,16 +61,26 @@ const fetchTechRound2Candidates = async (req, res) => {
           {
             roundNo: "2",
             meetingCompleted: false,
-            coreDomain: constants.Tech,
+            coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
           },
         ],
       },
     })
     .then((result) => {
       if (result.length === 0) {
-        response(res, true, null, "No Ready candidates for Tech Round 2 found");
+        response(
+          res,
+          true,
+          null,
+          "No Ready candidates for Tech/Design Round 2 found"
+        );
       } else {
-        response(res, true, result, "Ready candidates for Tech Round 2 found");
+        response(
+          res,
+          true,
+          result,
+          "Ready candidates for Tech/Design Round 2 found"
+        );
       }
     })
     .catch((err) => {
@@ -338,7 +348,7 @@ module.exports = {
   fetchAllUsers,
   readAdmin,
   updateAdmin,
-  fetchTechRound2Candidates,
+  fetchTechDsnRound2Candidates,
   fetchMgmtRound2Candidates,
   fetchAllAdmins,
   fetchExceptions,

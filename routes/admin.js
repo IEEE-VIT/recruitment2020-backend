@@ -12,9 +12,9 @@ const headerAuth = require("../middleware/headerAuth");
 router.get("/", adminController.readAdmin);
 router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
 router.get(
-  "/r2/tech/candidates",
+  "/r2/nonmgmt/candidates",
   queryFilter,
-  adminController.fetchTechRound2Candidates
+  adminController.fetchTechDsnRound2Candidates
 );
 router.get(
   "/r2/mgmt/candidates",
