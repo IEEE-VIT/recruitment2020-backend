@@ -315,6 +315,25 @@ const addSlot = async (req, res) => {
     });
 };
 
+const getAllMeetings = async (req, res) => {
+  const queryParams = req.query;
+  queryParams.auid = req.user.auid;
+  roundModel
+    .findAll({
+      where: queryParams,
+    })
+    .then((data) => {
+      if (data.length === 0) {
+        response(res, true, "", "No Meetings found for this admin!");
+      } else {
+        response(res, true, data, "Meetings Found!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -326,4 +345,5 @@ module.exports = {
   resolveExceptions,
   setDeadline,
   addSlot,
+  getAllMeetings,
 };
