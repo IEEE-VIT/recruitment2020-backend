@@ -64,6 +64,7 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
             roundNo: "2",
             meetingCompleted: false,
             coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
+            projectLink: { [Op.ne]: null },
           },
         ],
       },
