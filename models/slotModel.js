@@ -1,4 +1,5 @@
 const { DataTypes } = require("sequelize");
+const moment = require("moment");
 const sequelize = require("../utils/db");
 
 const Slot = sequelize.define("Slot", {
@@ -29,6 +30,9 @@ const Slot = sequelize.define("Slot", {
     validate: {
       notEmpty: true,
     },
+    get() {
+      return moment(this.getDataValue("date")).format("DD MMM");
+    },
   },
   timeFrom: {
     type: DataTypes.TIME,
@@ -36,12 +40,18 @@ const Slot = sequelize.define("Slot", {
     validate: {
       notEmpty: true,
     },
+    get() {
+      return this.getDataValue("timeFrom").slice(0, 5);
+    },
   },
   timeTo: {
     type: DataTypes.TIME,
     allowNull: false,
     validate: {
       notEmpty: true,
+    },
+    get() {
+      return this.getDataValue("timeTo").slice(0, 5);
     },
   },
   count: {
