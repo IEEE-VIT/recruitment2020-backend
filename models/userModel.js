@@ -14,17 +14,11 @@ const User = sequelize.define("User", {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
   },
   phoneNo: {
     type: DataTypes.BIGINT,
-    allowNull: false,
     unique: true,
     validate: {
-      notEmpty: true,
       isNumeric: true,
     },
   },
@@ -47,11 +41,9 @@ const User = sequelize.define("User", {
   },
   coreDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true,
   },
   specificDomains: {
     type: DataTypes.ARRAY(DataTypes.STRING),
-    allowNull: true,
   },
   puid: {
     type: DataTypes.INTEGER,

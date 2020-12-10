@@ -17,11 +17,6 @@ const schemas = {
       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
       .required(),
     password: Joi.string().min(8).required(),
-    phoneNo: Joi.string()
-      .length(10)
-      .pattern(/^[0-9]+$/)
-      .required(),
-    name: Joi.string().required(),
     email: Joi.string()
       .email()
       .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
@@ -41,6 +36,11 @@ const schemas = {
     suid: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
+    phoneNo: Joi.string()
+      .length(10)
+      .pattern(/^[0-9]+$/)
+      .required(),
+    name: Joi.string().required(),
     questions: Joi.array()
       .items({ quid: Joi.string().pattern(/^[0-9]+$/), answer: Joi.string() })
       .required(),
