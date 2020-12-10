@@ -46,12 +46,8 @@ const register = async (req, res) => {
   userModel
     .create({
       regNo: req.body.regNo,
-      name: req.body.name,
-      phoneNo: req.body.phoneNo,
       email: req.body.email,
       password: req.body.password,
-      coreDomains: req.body.coreDomains,
-      specificDomains: req.body.specificDomains,
     })
     .then((user) => {
       const payload = { regNo: user.regNo };

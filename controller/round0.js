@@ -126,6 +126,8 @@ const userForm = async (req, res) => {
 
       await userModel.update(
         {
+          name: req.body.name,
+          phoneNo: req.body.phoneNo,
           coreDomains: req.body.coreDomains,
           specificDomains: req.body.specificDomains,
         },
