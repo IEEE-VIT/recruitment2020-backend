@@ -69,11 +69,11 @@ const getSlots = async (req, res) => {
         ["timeFrom", "ASC"],
       ],
     })
-    .then((slot) => {
-      if (slot == "") {
+    .then((slots) => {
+      if (slots == "") {
         response(res, true, "", "No Valid Slot available");
       } else {
-        response(res, true, slot, "Slots Sent");
+        response(res, true, slots, "Slots Sent");
       }
     })
     .catch((err) => {
