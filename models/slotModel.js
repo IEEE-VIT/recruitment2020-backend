@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const moment = require("moment");
+const moment = require("moment-timezone");
 const sequelize = require("../utils/db");
 
 const Slot = sequelize.define("Slot", {
