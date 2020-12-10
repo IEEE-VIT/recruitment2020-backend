@@ -23,5 +23,6 @@ router.post(
 );
 router.post("/forgotPassword", userAuthController.forgotPassword);
 router.post("/resetPassword", userAuthController.resetPassword);
+router.post("/verifyOtp", userAuthController.verifyOtp);
 
 module.exports = router;

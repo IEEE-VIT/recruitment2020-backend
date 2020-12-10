@@ -172,6 +172,31 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+const verifyOtp = async (req, res) => {
+  const { otp, emailId } = req.body;
+  const userData = await userModel.findOne({ where: { email: emailId } });
+  if (userData === null) {
+    response(res, false, "", "No such user exists!");
+  }
+  try {
+    const forgetPasswordData = await forgotPasswordModel.findOne({
+      where: { regNo: userData.regNo },
+    });
+    if (forgetPasswordData === null) {
+      throw Error("OTP Expired!");
+    }
+    if (forgetPasswordData.expiry < moment()) {
+      throw Error("OTP Expired!");
+    }
+    if (forgetPasswordData.otp !== otp) {
+      throw Error("Invalid OTP!");
+    }
+    response(res, true, true, "Valid OTP");
+  } catch (err) {
+    response(res, false, false, err.toString());
+  }
+};
+
 const resetPassword = async (req, res) => {
   const { otp, emailId, password } = req.body;
   const userData = await userModel.findOne({ where: { email: emailId } });
@@ -217,4 +242,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { login, register, forgotPassword, resetPassword };
+module.exports = { login, register, forgotPassword, resetPassword, verifyOtp };
