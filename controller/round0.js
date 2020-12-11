@@ -176,8 +176,10 @@ const verifyslotTime = async (req, res) => {
           if (slot == null) {
             throw new Error("Invalid Slot");
           }
-          const todayDate = moment().format("YYYY-MM-DD");
-          const todayTime = moment().format("HH:mm:ss");
+          const todayDate = moment().format("DD MMM");
+          const todayTime = moment().format("HH:mm");
+          console.log(todayDate);
+          console.log(todayTime);
           if (
             todayDate == slot.date &&
             todayTime >= slot.timeFrom &&
