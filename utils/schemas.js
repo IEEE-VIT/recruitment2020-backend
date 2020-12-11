@@ -17,30 +17,18 @@ const schemas = {
       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
       .required(),
     password: Joi.string().min(8).required(),
-    email: Joi.string()
-      .email()
-      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
-      .required(),
+    email: Joi.string().email().required(),
   }),
   forgotPassword: Joi.object().keys({
-    email: Joi.string()
-      .email()
-      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
-      .required(),
+    email: Joi.string().email().required(),
   }),
   resetPassword: Joi.object().keys({
-    emailId: Joi.string()
-      .email()
-      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
-      .required(),
+    emailId: Joi.string().email().required(),
     otp: Joi.required(),
     password: Joi.string().min(8).required(),
   }),
   verifyOtp: Joi.object().keys({
-    emailId: Joi.string()
-      .email()
-      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
-      .required(),
+    emailId: Joi.string().email().required(),
     otp: Joi.required(),
   }),
   adminLogin: Joi.object().keys({
