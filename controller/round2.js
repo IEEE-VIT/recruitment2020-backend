@@ -25,12 +25,14 @@ const getSlots = async (req, res) => {
           {
             count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
             roundNo: "2",
+            mgmt: true,
             date: { [Op.gt]: todayDate },
           },
           {
             count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
             roundNo: "2",
             date: todayDate,
+            mgmt: true,
             timeFrom: { [Op.gte]: todayTime },
           },
         ],

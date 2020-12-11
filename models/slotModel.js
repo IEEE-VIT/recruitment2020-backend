@@ -21,6 +21,10 @@ const Slot = sequelize.define("Slot", {
       notEmpty: true,
     },
   },
+  mgmt: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   moderatorId: {
     type: DataTypes.INTEGER,
   },

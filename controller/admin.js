@@ -326,6 +326,7 @@ const addSlot = async (req, res) => {
       roundNo: req.body.roundNo,
       // SEND DATE IN DD MMM YYYY FOR EG:(12 DEC 2020) TO PREVENT DD-MM & MM-DD CONFUSION
       date: moment(new Date(req.body.date)),
+      mgmt: req.body.mgmt,
       timeFrom: req.body.timeFrom,
       timeTo: req.body.timeTo,
     })
