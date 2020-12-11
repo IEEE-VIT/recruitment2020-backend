@@ -42,29 +42,33 @@ const dashboard = async (req, res) => {
       where: { regNo },
     });
     if (roundModelData.length === 0) {
-      response(res, true, "", "Invalid User");
+      response(res, true, resultData, "Did not submit round0 form");
+      return;
     }
     roundModelData.map((roundData) => {
       switch (roundData.roundNo) {
         case "0":
           resultData.round0Status = true;
           domainAdder(roundData);
-          slots.round1 = roundData.Slot ?? false;
+          slots.round1 = roundData.Slot == null ? false : roundData.Slot;
           break;
         case "1":
+          resultData.round0Status = true;
           resultData.round1Status = roundData.status;
           domainAdder(roundData);
-          slots.round1 = roundData.Slot ?? false;
+          slots.round1 = roundData.Slot == null ? false : roundData.Slot;
           break;
         case "2":
+          resultData.round0Status = true;
           resultData.round2Status = roundData.status;
           domainAdder(roundData);
-          slots.round2 = roundData.Slot ?? false;
+          slots.round2 = roundData.Slot == null ? false : roundData.Slot;
           break;
         case "3":
+          resultData.round0Status = true;
           resultData.round3Status = roundData.status;
           domainAdder(roundData);
-          slots.round3 = roundData.Slot ?? false;
+          slots.round3 = roundData.Slot == null ? false : roundData.Slot;
           break;
         default:
           break;
