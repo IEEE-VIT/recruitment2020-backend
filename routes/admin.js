@@ -34,6 +34,12 @@ router.get("/meetings", adminController.getAllMeetings);
 router.get("/ongoing", adminController.fetchOnGoingMeetings);
 router.get("/projects", queryFilter, adminController.fetchProjects);
 router.get("/allslots", queryFilter, adminController.getAllSlots);
+router.get("/r2/mgmt/fetchGdaCandidates", adminController.fetchGdaCandidates);
+router.get("/r2/mgmt/fetchGdpCandidates", adminController.fetchGdpCandidates);
+router.get(
+  "/r2/nonmgmt/fetchMeetings",
+  adminController.fetchMyTechDesignMeetings
+);
 
 router.post(
   "/exceptions",
