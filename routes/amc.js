@@ -1,10 +1,12 @@
 const router = require("express").Router();
 const amcController = require("../controller/amc");
+const clubbedController = require("../controller/clubbed");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 
 router.get("/candidate/meetings", amcController.fetchMeetings);
 router.get("/candidate", amcController.meetingCandidateHistory);
+router.get("/fetchAmc", clubbedController.amcFetch);
 
 router.post(
   "/round1Interview",

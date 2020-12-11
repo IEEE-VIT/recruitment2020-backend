@@ -1,6 +1,9 @@
 const roundModel = require("../models/roundModel");
 const userModel = require("../models/userModel");
 const slotModel = require("../models/slotModel");
+const adminModel = require("../models/adminModel");
+const answerModel = require("../models/answerModel");
+const questionsModel = require("../models/questionModel");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
@@ -76,4 +79,52 @@ const dashboard = async (req, res) => {
   }
 };
 
-module.exports = { dashboard };
+const amcFetch = async (req, res) => {
+  const { regNo } = req.query;
+  try {
+    const round2Data = [];
+    const resultData = {
+      user: {},
+      round0Data: {},
+      round1Data: {},
+      round2Data: {},
+      round3Data: {},
+    };
+    const answerData = await answerModel.findAll({
+      include: [{ model: questionsModel, attributes: ["question"] }],
+      attributes: ["answer"],
+      where: { regNo },
+    });
+    const userData = await userModel.findOne({ where: { regNo } });
+    const roundModelData = await roundModel.findAll({
+      include: [adminModel, slotModel],
+      where: { regNo },
+    });
+    resultData.user = userData;
+    resultData.round0Data = answerData;
+    roundModelData.map((roundData) => {
+      switch (roundData.roundNo) {
+        case "0":
+          break;
+        case "1":
+          resultData.round1Data = roundData;
+          break;
+        case "2":
+          round2Data.push(roundData);
+          break;
+        case "3":
+          resultData.round3Data = roundData;
+          break;
+        default:
+          break;
+      }
+      return roundData;
+    });
+    resultData.round2Data = round2Data;
+    response(res, true, resultData, "User data found!");
+  } catch (error) {
+    response(res, false, "", error.toString());
+  }
+};
+
+module.exports = { dashboard, amcFetch };
