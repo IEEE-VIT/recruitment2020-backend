@@ -56,7 +56,7 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
   roundModel
     .findAll({
       attributes: ["regNo"],
-      include: userModel,
+      include: { model: userModel, where: { projectLink: { [Op.ne]: null } } },
       where: {
         [Op.and]: [
           req.query,
@@ -64,7 +64,6 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
             roundNo: "2",
             meetingCompleted: false,
             coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
-            projectLink: { [Op.ne]: null },
           },
         ],
       },
