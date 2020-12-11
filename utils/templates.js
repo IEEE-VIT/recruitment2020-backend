@@ -2,7 +2,7 @@ const forgotPasswordTempalate = (name, otp, time) => {
   return {
     body: `Hey ${name}, <br>
     Your Secret OTP for IEEE-Recruitments is: ${otp} <br>
-    OTP is valid only valid till ${time}`,
+    OTP is only valid till ${time}`,
     subject: "[IEEE-VIT] Reset Password",
   };
 };
@@ -10,11 +10,21 @@ const forgotPasswordTempalate = (name, otp, time) => {
 const round2Interview = (name, date, time, meetlink) => {
   return {
     body: `Hey ${name},
-    Congratualtaions!, Your IEEE Round 2 Interview is scheduled on ${date} at ${time}
+    Congratulations!, Your IEEE Round 2 Interview is scheduled on ${date} at ${time}
     Please make sure to join this ${meetlink} on time!
     `,
     subject: "[IEEE-VIT] Round 2 Interview",
   };
 };
 
-module.exports = { round2Interview, forgotPasswordTempalate };
+const round1Interview = (name, meetlink) => {
+  return {
+    body: `Hey ${name},
+    Your IEEE Round 1 Interview is about to start.
+    Please join this link: ${meetlink} ASAP!
+    `,
+    subject: "[IEEE-VIT] Round 1 Interview",
+  };
+};
+
+module.exports = { round1Interview, round2Interview, forgotPasswordTempalate };
