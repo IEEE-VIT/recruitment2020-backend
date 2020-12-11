@@ -21,7 +21,7 @@ router.get(
   queryFilter,
   adminController.fetchMgmtRound2Candidates
 );
-router.get("/allAdmins", queryFilter, isBoard, adminController.fetchAllAdmins);
+router.get("/allAdmins", queryFilter, adminController.fetchAllAdmins);
 router.get(
   "/allCandidates",
   queryFilter,

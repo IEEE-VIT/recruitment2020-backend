@@ -41,7 +41,11 @@ const Slot = sequelize.define("Slot", {
       notEmpty: true,
     },
     get() {
-      return this.getDataValue("timeFrom").slice(0, 5);
+      if (this.getDataValue("timeFrom")) {
+        return this.getDataValue("timeFrom").slice(0, 5);
+      }
+
+      return null;
     },
   },
   timeTo: {
@@ -51,7 +55,11 @@ const Slot = sequelize.define("Slot", {
       notEmpty: true,
     },
     get() {
-      return this.getDataValue("timeTo").slice(0, 5);
+      if (this.getDataValue("timeTo")) {
+        return this.getDataValue("timeTo").slice(0, 5);
+      }
+
+      return null;
     },
   },
   count: {

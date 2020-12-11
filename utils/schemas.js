@@ -22,13 +22,33 @@ const schemas = {
       .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
       .required(),
   }),
+  forgotPassword: Joi.object().keys({
+    email: Joi.string()
+      .email()
+      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .required(),
+  }),
+  resetPassword: Joi.object().keys({
+    emailId: Joi.string()
+      .email()
+      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .required(),
+    otp: Joi.required(),
+    password: Joi.string().min(8).required(),
+  }),
+  verifyOtp: Joi.object().keys({
+    emailId: Joi.string()
+      .email()
+      .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .required(),
+    otp: Joi.required(),
+  }),
   adminLogin: Joi.object().keys({
     email: Joi.string().email().required(),
     password: Joi.string().min(8).required(),
   }),
   adminUpdate: Joi.object().keys({
     name: Joi.string(),
-    email: Joi.string().email(),
     password: Joi.string().min(8),
     meetLink: Joi.string(),
   }),
@@ -82,6 +102,9 @@ const schemas = {
     gdpLink: Joi.string().required(),
   }),
   round2SetGda: Joi.object().keys({
+    auid: Joi.string()
+      .pattern(/^[0-9]+$/)
+      .required(),
     candidates: Joi.array().items(
       Joi.string().pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
     ),

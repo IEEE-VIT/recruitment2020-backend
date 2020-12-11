@@ -138,6 +138,9 @@ const getResults = async (req, res) => {
   await deadlineModel
     .findOne({ where: { roundNo: req.query.roundNo } })
     .then((roundDeadline) => {
+      if (roundDeadline === null) {
+        throw new Error("Deadline not yet set");
+      }
       if (
         todayDate > roundDeadline.date ||
         (todayDate == roundDeadline.date && todayTime >= roundDeadline.time)

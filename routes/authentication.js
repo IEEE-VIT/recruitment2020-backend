@@ -21,8 +21,20 @@ router.post(
   headerAuth.toRegisterAdmin,
   adminAuthController.register
 );
-router.post("/forgotPassword", userAuthController.forgotPassword);
-router.post("/resetPassword", userAuthController.resetPassword);
-router.post("/verifyOtp", userAuthController.verifyOtp);
+router.post(
+  "/forgotPassword",
+  validater(schemas.forgotPassword),
+  userAuthController.forgotPassword
+);
+router.post(
+  "/resetPassword",
+  validater(schemas.resetPassword),
+  userAuthController.resetPassword
+);
+router.post(
+  "/verifyOtp",
+  validater(schemas.verifyOtp),
+  userAuthController.verifyOtp
+);
 
 module.exports = router;
