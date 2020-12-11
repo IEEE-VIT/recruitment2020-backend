@@ -114,7 +114,7 @@ const forgotPassword = async (req, res) => {
           generatedCreds,
           userData.email
         );
-        if (!emailResult) {
+        if (!emailResult.success) {
           throw Error("Unable to send Email, hence aborted operation.");
         }
       } else if (forgotPasswordData.expiry <= moment()) {
