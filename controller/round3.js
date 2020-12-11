@@ -20,7 +20,7 @@ const candidates = async (req, res) => {
       },
     })
     .then((users) => {
-      if (users.length == 0) {
+      if (users.length === 0) {
         response(res, true, "", "No Users in round 3 till now");
       } else {
         response(res, true, users, "Users in round 3 are sent");
