@@ -32,6 +32,7 @@ router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
 router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 router.get("/meetings", adminController.getAllMeetings);
 router.get("/ongoing", adminController.fetchOnGoingMeetings);
+router.get("/projects", queryFilter, adminController.fetchProjects);
 
 router.post(
   "/exceptions",

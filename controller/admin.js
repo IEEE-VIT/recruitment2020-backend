@@ -8,6 +8,7 @@ const userModel = require("../models/userModel");
 const commentModel = require("../models/commentModel");
 const slotModel = require("../models/slotModel");
 const deadlineModel = require("../models/deadlineModel");
+const projectsModel = require("../models/projectModel");
 const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
@@ -386,6 +387,22 @@ const fetchOnGoingMeetings = async (req, res) => {
     });
 };
 
+const fetchProjects = async (req, res) => {
+  projectsModel
+    .findAll({
+      where: req.query,
+    })
+    .then((result) => {
+      if (result.length === 0) {
+        response(res, true, "", "No Projects found!");
+      } else {
+        response(res, true, result, "Projects found!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -399,4 +416,5 @@ module.exports = {
   addSlot,
   getAllMeetings,
   fetchOnGoingMeetings,
+  fetchProjects,
 };
