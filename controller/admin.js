@@ -429,6 +429,7 @@ const getAllSlots = async (req, res) => {
 const fetchGdpCandidates = async (req, res) => {
   roundModel
     .findAll({
+      attributes: ["id", "roundNo", "suid", "auid"],
       include: userModel,
       where: {
         [Op.and]: [
@@ -455,6 +456,7 @@ const fetchGdaCandidates = async (req, res) => {
   const { auid } = req.user;
   roundModel
     .findAll({
+      attributes: ["id", "roundNo", "suid", "auid"],
       include: userModel,
       where: {
         [Op.and]: [
@@ -482,6 +484,8 @@ const fetchMyTechDesignMeetings = async (req, res) => {
   const { auid } = req.user;
   roundModel
     .findAll({
+      attributes: ["id", "roundNo", "suid", "auid"],
+      include: userModel,
       where: {
         [Op.and]: [
           req.query,
