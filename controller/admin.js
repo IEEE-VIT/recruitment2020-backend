@@ -403,6 +403,29 @@ const fetchProjects = async (req, res) => {
       response(res, false, "", err.toString());
     });
 };
+
+const getAllSlots = async (req, res) => {
+  await slotModel
+    .findAll({
+      where: req.query,
+      order: [
+        ["date", "ASC"],
+        ["timeFrom", "ASC"],
+      ],
+    })
+    .then((slots) => {
+      if (slots == "") {
+        response(res, true, slots, "No such Slots available");
+      } else {
+        response(res, true, slots, "All Slots accordlingly sent");
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to getAllSlots due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -417,4 +440,5 @@ module.exports = {
   getAllMeetings,
   fetchOnGoingMeetings,
   fetchProjects,
+  getAllSlots,
 };

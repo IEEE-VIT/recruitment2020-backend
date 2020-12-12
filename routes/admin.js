@@ -33,6 +33,7 @@ router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 router.get("/meetings", adminController.getAllMeetings);
 router.get("/ongoing", adminController.fetchOnGoingMeetings);
 router.get("/projects", queryFilter, adminController.fetchProjects);
+router.get("/allslots", queryFilter, adminController.getAllSlots);
 
 router.post(
   "/exceptions",
