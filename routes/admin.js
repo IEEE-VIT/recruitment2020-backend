@@ -22,12 +22,7 @@ router.get(
   adminController.fetchMgmtRound2Candidates
 );
 router.get("/allAdmins", queryFilter, adminController.fetchAllAdmins);
-router.get(
-  "/allCandidates",
-  queryFilter,
-  isBoard,
-  adminController.fetchAllUsers
-);
+router.get("/allCandidates", queryFilter, adminController.fetchAllUsers);
 router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
 router.get("/exceptions", queryFilter, adminController.fetchExceptions);
 router.get("/meetings", adminController.getAllMeetings);
