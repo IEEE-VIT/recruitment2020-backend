@@ -426,6 +426,86 @@ const getAllSlots = async (req, res) => {
       response(res, false, "", err.toString());
     });
 };
+const fetchGdpCandidates = async (req, res) => {
+  roundModel
+    .findAll({
+      attributes: ["id", "roundNo", "suid", "auid"],
+      include: userModel,
+      where: {
+        [Op.and]: [
+          req.query,
+          {
+            meetingCompleted: false,
+            coreDomain: constants.Mgmt,
+            roundNo: "2",
+          },
+        ],
+      },
+    })
+    .then((result) => {
+      if (result.length === 0) {
+        response(res, true, "", "No candidates found!");
+      } else {
+        response(res, true, result, "Candidates found!");
+      }
+    })
+    .catch((err) => response(res, false, "", err.toString()));
+};
+
+const fetchGdaCandidates = async (req, res) => {
+  const { auid } = req.user;
+  roundModel
+    .findAll({
+      attributes: ["id", "roundNo", "suid", "auid"],
+      include: userModel,
+      where: {
+        [Op.and]: [
+          req.query,
+          {
+            meetingCompleted: false,
+            coreDomain: constants.Mgmt,
+            roundNo: "2",
+            auid,
+          },
+        ],
+      },
+    })
+    .then((results) => {
+      if (results.length === 0) {
+        response(res, true, "", "No Meetings found!");
+      } else {
+        response(res, true, results, "Meetings found!");
+      }
+    })
+    .catch((err) => response(res, false, "", err.toString()));
+};
+
+const fetchMyTechDesignMeetings = async (req, res) => {
+  const { auid } = req.user;
+  roundModel
+    .findAll({
+      attributes: ["id", "roundNo", "suid", "auid"],
+      include: userModel,
+      where: {
+        [Op.and]: [
+          req.query,
+          {
+            auid,
+            meetingCompleted: false,
+            coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
+          },
+        ],
+      },
+    })
+    .then((results) => {
+      if (results.length === 0) {
+        response(res, true, "", "No meetings found!");
+      } else {
+        response(res, true, results, "Meetings found!");
+      }
+    })
+    .catch((err) => response(res, false, "", err.toString()));
+};
 
 module.exports = {
   fetchAllUsers,
@@ -433,6 +513,9 @@ module.exports = {
   updateAdmin,
   fetchTechDsnRound2Candidates,
   fetchMgmtRound2Candidates,
+  fetchGdpCandidates,
+  fetchGdaCandidates,
+  fetchMyTechDesignMeetings,
   fetchAllAdmins,
   fetchExceptions,
   resolveExceptions,
