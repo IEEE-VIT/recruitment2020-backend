@@ -43,4 +43,6 @@ EMAIL_TOKEN=
 
 ## Postman Docs
 
-[Click Here](https://documenter.getpostman.com/view/11431136/TVmMgd2J)
+[General Docs](https://documenter.getpostman.com/view/11431136/TVmMgd2J)
+
+[Admin API Revised Docs](https://documenter.getpostman.com/view/11431136/TVsoFUzo)
