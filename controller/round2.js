@@ -162,9 +162,11 @@ const fetchGda = async (req, res) => {
 };
 
 const setGdp = async (req, res) => {
+  const { auid } = req.user;
   slotModel
     .update(
       {
+        auid,
         gdpLink: req.body.gdpLink,
       },
       {
@@ -328,9 +330,10 @@ const verifyslotTime = async (req, res) => {
 const fetchOccupiedMgmtSlots = async (req, res) => {
   slotModel
     .findAll({
+      include: adminModel,
       where: {
         mgmt: true,
-        moderatorId: { [Op.ne]: null },
+        auid: { [Op.ne]: null },
       },
     })
     .then((results) => {
@@ -350,7 +353,7 @@ const fetchUnoccupiedMgmtSlots = async (req, res) => {
     .findAll({
       where: {
         mgmt: true,
-        moderatorId: { [Op.is]: null },
+        auid: { [Op.is]: null },
       },
     })
     .then((results) => {

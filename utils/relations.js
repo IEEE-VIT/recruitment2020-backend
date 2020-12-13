@@ -22,6 +22,7 @@ const relations = () => {
   round.belongsTo(comment, { foreignKey: "cuid" });
   questionModel.hasMany(answerModel, { foreignKey: "quid" });
   answerModel.belongsTo(questionModel, { foreignKey: "quid" });
+  slot.belongsTo(admin, { foreignKey: "auid" });
   return sequelize;
 };
 

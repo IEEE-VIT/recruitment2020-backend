@@ -485,7 +485,7 @@ const fetchMyTechDesignMeetings = async (req, res) => {
   roundModel
     .findAll({
       attributes: ["id", "roundNo", "suid", "auid"],
-      include: userModel,
+      include: [userModel, slotModel],
       where: {
         [Op.and]: [
           req.query,
@@ -510,7 +510,7 @@ const fetchMyTechDesignMeetings = async (req, res) => {
 const fetchOnGoingGda = async (req, res) => {
   roundModel
     .findAll({
-      include: [adminModel, slotModel],
+      include: [adminModel, { model: slotModel, include: adminModel }],
       attributes: [
         [Sequelize.fn("DISTINCT", Sequelize.col("Round.auid")), "Round.auid"],
       ].concat(Object.keys(roundModel.rawAttributes)),

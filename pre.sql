@@ -1,6 +1,6 @@
-INSERT INTO public."Slots" (suid, "roundNo", "moderatorId", date, "timeFrom", "timeTo", count, "gdpLink", "createdAt", "updatedAt") VALUES (3, '2', null, '2020-12-27', '21:00:00', '23:00:00', 0, null, '2020-12-11 08:29:33.908390', '2020-12-11 08:29:33.908390');
-INSERT INTO public."Slots" (suid, "roundNo", "moderatorId", date, "timeFrom", "timeTo", count, "gdpLink", "createdAt", "updatedAt") VALUES (2, '1', null, '2020-12-26', '08:00:00', '09:00:00', 4, null, '2020-12-11 08:29:32.544996', '2020-12-11 18:32:13.495000');
-INSERT INTO public."Slots" (suid, "roundNo", "moderatorId", date, "timeFrom", "timeTo", count, "gdpLink", "createdAt", "updatedAt") VALUES (1, '1', null, '2020-12-25', '08:00:00', '09:00:00', 3, null, '2020-12-11 08:29:31.165508', '2020-12-11 18:40:20.629000');
+INSERT INTO public."Slots" (suid, "roundNo", "auid", date, "timeFrom", "timeTo", count, "gdpLink", "createdAt", "updatedAt") VALUES (3, '2', null, '2020-12-27', '21:00:00', '23:00:00', 0, null, '2020-12-11 08:29:33.908390', '2020-12-11 08:29:33.908390');
+INSERT INTO public."Slots" (suid, "roundNo", "auid", date, "timeFrom", "timeTo", count, "gdpLink", "createdAt", "updatedAt") VALUES (2, '1', null, '2020-12-26', '08:00:00', '09:00:00', 4, null, '2020-12-11 08:29:32.544996', '2020-12-11 18:32:13.495000');
+INSERT INTO public."Slots" (suid, "roundNo", "auid", date, "timeFrom", "timeTo", count, "gdpLink", "createdAt", "updatedAt") VALUES (1, '1', null, '2020-12-25', '08:00:00', '09:00:00', 3, null, '2020-12-11 08:29:31.165508', '2020-12-11 18:40:20.629000');
 
 INSERT INTO public."Questions" (quid, question, mandatory, "createdAt", "updatedAt") VALUES (1, 'Are you happy?', true, '2020-12-11 08:29:35.267098', '2020-12-11 08:29:35.267098');
 INSERT INTO public."Questions" (quid, question, mandatory, "createdAt", "updatedAt") VALUES (2, 'Are you sad?', true, '2020-12-11 08:29:36.644361', '2020-12-11 08:29:36.644361');

@@ -25,7 +25,7 @@ const Slot = sequelize.define("Slot", {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  moderatorId: {
+  auid: {
     type: DataTypes.INTEGER,
   },
   date: {
