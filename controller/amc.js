@@ -118,6 +118,7 @@ const round1Amc = async (req, res) => {
           meetingCompleted: true,
           status,
           cuid: commentObj.cuid,
+          auid: req.user.auid,
         },
         { where: { regNo, roundNo: "1" }, transaction: chain }
       );

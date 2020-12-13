@@ -5,6 +5,7 @@ const adminModel = require("../models/adminModel");
 const answerModel = require("../models/answerModel");
 const questionsModel = require("../models/questionModel");
 const projectsModel = require("../models/projectModel");
+const commentsModel = require("../models/commentModel");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
@@ -35,10 +36,12 @@ const dashboard = async (req, res) => {
       },
       user: {},
     };
-    const userData = await userModel.findOne({ where: { regNo } });
+    const userData = await userModel.findOne({
+      where: { regNo },
+    });
     resultData.user = userData;
     const roundModelData = await roundModel.findAll({
-      include: [slotModel, userModel, adminModel, projectsModel],
+      include: slotModel,
       order: ["roundNo"],
       where: { regNo },
     });
@@ -100,9 +103,12 @@ const amcFetch = async (req, res) => {
       attributes: ["answer"],
       where: { regNo },
     });
-    const userData = await userModel.findOne({ where: { regNo } });
+    const userData = await userModel.findOne({
+      include: projectsModel,
+      where: { regNo },
+    });
     const roundModelData = await roundModel.findAll({
-      include: [adminModel, slotModel],
+      include: [slotModel, commentsModel, adminModel],
       where: { regNo },
     });
     resultData.user = userData;
