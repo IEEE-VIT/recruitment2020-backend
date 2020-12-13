@@ -4,6 +4,7 @@ const slotModel = require("../models/slotModel");
 const adminModel = require("../models/adminModel");
 const answerModel = require("../models/answerModel");
 const questionsModel = require("../models/questionModel");
+const projectsModel = require("../models/projectModel");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 
@@ -37,7 +38,7 @@ const dashboard = async (req, res) => {
     const userData = await userModel.findOne({ where: { regNo } });
     resultData.user = userData;
     const roundModelData = await roundModel.findAll({
-      include: slotModel,
+      include: [slotModel, userModel, adminModel, projectsModel],
       order: ["roundNo"],
       where: { regNo },
     });
