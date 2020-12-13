@@ -11,6 +11,7 @@ const db = require("../utils/db");
 const response = require("../utils/genericResponse");
 const constants = require("../utils/constants");
 const logger = require("../configs/winston");
+const { round1MaxCandidatesPerSlot } = require("../utils/constants");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -70,6 +71,55 @@ const getSlots = async (req, res) => {
       ],
     })
     .then((slots) => {
+      if (slots == "") {
+        response(res, true, "", "No Valid Slot available");
+      } else {
+        response(res, true, slots, "Slots Sent");
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to getSlots due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
+const getAllRound1Slots = async (req, res) => {
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
+
+  slotModel
+    .findAll({
+      where: {
+        [Op.or]: [
+          {
+            roundNo: "1",
+            date: { [Op.gt]: todayDate },
+          },
+          {
+            roundNo: "1",
+            date: todayDate,
+            timeFrom: { [Op.gte]: todayTime },
+          },
+        ],
+      },
+      order: [
+        ["date", "ASC"],
+        ["timeFrom", "ASC"],
+      ],
+    })
+    .then((slots) => {
+      const newSlots = slots;
+
+      Object.keys(newSlots).forEach((slot) => {
+        newSlots[slot] = newSlots[slot].toJSON();
+        const currentSlot = newSlots[slot];
+        if (currentSlot.count >= round1MaxCandidatesPerSlot) {
+          currentSlot.filled = true;
+        } else {
+          currentSlot.filled = false;
+        }
+      });
+
       if (slots == "") {
         response(res, true, "", "No Valid Slot available");
       } else {
@@ -202,6 +252,7 @@ const verifyslotTime = async (req, res) => {
 module.exports = {
   getQuestions,
   getSlots,
+  getAllRound1Slots,
   userForm,
   verifyslotTime,
 };
