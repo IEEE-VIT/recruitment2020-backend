@@ -219,14 +219,18 @@ const setGda = async (req, res) => {
 };
 
 const selectR2TechDsnCandidate = async (req, res) => {
-  const { regNo, suid, coreDomain } = req.body;
+  const { regNo, suid } = req.body;
   const { auid } = req.user;
 
   try {
     await db.transaction(async (chain) => {
       const roundModelDetails = await roundModel.findOne({
         include: [userModel, slotModel],
-        where: { regNo, roundNo: "2", coreDomain },
+        where: {
+          regNo,
+          roundNo: "2",
+          coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
+        },
       });
       if (roundModelDetails.length === 0) {
         throw Error("No such candidate found!");
@@ -240,7 +244,7 @@ const selectR2TechDsnCandidate = async (req, res) => {
           where: {
             regNo,
             roundNo: "2",
-            coreDomain,
+            coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
           },
           transaction: chain,
         }
@@ -321,11 +325,53 @@ const verifyslotTime = async (req, res) => {
     });
 };
 
+const fetchOccupiedMgmtSlots = async (req, res) => {
+  slotModel
+    .findAll({
+      where: {
+        mgmt: true,
+        moderatorId: { [Op.ne]: null },
+      },
+    })
+    .then((results) => {
+      if (results.length === 0) {
+        response(res, true, "", "No slots found!");
+      } else {
+        response(res, true, results, "Slots found!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
+const fetchUnoccupiedMgmtSlots = async (req, res) => {
+  slotModel
+    .findAll({
+      where: {
+        mgmt: true,
+        moderatorId: { [Op.is]: null },
+      },
+    })
+    .then((results) => {
+      if (results.length === 0) {
+        response(res, true, "", "No slots found!");
+      } else {
+        response(res, true, results, "Slots found!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   setGdp,
   setGda,
   getSlots,
   selectSlot,
+  fetchOccupiedMgmtSlots,
+  fetchUnoccupiedMgmtSlots,
   fetchGda,
   fetchGdp,
   selectR2TechDsnCandidate,

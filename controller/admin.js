@@ -453,7 +453,7 @@ const fetchGdpCandidates = async (req, res) => {
 };
 
 const fetchGdaCandidates = async (req, res) => {
-  const { auid } = req.user;
+  const { suid } = req.query;
   roundModel
     .findAll({
       attributes: ["id", "roundNo", "suid", "auid"],
@@ -465,7 +465,7 @@ const fetchGdaCandidates = async (req, res) => {
             meetingCompleted: false,
             coreDomain: constants.Mgmt,
             roundNo: "2",
-            auid,
+            suid,
           },
         ],
       },
@@ -507,6 +507,37 @@ const fetchMyTechDesignMeetings = async (req, res) => {
     .catch((err) => response(res, false, "", err.toString()));
 };
 
+const fetchOnGoingGda = async (req, res) => {
+  roundModel
+    .findAll({
+      include: [adminModel, slotModel],
+      attributes: [
+        [Sequelize.fn("DISTINCT", Sequelize.col("Round.auid")), "Round.auid"],
+      ].concat(Object.keys(roundModel.rawAttributes)),
+      where: {
+        [Op.and]: [
+          {
+            meetingCompleted: false,
+            roundNo: "2",
+            auid: { [Op.ne]: null },
+            coreDomain: constants.Mgmt,
+          },
+          req.query,
+        ],
+      },
+    })
+    .then((data) => {
+      if (data.length === 0) {
+        response(res, true, false, "Unable to find any ongoing meetings");
+      } else {
+        response(res, true, data, "Meetings Found!");
+      }
+    })
+    .catch((err) => {
+      response(res, false, false, err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -525,4 +556,5 @@ module.exports = {
   fetchOnGoingMeetings,
   fetchProjects,
   getAllSlots,
+  fetchOnGoingGda,
 };

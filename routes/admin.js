@@ -35,6 +35,15 @@ router.get(
   "/r2/nonmgmt/fetchMeetings",
   adminController.fetchMyTechDesignMeetings
 );
+router.get(
+  "/r2/mgmt/fetchUnoccupiedMgmtGdpSlots",
+  round2Controller.fetchUnoccupiedMgmtSlots
+);
+router.get(
+  "/r2/mgmt/fetchOccupiedMgmtGdpSlots",
+  round2Controller.fetchOccupiedMgmtSlots
+);
+router.get("/r2/mgmt/fetchOnGoingGda", adminController.fetchOnGoingGda);
 
 router.post(
   "/exceptions",
