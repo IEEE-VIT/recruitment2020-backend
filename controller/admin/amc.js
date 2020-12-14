@@ -1,13 +1,16 @@
 /* eslint-disable eqeqeq */
-const slotModel = require("../models/slotModel");
-const roundModel = require("../models/roundModel");
-const userModel = require("../models/userModel");
-const commentsModel = require("../models/commentModel");
-const projectsModel = require("../models/projectModel");
-const response = require("../utils/genericResponse");
-const db = require("../utils/db");
-const constants = require("../utils/constants");
-const logger = require("../configs/winston");
+const slotModel = require("../../models/slotModel");
+const roundModel = require("../../models/roundModel");
+const userModel = require("../../models/userModel");
+const commentsModel = require("../../models/commentModel");
+const projectsModel = require("../../models/projectModel");
+const answerModel = require("../../models/answerModel");
+const questionsModel = require("../../models/questionModel");
+const adminModel = require("../../models/adminModel");
+const response = require("../../utils/genericResponse");
+const db = require("../../utils/db");
+const constants = require("../../utils/constants");
+const logger = require("../../configs/winston");
 
 const fetchProjects = async (req, res) => {
   projectsModel
@@ -335,6 +338,56 @@ const postException = async (req, res) => {
     response(res, false, "", err.toString());
   }
 };
+const amcFetch = async (req, res) => {
+  const { regNo } = req.query;
+  try {
+    const round2Data = [];
+    const resultData = {
+      user: {},
+      round0Data: {},
+      round1Data: {},
+      round2Data: {},
+      round3Data: {},
+    };
+    const answerData = await answerModel.findAll({
+      include: [{ model: questionsModel, attributes: ["question"] }],
+      attributes: ["answer"],
+      where: { regNo },
+    });
+    const userData = await userModel.findOne({
+      include: projectsModel,
+      where: { regNo },
+    });
+    const roundModelData = await roundModel.findAll({
+      include: [slotModel, commentsModel, adminModel],
+      where: { regNo },
+    });
+    resultData.user = userData;
+    resultData.round0Data = answerData;
+    roundModelData.map((roundData) => {
+      switch (roundData.roundNo) {
+        case "0":
+          break;
+        case "1":
+          resultData.round1Data = roundData;
+          break;
+        case "2":
+          round2Data.push(roundData);
+          break;
+        case "3":
+          resultData.round3Data = roundData;
+          break;
+        default:
+          break;
+      }
+      return roundData;
+    });
+    resultData.round2Data = round2Data;
+    response(res, true, resultData, "User data found!");
+  } catch (error) {
+    response(res, false, "", error.toString());
+  }
+};
 
 module.exports = {
   meetingCandidateHistory,
@@ -344,4 +397,5 @@ module.exports = {
   round3Amc,
   fetchProjects,
   postException,
+  amcFetch,
 };

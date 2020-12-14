@@ -1,16 +1,14 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
 const moment = require("moment-timezone");
-const slotModel = require("../models/slotModel");
-const roundModel = require("../models/roundModel");
-const userModel = require("../models/userModel");
-const adminModel = require("../models/adminModel");
-const db = require("../utils/db");
-const response = require("../utils/genericResponse");
-const constants = require("../utils/constants");
-const emailer = require("../utils/emailer");
-const templates = require("../utils/templates");
-const logger = require("../configs/winston");
+const slotModel = require("../../models/slotModel");
+const roundModel = require("../../models/roundModel");
+const userModel = require("../../models/userModel");
+const adminModel = require("../../models/adminModel");
+const db = require("../../utils/db");
+const response = require("../../utils/genericResponse");
+const constants = require("../../utils/constants");
+const logger = require("../../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
 
@@ -161,130 +159,6 @@ const fetchGda = async (req, res) => {
     });
 };
 
-const setGdp = async (req, res) => {
-  const { auid } = req.user;
-  slotModel
-    .update(
-      {
-        auid,
-        gdpLink: req.body.gdpLink,
-      },
-      {
-        where: {
-          suid: req.body.suid,
-        },
-      }
-    )
-    .then((data) => {
-      if (data > 0) {
-        response(res, true, "", "GDP Updated Successfully!");
-      } else {
-        response(res, true, "", "Error updating GDP!");
-      }
-    })
-    .catch((err) => {
-      logger.error(`Failure to setGdp due to ${err}`);
-      response(res, false, "", err.toString());
-    });
-};
-
-const setGda = async (req, res) => {
-  const { candidates, auid } = req.body;
-
-  try {
-    await db.transaction(async (chain) => {
-      for (let i = 0; i < candidates.length; i += 1) {
-        // eslint-disable-next-line no-await-in-loop
-        const roundModelUpdate = await roundModel.update(
-          { auid },
-          {
-            where: {
-              roundNo: "2",
-              coreDomain: constants.Mgmt,
-              regNo: candidates[i],
-            },
-            transaction: chain,
-          }
-        );
-        if (roundModelUpdate == 0) {
-          throw Error(
-            `Unable to update gda for the candidate ${candidates[i]}`
-          );
-        }
-      }
-      response(res, true, "", "GDA Successfully set for Candidates!");
-    });
-  } catch (err) {
-    logger.error(`Failure to setGda due to ${err}`);
-    response(res, false, "", err.toString());
-  }
-};
-
-const selectR2TechDsnCandidate = async (req, res) => {
-  const { regNo, suid } = req.body;
-  const { auid } = req.user;
-
-  try {
-    await db.transaction(async (chain) => {
-      const roundModelDetails = await roundModel.findOne({
-        include: [userModel, slotModel],
-        where: {
-          regNo,
-          roundNo: "2",
-          coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
-        },
-      });
-      if (roundModelDetails.length === 0) {
-        throw Error("No such candidate found!");
-      }
-      const roundUpdate = await roundModel.update(
-        {
-          auid,
-          suid,
-        },
-        {
-          where: {
-            regNo,
-            roundNo: "2",
-            coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
-          },
-          transaction: chain,
-        }
-      );
-      if (roundUpdate == 0) {
-        throw Error("Unable to update the candidate with the data");
-      }
-      const admin = await adminModel.findOne({ where: auid });
-      if (admin.length == 0) {
-        throw Error("No admin found with such auid");
-      }
-      const slotDetails = await slotModel.findOne({ where: { suid } });
-      if (slotDetails.length === 0) {
-        throw Error("Unable to find such slots ");
-      }
-      const userDetails = roundModelDetails.User;
-      const candidateEmailId = [userDetails.email];
-      const template = templates.round2Interview(
-        userDetails.name,
-        slotDetails.date,
-        slotDetails.timeFrom,
-        admin.meetLink
-      );
-      const email = await emailer(template, candidateEmailId);
-      console.log(email);
-      if (!email.success) {
-        throw Error(
-          `Unable to send the email to the candidate because: ${email.error}`
-        );
-      }
-      response(res, true, "", "Candidate Intrview Email Sent!");
-    });
-  } catch (err) {
-    logger.error(`Failure to selectR2TechDsnCandidate due to ${err}`);
-    response(res, false, "", err.toString());
-  }
-};
-
 const verifyslotTime = async (req, res) => {
   roundModel
     .findOne({
@@ -327,56 +201,10 @@ const verifyslotTime = async (req, res) => {
     });
 };
 
-const fetchOccupiedMgmtSlots = async (req, res) => {
-  slotModel
-    .findAll({
-      include: adminModel,
-      where: {
-        mgmt: true,
-        auid: { [Op.ne]: null },
-      },
-    })
-    .then((results) => {
-      if (results.length === 0) {
-        response(res, true, "", "No slots found!");
-      } else {
-        response(res, true, results, "Slots found!");
-      }
-    })
-    .catch((err) => {
-      response(res, false, "", err.toString());
-    });
-};
-
-const fetchUnoccupiedMgmtSlots = async (req, res) => {
-  slotModel
-    .findAll({
-      where: {
-        mgmt: true,
-        auid: { [Op.is]: null },
-      },
-    })
-    .then((results) => {
-      if (results.length === 0) {
-        response(res, true, "", "No slots found!");
-      } else {
-        response(res, true, results, "Slots found!");
-      }
-    })
-    .catch((err) => {
-      response(res, false, "", err.toString());
-    });
-};
-
 module.exports = {
-  setGdp,
-  setGda,
   getSlots,
   selectSlot,
-  fetchOccupiedMgmtSlots,
-  fetchUnoccupiedMgmtSlots,
   fetchGda,
   fetchGdp,
-  selectR2TechDsnCandidate,
   verifyslotTime,
 };

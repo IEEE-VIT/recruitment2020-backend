@@ -1,13 +1,13 @@
 /* eslint-disable eqeqeq */
 const moment = require("moment-timezone");
-const authMiddlewaare = require("../middleware/authentication");
-const userModel = require("../models/userModel");
-const forgotPasswordModel = require("../models/forgotPasswordModel");
-const emailer = require("../utils/emailer");
-const db = require("../utils/db");
-const response = require("../utils/genericResponse");
-const templates = require("../utils/templates");
-const logger = require("../configs/winston");
+const authMiddlewaare = require("../../middleware/authentication");
+const userModel = require("../../models/userModel");
+const forgotPasswordModel = require("../../models/forgotPasswordModel");
+const emailer = require("../../utils/emailer");
+const db = require("../../utils/db");
+const response = require("../../utils/genericResponse");
+const templates = require("../../utils/templates");
+const logger = require("../../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
 

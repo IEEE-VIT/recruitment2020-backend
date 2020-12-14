@@ -1,7 +1,7 @@
-const authMiddlewaare = require("../middleware/authentication");
-const adminModel = require("../models/adminModel");
-const response = require("../utils/genericResponse");
-const logger = require("../configs/winston");
+const authMiddlewaare = require("../../middleware/authentication");
+const adminModel = require("../../models/adminModel");
+const response = require("../../utils/genericResponse");
+const logger = require("../../configs/winston");
 
 const login = async (req, res) => {
   const { email, password } = req.body;

@@ -2,16 +2,16 @@
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 const moment = require("moment-timezone");
-const slotModel = require("../models/slotModel");
-const questionModel = require("../models/questionModel");
-const answerModel = require("../models/answerModel");
-const roundModel = require("../models/roundModel");
-const userModel = require("../models/userModel");
-const db = require("../utils/db");
-const response = require("../utils/genericResponse");
-const constants = require("../utils/constants");
-const logger = require("../configs/winston");
-const { round1MaxCandidatesPerSlot } = require("../utils/constants");
+const slotModel = require("../../models/slotModel");
+const questionModel = require("../../models/questionModel");
+const answerModel = require("../../models/answerModel");
+const roundModel = require("../../models/roundModel");
+const userModel = require("../../models/userModel");
+const db = require("../../utils/db");
+const response = require("../../utils/genericResponse");
+const constants = require("../../utils/constants");
+const logger = require("../../configs/winston");
+const { round1MaxCandidatesPerSlot } = require("../../utils/constants");
 
 moment.tz.setDefault("Asia/Calcutta");
 

@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const round2Controller = require("../controller/round2");
+const round2Controller = require("../controller/user/round2");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 

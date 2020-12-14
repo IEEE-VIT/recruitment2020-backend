@@ -1,92 +1,14 @@
 /* eslint-disable eqeqeq */
 const moment = require("moment-timezone");
-const userModel = require("../models/userModel");
-const deadlineModel = require("../models/deadlineModel");
-const roundModel = require("../models/roundModel");
-const response = require("../utils/genericResponse");
-const logger = require("../configs/winston");
+const userModel = require("../../models/userModel");
+const deadlineModel = require("../../models/deadlineModel");
+const roundModel = require("../../models/roundModel");
+const slotModel = require("../../models/slotModel");
+const response = require("../../utils/genericResponse");
+const constants = require("../../utils/constants");
+const logger = require("../../configs/winston");
 
 moment.tz.setDefault("Asia/Calcutta");
-
-const createUser = async (req, res) => {
-  userModel
-    .create({
-      regNo: req.body.regNo,
-      name: req.body.name,
-      phoneNo: req.body.phoneNo,
-      email: req.body.email,
-      password: req.body.password,
-    })
-    .then((user) => {
-      response(res, true, user, "User created successfully");
-    })
-    .catch((err) => {
-      logger.error(`Failure to createUser due to ${err}`);
-      response(res, false, "", err.toString());
-    });
-};
-
-const readUser = async (req, res) => {
-  userModel
-    .findOne({
-      where: { regNo: req.query.regNo },
-      attributes: { exclude: ["password"] },
-    })
-    .then((user) => {
-      if (user === null) {
-        response(res, true, user, "User doesn't exists");
-      } else {
-        response(res, true, user, "User exists");
-      }
-    })
-    .catch((err) => {
-      logger.error(`Failure to readUser due to ${err}`);
-      response(res, false, "", err.toString());
-    });
-};
-
-const updateUser = async (req, res) => {
-  userModel
-    .update(
-      {
-        regNo: req.body.regNo,
-        name: req.body.name,
-        phoneNo: req.body.phoneNo,
-        email: req.body.email,
-        password: req.body.password,
-        coreDomain: req.body.coreDomain,
-        specificDomains: req.body.specificDomains,
-      },
-      { where: { regNo: req.body.regNo } }
-    )
-    .then((result) => {
-      if (result == 0) {
-        response(res, true, result, "User not found");
-      } else {
-        response(res, true, result, "User updated successfully");
-      }
-    })
-    .catch((err) => {
-      logger.error(`Failure to updateUser due to ${err}`);
-      response(res, false, "", err.toString());
-    });
-};
-
-const deleteUser = async (req, res) => {
-  userModel
-    .destroy({ where: { regNo: req.body.regNo } })
-    .then((user) => {
-      if (user == 0) {
-        response(res, true, user, "User not found");
-      } else {
-        response(res, true, user, "User deleted successfully");
-      }
-    })
-    .catch((err) => {
-      logger.error(`Failure to deleteUser due to ${err}`);
-      response(res, false, "", err.toString());
-    });
-};
 
 const userStatus = async (req, res) => {
   roundModel
@@ -183,11 +105,86 @@ const getResults = async (req, res) => {
     });
 };
 
+const dashboard = async (req, res) => {
+  const { regNo } = req.user;
+  try {
+    const qualifiedRounds = [];
+    const slots = {};
+    const domainAdder = (roundData) => {
+      if (
+        roundData.status === constants.AcceptedReview &&
+        !qualifiedRounds.includes(roundData.coreDomain)
+      ) {
+        qualifiedRounds.push(roundData.domain);
+      }
+    };
+
+    const resultData = {
+      round0Status: false,
+      round1Status: constants.PendingReview,
+      round2Status: constants.PendingReview,
+      round3Status: constants.PendingReview,
+      qualifiedRounds: [],
+      slots: {
+        round1: {},
+        round2: {},
+        round3: {},
+      },
+      user: {},
+    };
+    const userData = await userModel.findOne({
+      where: { regNo },
+    });
+    resultData.user = userData;
+    const roundModelData = await roundModel.findAll({
+      include: slotModel,
+      order: ["roundNo"],
+      where: { regNo },
+    });
+    if (roundModelData.length === 0) {
+      response(res, true, resultData, "Did not submit round0 form");
+      return;
+    }
+    roundModelData.map((roundData) => {
+      switch (roundData.roundNo) {
+        case "0":
+          resultData.round0Status = true;
+          domainAdder(roundData);
+          slots.round1 = roundData.Slot == null ? false : roundData.Slot;
+          break;
+        case "1":
+          resultData.round0Status = true;
+          resultData.round1Status = roundData.status;
+          domainAdder(roundData);
+          slots.round1 = roundData.Slot == null ? false : roundData.Slot;
+          break;
+        case "2":
+          resultData.round0Status = true;
+          resultData.round2Status = roundData.status;
+          domainAdder(roundData);
+          slots.round2 = roundData.Slot == null ? false : roundData.Slot;
+          break;
+        case "3":
+          resultData.round0Status = true;
+          resultData.round3Status = roundData.status;
+          domainAdder(roundData);
+          slots.round3 = roundData.Slot == null ? false : roundData.Slot;
+          break;
+        default:
+          break;
+      }
+      return roundData;
+    });
+    resultData.slots = slots;
+    resultData.qualifiedRounds = qualifiedRounds;
+    response(res, true, resultData, "User details");
+  } catch (error) {
+    response(res, false, "", error.toString());
+  }
+};
+
 module.exports = {
-  createUser,
-  updateUser,
-  readUser,
-  deleteUser,
   userStatus,
   getResults,
+  dashboard,
 };

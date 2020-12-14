@@ -1,10 +1,10 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
-const roundModel = require("../models/roundModel");
-const userModel = require("../models/userModel");
-const commentModel = require("../models/commentModel");
-const response = require("../utils/genericResponse");
-const logger = require("../configs/winston");
+const roundModel = require("../../models/roundModel");
+const userModel = require("../../models/userModel");
+const commentModel = require("../../models/commentModel");
+const response = require("../../utils/genericResponse");
+const logger = require("../../configs/winston");
 
 const candidates = async (req, res) => {
   await roundModel
