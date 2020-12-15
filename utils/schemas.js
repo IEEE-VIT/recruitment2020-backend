@@ -49,9 +49,10 @@ const schemas = {
       .pattern(/^[0-9]+$/)
       .required(),
     name: Joi.string().required(),
-    questions: Joi.array()
-      .items({ quid: Joi.string().pattern(/^[0-9]+$/), answer: Joi.string() })
-      .required(),
+    questions: Joi.array().items({
+      quid: Joi.string().pattern(/^[0-9]+$/),
+      answer: Joi.string().allow(""),
+    }),
     specificDomains: Joi.array()
       .items(
         constants.App,
