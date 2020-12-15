@@ -150,6 +150,26 @@ const userForm = async (req, res) => {
       if (slot == null) {
         throw new Error("Invalid Slot");
       }
+
+      const roundForm = await roundModel.findOne({
+        where: {
+          [Op.or]: [
+            {
+              regNo: req.user.regNo,
+              roundNo: "0",
+            },
+            {
+              regNo: req.user.regNo,
+              roundNo: "1",
+            },
+          ],
+        },
+      });
+
+      if (roundForm !== null) {
+        throw new Error("Round 0 form already filled");
+      }
+
       for (let i = 0; i < req.body.questions.length; i += 1) {
         // eslint-disable-next-line no-await-in-loop
         const alreadyAnswered = await answerModel.findOne({
@@ -249,10 +269,40 @@ const verifyslotTime = async (req, res) => {
     });
 };
 
+const filledFormBoolean = async (req, res) => {
+  roundModel
+    .findOne({
+      where: {
+        [Op.or]: [
+          {
+            regNo: req.user.regNo,
+            roundNo: "0",
+          },
+          {
+            regNo: req.user.regNo,
+            roundNo: "1",
+          },
+        ],
+      },
+    })
+    .then((roundData) => {
+      if (roundData === null) {
+        response(res, true, false, "Round0 form not filled");
+      } else {
+        response(res, true, true, "Round0 form filled");
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to filledFormBoolean due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   getQuestions,
   getSlots,
   getAllRound1Slots,
   userForm,
   verifyslotTime,
+  filledFormBoolean,
 };
