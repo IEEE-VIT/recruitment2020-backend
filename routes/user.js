@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const userController = require("../controller/user");
-const clubbedController = require("../controller/clubbed");
+const userController = require("../controller/user/user");
+const legacyUserController = require("../controller/legacy/user");
 
-router.get("/userStatus", userController.userStatus);
+router.get("/userStatus", legacyUserController.userStatus);
 router.get("/getresults", userController.getResults);
-router.get("/dashboard", clubbedController.dashboard);
+router.get("/dashboard", userController.dashboard);
 
 module.exports = router;

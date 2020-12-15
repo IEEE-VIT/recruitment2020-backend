@@ -1,8 +1,10 @@
 const router = require("express").Router();
-const round1Controller = require("../controller/round1");
-const adminController = require("../controller/admin.js");
-const round2Controller = require("../controller/round2");
-const round3Controller = require("../controller/round3");
+const adminController = require("../controller/admin/admin.js");
+const adminRound1Controller = require("../controller/admin/round1.js");
+const adminRound2NonMgmtController = require("../controller/admin/round2/r2nonmgmt.js");
+const adminRound2MgmtController = require("../controller/admin/round2/r2mgmt.js");
+const adminRound3Controller = require("../controller/admin/round3.js");
+const adminExceptionController = require("../controller/admin/exceptions");
 const queryFilter = require("../middleware/filter");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
@@ -10,63 +12,84 @@ const isBoard = require("../middleware/boardAuth");
 const headerAuth = require("../middleware/headerAuth");
 
 router.get("/", adminController.readAdmin);
-router.get("/r1/candidates", round1Controller.fetchReadyCandidates);
+router.get("/r1/candidates", adminRound1Controller.fetchReadyCandidates);
 router.get(
   "/r2/nonmgmt/candidates",
   queryFilter,
-  adminController.fetchTechDsnRound2Candidates
+  adminRound2NonMgmtController.fetchTechDsnRound2Candidates
 );
 router.get(
   "/r2/mgmt/candidates",
   queryFilter,
-  adminController.fetchMgmtRound2Candidates
+  adminRound2MgmtController.fetchMgmtRound2Candidates
 );
 router.get("/allAdmins", queryFilter, adminController.fetchAllAdmins);
 router.get("/allCandidates", queryFilter, adminController.fetchAllUsers);
-router.get("/r3/candidates", isBoard, queryFilter, round3Controller.candidates);
-router.get("/exceptions", queryFilter, adminController.fetchExceptions);
+router.get(
+  "/r3/candidates",
+  isBoard,
+  queryFilter,
+  adminRound3Controller.candidates
+);
+router.get(
+  "/exceptions",
+  queryFilter,
+  adminExceptionController.fetchExceptions
+);
 router.get("/meetings", adminController.getAllMeetings);
 router.get("/ongoing", adminController.fetchOnGoingMeetings);
 router.get("/projects", queryFilter, adminController.fetchProjects);
 router.get("/allslots", queryFilter, adminController.getAllSlots);
-router.get("/r2/mgmt/fetchGdaCandidates", adminController.fetchGdaCandidates);
-router.get("/r2/mgmt/fetchGdpCandidates", adminController.fetchGdpCandidates);
+router.get(
+  "/r2/mgmt/fetchGdaCandidates",
+  adminRound2MgmtController.fetchGdaCandidates
+);
+router.get(
+  "/r2/mgmt/fetchGdpCandidates",
+  adminRound2MgmtController.fetchGdpCandidates
+);
 router.get(
   "/r2/nonmgmt/fetchMeetings",
-  adminController.fetchMyTechDesignMeetings
+  adminRound2NonMgmtController.fetchMyTechDesignMeetings
 );
 router.get(
   "/r2/mgmt/fetchUnoccupiedMgmtGdpSlots",
-  round2Controller.fetchUnoccupiedMgmtSlots
+  adminRound2MgmtController.fetchUnoccupiedMgmtSlots
 );
 router.get(
   "/r2/mgmt/fetchOccupiedMgmtGdpSlots",
-  round2Controller.fetchOccupiedMgmtSlots
+  adminRound2MgmtController.fetchOccupiedMgmtSlots
 );
-router.get("/r2/mgmt/fetchOnGoingGda", adminController.fetchOnGoingGda);
+router.get(
+  "/r2/mgmt/fetchOnGoingGda",
+  adminRound2MgmtController.fetchOnGoingGda
+);
 
 router.post(
   "/exceptions",
   validater(schemas.resolveException),
-  adminController.resolveExceptions
+  adminExceptionController.resolveExceptions
 );
 router.post(
   "/mgmt/r2/gdp",
   validater(schemas.round2SetGdp),
-  round2Controller.setGdp
+  adminRound2MgmtController.setGdp
 );
 router.post(
   "/mgmt/r2/gda",
   validater(schemas.round2SetGda),
-  round2Controller.setGda
+  adminRound2MgmtController.setGda
 );
 router.post("/addslot", headerAuth.toAddSlot, adminController.addSlot);
 router.post("/setdeadline", isBoard, adminController.setDeadline);
-router.post("/r2/emailCandidate", round2Controller.selectR2TechDsnCandidate);
+router.post(
+  "/r2/emailCandidate",
+  adminRound2NonMgmtController.selectR2TechDsnCandidate
+);
 router.post(
   "/r1/candidates",
   validater(schemas.round1SelectCandidates),
-  round1Controller.selectReadyCandidates
+  adminRound1Controller.selectReadyCandidates
 );
 
 router.put("/", validater(schemas.adminUpdate), adminController.updateAdmin);

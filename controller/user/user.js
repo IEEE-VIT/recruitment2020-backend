@@ -1,13 +1,66 @@
-const roundModel = require("../models/roundModel");
-const userModel = require("../models/userModel");
-const slotModel = require("../models/slotModel");
-const adminModel = require("../models/adminModel");
-const answerModel = require("../models/answerModel");
-const questionsModel = require("../models/questionModel");
-const projectsModel = require("../models/projectModel");
-const commentsModel = require("../models/commentModel");
-const response = require("../utils/genericResponse");
-const constants = require("../utils/constants");
+/* eslint-disable eqeqeq */
+const moment = require("moment-timezone");
+const userModel = require("../../models/userModel");
+const deadlineModel = require("../../models/deadlineModel");
+const roundModel = require("../../models/roundModel");
+const slotModel = require("../../models/slotModel");
+const response = require("../../utils/genericResponse");
+const constants = require("../../utils/constants");
+const logger = require("../../configs/winston");
+
+moment.tz.setDefault("Asia/Calcutta");
+
+const getResults = async (req, res) => {
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
+
+  await deadlineModel
+    .findOne({ where: { roundNo: req.query.roundNo } })
+    .then((roundDeadline) => {
+      if (roundDeadline === null) {
+        throw new Error("Deadline not yet set");
+      }
+      if (
+        todayDate > roundDeadline.date ||
+        (todayDate == roundDeadline.date && todayTime >= roundDeadline.time)
+      ) {
+        roundModel
+          .findAll({
+            where: { roundNo: req.query.roundNo, regNo: req.user.regNo },
+          })
+          .then((roundData) => {
+            if (roundData == "") {
+              throw new Error("User not found in given round");
+            }
+            response(res, true, roundData, "Results are out");
+          })
+          .catch((err) => {
+            logger.error(`Failure to getResults due to ${err}`);
+            response(res, false, "", err.toString());
+          });
+      } else {
+        roundModel
+          .findAll({
+            attributes: { exclude: ["status"] },
+            where: { roundNo: req.query.roundNo, regNo: req.user.regNo },
+          })
+          .then((roundData) => {
+            if (roundData == "") {
+              throw new Error("User not found in given round");
+            }
+            response(res, true, roundData, "Results are not out yet");
+          })
+          .catch((err) => {
+            logger.error(`Failure to getResults due to ${err}`);
+            response(res, false, "", err.toString());
+          });
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to getResults due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
 
 const dashboard = async (req, res) => {
   const { regNo } = req.user;
@@ -87,55 +140,7 @@ const dashboard = async (req, res) => {
   }
 };
 
-const amcFetch = async (req, res) => {
-  const { regNo } = req.query;
-  try {
-    const round2Data = [];
-    const resultData = {
-      user: {},
-      round0Data: {},
-      round1Data: {},
-      round2Data: {},
-      round3Data: {},
-    };
-    const answerData = await answerModel.findAll({
-      include: [{ model: questionsModel, attributes: ["question"] }],
-      attributes: ["answer"],
-      where: { regNo },
-    });
-    const userData = await userModel.findOne({
-      include: projectsModel,
-      where: { regNo },
-    });
-    const roundModelData = await roundModel.findAll({
-      include: [slotModel, commentsModel, adminModel],
-      where: { regNo },
-    });
-    resultData.user = userData;
-    resultData.round0Data = answerData;
-    roundModelData.map((roundData) => {
-      switch (roundData.roundNo) {
-        case "0":
-          break;
-        case "1":
-          resultData.round1Data = roundData;
-          break;
-        case "2":
-          round2Data.push(roundData);
-          break;
-        case "3":
-          resultData.round3Data = roundData;
-          break;
-        default:
-          break;
-      }
-      return roundData;
-    });
-    resultData.round2Data = round2Data;
-    response(res, true, resultData, "User data found!");
-  } catch (error) {
-    response(res, false, "", error.toString());
-  }
+module.exports = {
+  getResults,
+  dashboard,
 };
-
-module.exports = { dashboard, amcFetch };
