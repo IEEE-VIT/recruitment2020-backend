@@ -7,6 +7,11 @@ module.exports = {
   RejectedReview: "RR",
   ExceptionReview: "ER",
   PendingReview: "PR",
+  NoSlot: "NS",
+  Ready: "RD",
+  Missed: "MS",
+  Locked: "LD",
+  Deadline: "DD",
   ReviewTypes() {
     return [
       this.AcceptedReview,
