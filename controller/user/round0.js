@@ -12,8 +12,46 @@ const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
 const logger = require("../../configs/winston");
 const { round1MaxCandidatesPerSlot } = require("../../utils/constants");
+const { firebaseDb } = require("../../utils/firebase");
 
 moment.tz.setDefault("Asia/Calcutta");
+
+const whyIEEE = async (req, res) => {
+  const data = {
+    regNo: req.user.regNo,
+    email: req.user.email,
+    whyIEEE: req.body.answer,
+  };
+  await firebaseDb
+    .collection("prod")
+    .doc(req.user.regNo)
+    .set(data)
+    .then(() => {
+      response(res, true, true, "Question Answered");
+    })
+    .catch((err) => {
+      logger.error(`Failure to answerWhyIEEE due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
+const filledWhyIEEE = async (req, res) => {
+  await firebaseDb
+    .collection("prod")
+    .where("regNo", "==", req.user.regNo)
+    .get()
+    .then((snapshot) => {
+      if (snapshot.empty) {
+        response(res, true, false, "Question Not Yet Answered");
+      } else {
+        response(res, true, true, "Question Already Answered");
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to answerWhyIEEE due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
 
 const getQuestions = async (req, res) => {
   questionModel
@@ -305,4 +343,6 @@ module.exports = {
   userForm,
   verifyslotTime,
   filledFormBoolean,
+  whyIEEE,
+  filledWhyIEEE,
 };
