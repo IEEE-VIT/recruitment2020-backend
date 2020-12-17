@@ -2,6 +2,7 @@
 const { Op } = require("sequelize");
 const sequelize = require("sequelize");
 const moment = require("moment-timezone");
+const firebase = require("firebase-admin");
 const slotModel = require("../../models/slotModel");
 const questionModel = require("../../models/questionModel");
 const answerModel = require("../../models/answerModel");
@@ -21,6 +22,7 @@ const whyIEEE = async (req, res) => {
     regNo: req.user.regNo,
     email: req.user.email,
     whyIEEE: req.body.answer,
+    created: firebase.firestore.Timestamp.now(),
   };
   await firebaseDb
     .collection("prod")
