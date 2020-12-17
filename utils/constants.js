@@ -39,6 +39,4 @@ module.exports = {
     return [this.Mgmt];
   },
   NonMandatoryQuesions: 2,
-  round1MaxCandidatesPerSlot: 5,
-  round2MaxCandidatesPerMgmtSlot: 15,
 };

@@ -4,6 +4,7 @@ const sequelize = require("sequelize");
 const moment = require("moment-timezone");
 const firebase = require("firebase-admin");
 const slotModel = require("../../models/slotModel");
+const slotLimitModel = require("../../models/slotLimitModel");
 const questionModel = require("../../models/questionModel");
 const answerModel = require("../../models/answerModel");
 const roundModel = require("../../models/roundModel");
@@ -12,7 +13,6 @@ const db = require("../../utils/db");
 const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
 const logger = require("../../configs/winston");
-const { round1MaxCandidatesPerSlot } = require("../../utils/constants");
 const { firebaseDb } = require("../../utils/firebase");
 
 moment.tz.setDefault("Asia/Calcutta");
@@ -88,38 +88,46 @@ const getSlots = async (req, res) => {
   const todayDate = moment().format("YYYY-MM-DD");
   const todayTime = moment().format("HH:mm:ss");
 
-  slotModel
-    .findAll({
-      where: {
-        [Op.or]: [
-          {
-            count: { [Op.lt]: constants.round1MaxCandidatesPerSlot },
-            roundNo: "1",
-            date: { [Op.gt]: todayDate },
-          },
-          {
-            count: { [Op.lt]: constants.round1MaxCandidatesPerSlot },
-            roundNo: "1",
-            date: todayDate,
-            timeFrom: { [Op.gte]: todayTime },
-          },
-        ],
-      },
-      order: [
-        ["date", "ASC"],
-        ["timeFrom", "ASC"],
-      ],
-    })
-    .then((slots) => {
-      if (slots == "") {
-        response(res, true, "", "No Valid Slot available");
+  await slotLimitModel
+    .findOne({ where: { roundNo: "1" } })
+    .then((slotLimit) => {
+      if (slotLimit === null) {
+        throw new Error("Slots will be sent asap the limit is set");
       } else {
-        response(res, true, slots, "Slots Sent");
+        slotModel
+          .findAll({
+            where: {
+              [Op.or]: [
+                {
+                  count: { [Op.lt]: slotLimit.maxCandidates },
+                  roundNo: "1",
+                  date: { [Op.gt]: todayDate },
+                },
+                {
+                  count: { [Op.lt]: slotLimit.maxCandidates },
+                  roundNo: "1",
+                  date: todayDate,
+                  timeFrom: { [Op.gte]: todayTime },
+                },
+              ],
+            },
+            order: [
+              ["date", "ASC"],
+              ["timeFrom", "ASC"],
+            ],
+          })
+          .then((slots) => {
+            if (slots == "") {
+              response(res, true, "", "No Valid Slot available");
+            } else {
+              response(res, true, slots, "Slots Sent");
+            }
+          })
+          .catch((err) => {
+            logger.error(`Failure to getSlots due to ${err}`);
+            response(res, false, "", err.toString());
+          });
       }
-    })
-    .catch((err) => {
-      logger.error(`Failure to getSlots due to ${err}`);
-      response(res, false, "", err.toString());
     });
 };
 
@@ -147,13 +155,17 @@ const getAllRound1Slots = async (req, res) => {
         ["timeFrom", "ASC"],
       ],
     })
-    .then((slots) => {
+    .then(async (slots) => {
       const newSlots = slots;
+
+      const slotLimit = await slotLimitModel.findOne({
+        where: { roundNo: "1" },
+      });
 
       Object.keys(newSlots).forEach((slot) => {
         newSlots[slot] = newSlots[slot].toJSON();
         const currentSlot = newSlots[slot];
-        if (currentSlot.count >= round1MaxCandidatesPerSlot) {
+        if (currentSlot.count >= slotLimit.maxCandidates) {
           currentSlot.filled = true;
         } else {
           currentSlot.filled = false;
