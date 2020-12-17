@@ -55,6 +55,7 @@ const fetchGdpCandidates = async (req, res) => {
             meetingCompleted: false,
             coreDomain: constants.Mgmt,
             roundNo: "2",
+            auid: { [Op.is]: null },
           },
         ],
       },
