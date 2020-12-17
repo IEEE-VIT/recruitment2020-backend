@@ -13,7 +13,7 @@ admin.initializeApp({
     auth_provider_x509_cert_url: process.env.auth_provider_x509_cert_url,
     client_x509_cert_url: process.env.client_x509_cert_url,
   }),
-  databaseURL: "https://recruitments2020-rsvp.firebaseio.com",
+  databaseURL: process.env.databaseURL,
 });
 
 const firebaseDb = admin.firestore();
