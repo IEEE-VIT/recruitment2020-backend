@@ -11,9 +11,6 @@ const relations = require("./utils/relations");
 const userRoute = require("./routes/user");
 const adminRoute = require("./routes/admin");
 const amcRoute = require("./routes/amc");
-const round0Route = require("./routes/round0");
-const round1Route = require("./routes/round1");
-const round2Route = require("./routes/round2");
 const authRoute = require("./routes/authentication");
 
 const app = express();
@@ -37,9 +34,9 @@ const adminAuthMiddleware = passport.authenticate("adminStrategy", {
 });
 
 app.use("/api/user", userAuthMiddleware, userRoute);
-app.use("/api/r0", userAuthMiddleware, round0Route);
-app.use("/api/r1", userAuthMiddleware, round1Route);
-app.use("/api/r2", userAuthMiddleware, round2Route);
+// app.use("/api/r0", userAuthMiddleware, round0Route);
+// app.use("/api/r1", userAuthMiddleware, round1Route);
+// app.use("/api/r2", userAuthMiddleware, round2Route);
 app.use("/api/admin", adminAuthMiddleware, adminRoute);
 app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 
