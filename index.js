@@ -26,7 +26,8 @@ app.use(
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common", { stream: logger.stream }));
-app.use(favicon(path.join(__dirname, "public", "favicon.png")));
+app.use(express.static(path.resolve("public")));
+app.use(favicon(path.join(__dirname, "public", "images", "favicon.png")));
 
 app.use(passport.initialize());
 
@@ -47,7 +48,8 @@ app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 app.use("/api", authRoute);
 
 app.get("/", (req, res) => {
-  res.json({ success: true, status: "Runnning" });
+  res.sendFile(path.resolve("public/verified.html"));
+  // res.json({ success: true, status: "Runnning" });
 });
 
 relations()

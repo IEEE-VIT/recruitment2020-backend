@@ -62,7 +62,7 @@ const register = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     })
-    .then((user) => {
+    .then(() => {
       firebase
         .auth()
         .createUserWithEmailAndPassword(req.body.email, req.body.password)
@@ -71,7 +71,7 @@ const register = async (req, res) => {
           createdUser
             .sendEmailVerification(urlButtonAfterVerification)
             .then(() => {
-              response(res, true, user, "User Registered");
+              response(res, true, true, "User Registered");
             })
             .catch((error) => {
               res.send(error.toString());
