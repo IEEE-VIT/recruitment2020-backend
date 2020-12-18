@@ -261,4 +261,22 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { login, register, forgotPassword, resetPassword, verifyOtp };
+const verifyEmail = async (req, res) => {
+  const { oobCode } = req.query;
+  firebase
+    .auth()
+    .applyActionCode(oobCode)
+    .then((resp) => {
+      response(res, true, resp, "Verified");
+    })
+    .catch((err) => response(res, false, "", err.toString()));
+};
+
+module.exports = {
+  login,
+  register,
+  forgotPassword,
+  resetPassword,
+  verifyOtp,
+  verifyEmail,
+};
