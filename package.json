@@ -31,6 +31,7 @@
     "pg": "^8.5.0",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.5",
+    "serve-favicon": "^2.5.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {

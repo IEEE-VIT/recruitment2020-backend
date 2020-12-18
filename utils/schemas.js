@@ -19,7 +19,7 @@ const schemas = {
     password: Joi.string().min(8).required(),
     email: Joi.string()
       .email()
-      .pattern(/^[a-zA-Z1-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      // .pattern(/^[a-zA-Z1-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
       .required(),
   }),
   forgotPassword: Joi.object().keys({

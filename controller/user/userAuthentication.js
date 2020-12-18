@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 const moment = require("moment-timezone");
 const firebase = require("firebase");
+const path = require("path");
 const { verifiedUser } = require("../../middleware/verifiedmail");
 const authMiddlewaare = require("../../middleware/authentication");
 const userModel = require("../../models/userModel");
@@ -261,4 +262,23 @@ const resetPassword = async (req, res) => {
   }
 };
 
-module.exports = { login, register, forgotPassword, resetPassword, verifyOtp };
+const verifyEmail = async (req, res) => {
+  const { oobCode } = req.query;
+  firebase
+    .auth()
+    .applyActionCode(oobCode)
+    .then(() => res.sendFile(path.resolve("public/verified.html")))
+    .catch((err) => {
+      logger.error(`Failure to verifyEmail due to ${err}`);
+      res.sendFile(path.resolve("public/verificationError.html"));
+    });
+};
+
+module.exports = {
+  login,
+  register,
+  forgotPassword,
+  resetPassword,
+  verifyOtp,
+  verifyEmail,
+};
