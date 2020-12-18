@@ -1,4 +1,6 @@
 const express = require("express");
+const path = require("path");
+const favicon = require("serve-favicon");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -24,6 +26,7 @@ app.use(
 app.use(cors());
 app.use(helmet());
 app.use(morgan("common", { stream: logger.stream }));
+app.use(favicon(path.join(__dirname, "public", "favicon.png")));
 
 app.use(passport.initialize());
 

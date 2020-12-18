@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://ccs.ieeevit.org/favicon.png"
+    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0px;
+      }
+      #container {
+        background-color: black;
+        width: 100vw;
+        height: 100vh;
+        font-family: "Manrope";
+        user-select: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #container img {
+        margin-top: 5vh;
+      }
+      #main-cont {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #heading {
+        font-weight: 700;
+        text-align: left;
+        padding: 0 2vw;
+      }
+      #heading p {
+        background-image: linear-gradient(
+          90.31deg,
+          #00aaff 0.13%,
+          #aa00ff 99.88%
+        );
+        background-clip: text;
+        background-size: fit-content;
+        -webkit-background-clip: text;
+        -moz-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        -moz-text-fill-color: transparent;
+        font-size: 5rem;
+      }
+      #subtitle {
+        font-weight: 500;
+        text-align: center;
+        font-size: 1.2rem;
+        color: white;
+        margin-bottom: 2em;
+      }
+      #subtitle-text {
+        text-align: left;
+        font-size: 24px;
+        font-weight: 600;
+      }
+      #verify-button {
+        background: #0088ff;
+        border-radius: 4px;
+        padding: 10px 20px;
+        border: 1px solid #0088ff;
+        color: white;
+      }
+      #verify-button:hover {
+        cursor: pointer;
+        color: #0088ff;
+        background-color: black;
+        border: 1px solid #0088ff;
+      }
+      #footer {
+        height: 3vh;
+        width: 100%;
+        background-image: linear-gradient(
+          90.31deg,
+          #00aaff 0.13%,
+          #aa00ff 99.88%
+        );
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <a href="https://ieeevit.org" target="_blank" rel="noreferrer noopener">
+        <img
+          src="https://hacktoberfest.ieeevit.com/static/media/logoplus.9e04156c.png"
+          height="40"
+          width="83"
+          alt="logo"
+        />
+      </a>
+      <div id="main-cont">
+        <div id="heading">
+          <p>Core Committee Selections</p>
+        </div>
+        <div id="subtitle">
+          <p id="subtitle-text">
+            Your email has been verified. Log in to proceed.
+          </p>
+          <br />
+          <a href="https://ccs.ieeevit.org/"
+            ><button id="verify-button">LOG IN</button></a
+          >
+        </div>
+      </div>
+      <div id="footer" />
+    </div>
+  </body>
+</html>
