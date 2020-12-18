@@ -1,5 +1,10 @@
 const admin = require("firebase-admin");
 
+const firebase = require("firebase/app");
+
+require("firebase/auth");
+require("firebase/firestore");
+
 admin.initializeApp({
   credential: admin.credential.cert({
     type: "service_account",
@@ -14,6 +19,16 @@ admin.initializeApp({
     client_x509_cert_url: process.env.client_x509_cert_url,
   }),
   databaseURL: process.env.databaseURL,
+});
+
+firebase.initializeApp({
+  apiKey: process.env.apiKey,
+  authDomain: process.env.authDomain,
+  projectId: process.env.projectId,
+  storageBucket: process.env.storageBucket,
+  messagingSenderId: process.env.messagingSenderId,
+  appId: process.env.appId,
+  measurementId: process.env.measurementId,
 });
 
 const firebaseDb = admin.firestore();
