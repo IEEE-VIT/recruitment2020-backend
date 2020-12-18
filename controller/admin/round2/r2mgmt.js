@@ -55,6 +55,7 @@ const fetchGdpCandidates = async (req, res) => {
             meetingCompleted: false,
             coreDomain: constants.Mgmt,
             roundNo: "2",
+            auid: { [Op.is]: null },
           },
         ],
       },
@@ -70,7 +71,7 @@ const fetchGdpCandidates = async (req, res) => {
 };
 
 const fetchGdaCandidates = async (req, res) => {
-  const { suid } = req.query;
+  const { auid } = req.query;
   roundModel
     .findAll({
       attributes: ["id", "roundNo", "suid", "auid"],
@@ -79,10 +80,11 @@ const fetchGdaCandidates = async (req, res) => {
         [Op.and]: [
           req.query,
           {
+            status: constants.PendingReview,
             meetingCompleted: false,
             coreDomain: constants.Mgmt,
             roundNo: "2",
-            suid,
+            auid,
           },
         ],
       },
@@ -98,6 +100,18 @@ const fetchGdaCandidates = async (req, res) => {
 };
 
 const fetchOnGoingGda = async (req, res) => {
+  const dataParsing = async (roundData) => {
+    const adminList = [];
+    const finalData = [];
+    roundData.map((rounds) => {
+      if (!adminList.includes(rounds.Admin.auid)) {
+        finalData.push(rounds);
+        adminList.push(rounds.Admin.auid);
+      }
+      return rounds;
+    });
+    return finalData;
+  };
   roundModel
     .findAll({
       include: [adminModel, { model: slotModel, include: adminModel }],
@@ -116,11 +130,12 @@ const fetchOnGoingGda = async (req, res) => {
         ],
       },
     })
-    .then((data) => {
+    .then(async (data) => {
       if (data.length === 0) {
         response(res, true, false, "Unable to find any ongoing meetings");
       } else {
-        response(res, true, data, "Meetings Found!");
+        const finalParsedData = await dataParsing(data);
+        response(res, true, finalParsedData, "Meetings Found!");
       }
     })
     .catch((err) => {
