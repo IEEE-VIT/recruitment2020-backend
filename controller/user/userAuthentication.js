@@ -1,5 +1,7 @@
 /* eslint-disable eqeqeq */
 const moment = require("moment-timezone");
+const firebase = require("firebase");
+const { verifiedUser } = require("../../middleware/verifiedmail");
 const authMiddlewaare = require("../../middleware/authentication");
 const userModel = require("../../models/userModel");
 const forgotPasswordModel = require("../../models/forgotPasswordModel");
@@ -24,13 +26,18 @@ const login = async (req, res) => {
         }
         const validPassword = await user.isValidPassword(password);
         if (validPassword) {
-          const payload = { regNo: user.regNo };
-          authMiddlewaare.generateJwtToken(
-            payload,
-            res,
-            user,
-            "User Authenticated Successfully!"
-          );
+          const userVerified = await verifiedUser(user.email);
+          if (userVerified) {
+            const payload = { regNo: user.regNo };
+            authMiddlewaare.generateJwtToken(
+              payload,
+              res,
+              user,
+              "User Authenticated Successfully!"
+            );
+          } else {
+            response(res, true, "", "Please verify Email Address");
+          }
         } else {
           response(res, true, "", "Incorrect Password!");
         }
@@ -42,6 +49,11 @@ const login = async (req, res) => {
   }
 };
 
+const urlButtonAfterVerification = {
+  url: "https://ccs.ieeevit.org",
+  handleCodeInApp: false,
+};
+
 const register = async (req, res) => {
   userModel
     .create({
@@ -50,13 +62,24 @@ const register = async (req, res) => {
       password: req.body.password,
     })
     .then((user) => {
-      const payload = { regNo: user.regNo };
-      authMiddlewaare.generateJwtToken(
-        payload,
-        res,
-        user,
-        "User created successfully!"
-      );
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(req.body.email, req.body.password)
+        .then(() => {
+          const createdUser = firebase.auth().currentUser;
+          createdUser
+            .sendEmailVerification(urlButtonAfterVerification)
+            .then(() => {
+              response(res, true, user, "User Registered");
+            })
+            .catch((error) => {
+              res.send(error.toString());
+            });
+        })
+        .catch((err) => {
+          logger.error(`Failure to userRegister due to ${err}`);
+          response(res, false, "", err.toString());
+        });
     })
     .catch((err) => {
       logger.error(`Failure to userRegister due to ${err}`);
