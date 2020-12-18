@@ -36,5 +36,6 @@ router.post(
   validater(schemas.verifyOtp),
   userAuthController.verifyOtp
 );
+router.get("/verifyEmail", userAuthController.verifyEmail);
 
 module.exports = router;
