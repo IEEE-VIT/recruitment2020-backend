@@ -38,8 +38,12 @@ const addUpdate = async (req, res) => {
 const deleteUpdate = async (req, res) => {
   updatesModel
     .destroy({ where: { uuid: req.body.uuid } })
-    .then(() => {
-      response(res, true, true, "update deleted");
+    .then((successBool) => {
+      if (successBool === 1) {
+        response(res, true, true, "update deleted");
+      } else {
+        response(res, true, false, "error deleting update");
+      }
     })
     .catch((err) => {
       logger.error(`Failure to deleteUpdate due to ${err}`);

@@ -4,6 +4,7 @@ const userModel = require("../../models/userModel");
 const deadlineModel = require("../../models/deadlineModel");
 const roundModel = require("../../models/roundModel");
 const slotModel = require("../../models/slotModel");
+const updatesModel = require("../../models/updateModel");
 const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
 const logger = require("../../configs/winston");
@@ -247,7 +248,29 @@ const dashboard = async (req, res) => {
   }
 };
 
+const getUpdates = async (req, res) => {
+  updatesModel
+    .findAll({
+      order: [
+        ["date", "DESC"],
+        ["time", "DESC"],
+      ],
+    })
+    .then((updates) => {
+      if (updates.length === 0) {
+        response(res, true, false, "No Updates Available");
+      } else {
+        response(res, true, updates, "All updates sent");
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to getUpdates due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   getResults,
   dashboard,
+  getUpdates,
 };
