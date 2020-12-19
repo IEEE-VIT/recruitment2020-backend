@@ -6,6 +6,14 @@
       type="image/png"
       href="images/favicon.png"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@700&display=swap"
+      rel="stylesheet"
+    />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
@@ -24,7 +32,7 @@
         align-items: center;
       }
       #container img {
-        margin-top: 5vh;
+        margin-top: 2em;
       }
       #main-cont {
         display: flex;
@@ -34,8 +42,8 @@
       }
       #heading {
         font-weight: 700;
-        text-align: left;
-        padding: 0 2vw;
+        text-align: center;
+        padding: 0 25px;
       }
       #heading p {
         background-image: linear-gradient(
@@ -49,19 +57,20 @@
         -moz-background-clip: text;
         -webkit-text-fill-color: transparent;
         -moz-text-fill-color: transparent;
-        font-size: 5rem;
+        font-size: 3rem;
       }
       #subtitle {
         font-weight: 500;
         text-align: center;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         color: white;
         margin-bottom: 2em;
       }
       #subtitle-text {
-        text-align: left;
-        font-size: 24px;
-        font-weight: 600;
+        text-align:  center;
+        font-size: 1.1rem;
+        font-weight: 500;
+        padding : 0 20px;
       }
       #verify-button {
         background: #0088ff;
@@ -69,14 +78,22 @@
         padding: 10px 20px;
         border: 1px solid #0088ff;
         color: white;
+        cursor: pointer;
       }
       #verify-button:hover {
-        cursor: pointer;
-        color: #0088ff;
-        background-color: black;
-        border: 1px solid #0088ff;
+         box-shadow: 0px 0px 3px 1px rgba(31, 150, 255, 0.6);
+      }
+      #verify-button:focus {
+        outline: none;
+        border-width: 0;
+      }
+      #verify-button:active {
+        background-color: rgba(0, 136, 255, 0.3);
+        outline: none;
+        border-width: 0;
       }
       #footer {
+        position: relative;
         height: 3vh;
         width: 100%;
         background-image: linear-gradient(
@@ -91,7 +108,7 @@
     <div id="container">
       <a href="https://ieeevit.org" target="_blank" rel="noreferrer noopener">
         <img
-          src="images/logo.png"
+          src="/images/ieee.svg"
           height="40"
           width="83"
           alt="logo"

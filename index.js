@@ -48,8 +48,7 @@ app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 app.use("/api", authRoute);
 
 app.get("/", (req, res) => {
-  res.sendFile(path.resolve("public/verified.html"));
-  // res.json({ success: true, status: "Runnning" });
+  res.json({ success: true, status: "Runnning" });
 });
 
 relations()
