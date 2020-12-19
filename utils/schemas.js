@@ -6,7 +6,7 @@ const schemas = {
     regNo: Joi.string()
       .alphanum()
       .length(9)
-      //       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
+            .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
       .required(),
     password: Joi.string().min(8).required(),
   }),
@@ -14,24 +14,24 @@ const schemas = {
     regNo: Joi.string()
       .alphanum()
       .length(9)
-      //       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
+            .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
       .required(),
     password: Joi.string().min(8).required(),
     email: Joi.string()
       .email()
-      // .pattern(/^[a-zA-Z1-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .pattern(/^[a-zA-Z1-9.]+(2020)@(vitstudent)\.ac\.in$/)
       .required(),
   }),
   forgotPassword: Joi.object().keys({
     email: Joi.string()
       .email()
-      //       .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .pattern(/^[a-zA-Z1-9.]+(2020)@(vitstudent)\.ac\.in$/)
       .required(),
   }),
   resetPassword: Joi.object().keys({
     emailId: Joi.string()
       .email()
-      //       .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .pattern(/^[a-zA-Z1-9.]+(2020)@(vitstudent)\.ac\.in$/)
       .required(),
     otp: Joi.required(),
     password: Joi.string().min(8).required(),
@@ -39,7 +39,7 @@ const schemas = {
   verifyOtp: Joi.object().keys({
     emailId: Joi.string()
       .email()
-      //       .pattern(/^[a-zA-Z0-9]+[.][a-zA-Z0-9]+(2020)@(vitstudent)\.ac\.in$/)
+      .pattern(/^[a-zA-Z1-9.]+(2020)@(vitstudent)\.ac\.in$/)
       .required(),
     otp: Joi.required(),
   }),
