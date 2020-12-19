@@ -1,6 +1,6 @@
 const forgotPasswordTempalate = (name, otp, time) => {
   return {
-    body: `Hey ${name}, <br>
+    body: `Hey, <br>
     Your Secret OTP for IEEE-Recruitments is: ${otp} <br>
     OTP is only valid till ${time}`,
     subject: "[IEEE-VIT] Reset Password",
