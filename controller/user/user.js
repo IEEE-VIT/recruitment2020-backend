@@ -251,27 +251,10 @@ const dashboard = async (req, res) => {
           }
 
           if (roundData.Slot === null) {
-            resultData.round3Status = constants.Ready;
+            resultData.round3Status = constants.PendingReview;
             slots.round3 = null;
-          } else if (
-            missedSlot(
-              roundData.meetingCompleted,
-              roundData.Slot.timeTo,
-              roundData.Slot.date
-            )
-          ) {
-            resultData.round3Status = constants.Missed;
-            slots.round3 = roundData.Slot;
-          } else if (roundData.meetingCompleted === false) {
-            resultData.round3Status = constants.Ready;
-            slots.round3 = roundData.Slot;
           } else {
-            const isResultTime = await resultsTimeCheck("3");
-            if (isResultTime) {
-              resultData.round3Status = roundData.status;
-            } else {
-              resultData.round3Status = constants.PendingReview;
-            }
+            resultData.round3Status = constants.Ready;
             slots.round3 = roundData.Slot;
           }
           domainAdder(roundData);
