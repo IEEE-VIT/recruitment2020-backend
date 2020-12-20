@@ -147,8 +147,8 @@ const fetchGda = async (req, res) => {
       },
     })
     .then((result) => {
-      if (result.length === 0) {
-        response(res, true, result.Admin, "No GDA Found!");
+      if (result.Admin == null) {
+        response(res, true, { meetlink: null }, "No GDA Found!");
       } else {
         response(res, true, result.Admin, "Found GDA");
       }
