@@ -25,15 +25,16 @@ module.exports = {
   Ml: "ML",
   Elec: "Electronics",
   CSec: "CyberSecurity",
-  Game: "GameDev",
+  ARVR: "AR/VR",
   TechDomains() {
-    return [this.App, this.Web, this.Ml, this.Elec, this.CSec, this.Game];
+    return [this.App, this.Web, this.Ml, this.Elec, this.CSec, this.ARVR];
   },
   GDes: "GraphicDesign",
   Ui: "UI/UX",
   Vfx: "VFX",
+  ThreeD: "  3D",
   DesignDomains() {
-    return [this.GDes, this.Ui, this.Vfx];
+    return [this.GDes, this.Ui, this.Vfx, this.ThreeD];
   },
   MgmtDomains() {
     return [this.Mgmt];
