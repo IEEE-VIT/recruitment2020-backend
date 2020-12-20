@@ -177,7 +177,10 @@ const dashboard = async (req, res) => {
         case "2":
           resultData.round1Status = constants.AcceptedReview;
 
-          if (roundData.coreDomain == (constants.Tech || constants.Dsn)) {
+          if (
+            roundData.coreDomain === constants.Tech ||
+            roundData.coreDomain === constants.Dsn
+          ) {
             resultData.round2NonMgmtStatus = true;
 
             if (roundData.Slot === null) {
