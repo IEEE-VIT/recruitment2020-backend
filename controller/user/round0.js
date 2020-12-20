@@ -85,8 +85,12 @@ const getQuestions = async (req, res) => {
 };
 
 const getSlots = async (req, res) => {
-  const todayDate = moment().format("YYYY-MM-DD");
-  const todayTime = moment().format("HH:mm:ss");
+  const todayDate = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("YYYY-MM-DD");
+  const todayTime = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("HH:mm:ss");
 
   await slotLimitModel
     .findOne({ where: { roundNo: "1" } })
@@ -132,8 +136,12 @@ const getSlots = async (req, res) => {
 };
 
 const getAllRound1Slots = async (req, res) => {
-  const todayDate = moment().format("YYYY-MM-DD");
-  const todayTime = moment().format("HH:mm:ss");
+  const todayDate = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("YYYY-MM-DD");
+  const todayTime = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("HH:mm:ss");
 
   slotModel
     .findAll({
