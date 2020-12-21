@@ -184,83 +184,97 @@ const dashboard = async (req, res) => {
           break;
 
         case "2":
-          resultData.round1Status = constants.AcceptedReview;
+          // eslint-disable-next-line no-case-declarations
+          const isResultTimeRound1 = await resultsTimeCheck("1");
+          if (isResultTimeRound1) {
+            resultData.round1Status = roundData.status;
 
-          if (
-            roundData.coreDomain === constants.Tech ||
-            roundData.coreDomain === constants.Dsn
-          ) {
-            resultData.round2NonMgmtStatus = true;
-
-            if (roundData.Slot === null) {
-              resultData.round2NonMgmtStatus = constants.Ready;
-              slots.round2NonMgmt = null;
-            } else if (
-              missedSlot(
-                roundData.meetingCompleted,
-                roundData.Slot.timeTo,
-                roundData.Slot.date
-              )
+            if (
+              roundData.coreDomain === constants.Tech ||
+              roundData.coreDomain === constants.Dsn
             ) {
-              resultData.round2NonMgmtStatus = constants.Missed;
-              slots.round2NonMgmt = roundData.Slot;
-            } else if (roundData.meetingCompleted === false) {
-              resultData.round2NonMgmtStatus = constants.Ready;
-              slots.round2NonMgmt = roundData.Slot;
-            } else {
-              const isResultTime = await resultsTimeCheck("2");
-              if (isResultTime) {
-                resultData.round2NonMgmtStatus = roundData.status;
+              resultData.round2NonMgmtStatus = true;
+
+              if (roundData.Slot === null) {
+                resultData.round2NonMgmtStatus = constants.Ready;
+                slots.round2NonMgmt = null;
+              } else if (
+                missedSlot(
+                  roundData.meetingCompleted,
+                  roundData.Slot.timeTo,
+                  roundData.Slot.date
+                )
+              ) {
+                resultData.round2NonMgmtStatus = constants.Missed;
+                slots.round2NonMgmt = roundData.Slot;
+              } else if (roundData.meetingCompleted === false) {
+                resultData.round2NonMgmtStatus = constants.Ready;
+                slots.round2NonMgmt = roundData.Slot;
               } else {
-                resultData.round2NonMgmtStatus = constants.PendingReview;
+                const isResultTime = await resultsTimeCheck("2");
+                if (isResultTime) {
+                  resultData.round2NonMgmtStatus = roundData.status;
+                } else {
+                  resultData.round2NonMgmtStatus = constants.PendingReview;
+                }
+                slots.round2NonMgmt = roundData.Slot;
               }
-              slots.round2NonMgmt = roundData.Slot;
             }
-          }
 
-          if (roundData.coreDomain == constants.Mgmt) {
-            resultData.round2MgmtStatus = true;
-            if (roundData.Slot === null) {
-              resultData.round2MgmtStatus = constants.NoSlot;
-              slots.round2Mgmt = null;
-            } else if (
-              missedSlot(
-                roundData.meetingCompleted,
-                roundData.Slot.timeTo,
-                roundData.Slot.date
-              )
-            ) {
-              resultData.round2MgmtStatus = constants.Missed;
-              slots.round2Mgmt = roundData.Slot;
-            } else if (roundData.meetingCompleted === false) {
-              resultData.round2MgmtStatus = constants.Ready;
-              slots.round2Mgmt = roundData.Slot;
-            } else {
-              const isResultTime = await resultsTimeCheck("2");
-              if (isResultTime) {
-                resultData.round2MgmtStatus = roundData.status;
+            if (roundData.coreDomain == constants.Mgmt) {
+              resultData.round2MgmtStatus = true;
+              if (roundData.Slot === null) {
+                resultData.round2MgmtStatus = constants.NoSlot;
+                slots.round2Mgmt = null;
+              } else if (
+                missedSlot(
+                  roundData.meetingCompleted,
+                  roundData.Slot.timeTo,
+                  roundData.Slot.date
+                )
+              ) {
+                resultData.round2MgmtStatus = constants.Missed;
+                slots.round2Mgmt = roundData.Slot;
+              } else if (roundData.meetingCompleted === false) {
+                resultData.round2MgmtStatus = constants.Ready;
+                slots.round2Mgmt = roundData.Slot;
               } else {
-                resultData.round2MgmtStatus = constants.PendingReview;
+                const isResultTime = await resultsTimeCheck("2");
+                if (isResultTime) {
+                  resultData.round2MgmtStatus = roundData.status;
+                } else {
+                  resultData.round2MgmtStatus = constants.PendingReview;
+                }
+                slots.round2Mgmt = roundData.Slot;
               }
-              slots.round2Mgmt = roundData.Slot;
             }
-          }
-          domainAdder(roundData);
-          break;
-
-        case "3":
-          resultData.round0Status = true;
-          resultData.round1Status = constants.AcceptedReview;
-
-          if (roundData.coreDomain == constants.Mgmt) {
-            resultData.round2MgmtStatus = constants.AcceptedReview;
+            domainAdder(roundData);
+            break;
           } else {
-            resultData.round2NonMgmtStatus = constants.AcceptedReview;
+            resultData.round1Status = constants.PendingReview;
           }
 
-          resultData.round3Status = constants.PendingReview;
-          slots.round3 = null;
-          domainAdder(roundData);
+          // const isResultTimeRound1 = await resultsTimeCheck("1");
+          // if (isResultTimeRound1) {
+          //   resultData.round1Status = roundData.status;
+          // }
+
+          // resultData.round1Status = constants.AcceptedReview;
+
+          // case "3":
+          //   resultData.round0Status = true;
+          //   resultData.round1Status = constants.AcceptedReview;
+
+          //   if (roundData.coreDomain == constants.Mgmt) {
+          //     resultData.round2MgmtStatus = constants.AcceptedReview;
+          //   } else {
+          //     resultData.round2NonMgmtStatus = constants.AcceptedReview;
+          //   }
+
+          //   resultData.round3Status = constants.PendingReview;
+          //   slots.round3 = null;
+          //   domainAdder(roundData);
+          //   break;
           break;
         default:
           break;
