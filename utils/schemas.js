@@ -110,13 +110,13 @@ const schemas = {
       .length(9)
       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/)
       .required(),
-    coreDomain: Joi.string().valid(
-      constants.Mgmt,
-      constants.Tech,
-      constants.Dsn,
-      constants.Unknown
-    ),
-    reason: Joi.string(),
+    coreDomain: Joi.string()
+      .valid(constants.Mgmt, constants.Tech, constants.Dsn, constants.Unknown)
+      .required(),
+    reason: Joi.string().required(),
+    status: Joi.string()
+      .valid(constants.AcceptedReview, constants.RejectedReview)
+      .required(),
   }),
   postAmc: Joi.object().keys({
     comment: Joi.string(),

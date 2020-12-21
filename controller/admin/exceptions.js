@@ -6,6 +6,7 @@ const roundModel = require("../../models/roundModel");
 const commentModel = require("../../models/commentModel");
 const db = require("../../utils/db");
 const response = require("../../utils/genericResponse");
+const constants = require("../../utils/constants");
 
 const fetchExceptions = async (req, res) => {
   roundModel
@@ -43,6 +44,7 @@ const resolveExceptions = async (req, res) => {
             regNo: req.body.regNo,
             coreDomain: req.body.coreDomain,
             exception: true,
+            status: constants.ExceptionReview,
           },
         },
         { transaction: t }
@@ -81,6 +83,7 @@ const resolveExceptions = async (req, res) => {
       const updatedRoundData = await roundModel.update(
         {
           exception: false,
+          status: req.body.status,
         },
         {
           where: {
@@ -92,8 +95,32 @@ const resolveExceptions = async (req, res) => {
         },
         { transaction: t }
       );
+      if (req.body.status === constants.AcceptedReview) {
+        let newRoundNo = 1;
+        // eslint-disable-next-line default-case
+        switch (req.body.roundNo) {
+          case "1":
+            newRoundNo = "2";
+            break;
 
-      const newComment = await rawCommentData.comment
+          case "2":
+            newRoundNo = "3";
+            break;
+        }
+        // eslint-disable-next-line no-unused-vars
+        const nextRoundRow = await roundModel.create(
+          {
+            regNo: req.body.regNo,
+            roundNo: newRoundNo,
+            status: constants.PendingReview,
+            specificDomain: roundData.coreDomain,
+            coreDomain: roundData.specificDomain,
+          },
+          { transaction: t }
+        );
+      }
+
+      const updatedComment = await rawCommentData.comment
         .concat(" // exception resolved: ")
         .concat(req.body.reason)
         .concat(" // by: ")
@@ -101,7 +128,7 @@ const resolveExceptions = async (req, res) => {
 
       const newCommentBool = await commentModel.update(
         {
-          comment: newComment,
+          comment: updatedComment,
         },
         { where: { cuid: roundData.cuid } },
         { transaction: t }
@@ -109,12 +136,16 @@ const resolveExceptions = async (req, res) => {
       if (newCommentBool == 0) {
         throw new Error("Error Resolving Exception");
       }
-      return updatedRoundData;
+
+      if (updatedRoundData == 1) {
+        return true;
+      }
+      return false;
     });
     response(res, true, result, "Exception resolved");
   } catch (err) {
     logger.error(`Failure to resolveExceptions due to ${err}`);
-    response(res, false, "", err.toString());
+    response(res, false, false, err.toString());
   }
 };
 module.exports = {
