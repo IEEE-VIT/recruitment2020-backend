@@ -3,6 +3,7 @@ const { Op } = require("sequelize");
 const logger = require("../../configs/winston");
 const adminModel = require("../../models/adminModel");
 const roundModel = require("../../models/roundModel");
+const userModel = require("../../models/userModel");
 const commentModel = require("../../models/commentModel");
 const db = require("../../utils/db");
 const response = require("../../utils/genericResponse");
@@ -11,7 +12,7 @@ const constants = require("../../utils/constants");
 const fetchExceptions = async (req, res) => {
   roundModel
     .findAll({
-      include: [commentModel],
+      include: [commentModel, userModel],
       where: {
         [Op.and]: [
           req.query,
