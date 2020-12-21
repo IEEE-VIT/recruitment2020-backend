@@ -77,6 +77,23 @@ const dashboard = async (req, res) => {
       }
     };
 
+    const resultsTimeCheck = async (roundNo) => {
+      const todayDate = moment().format("YYYY-MM-DD");
+      const todayTime = moment().format("HH:mm:ss");
+      const resultsTimeChecker = await deadlineModel
+        .findOne({ where: { roundNo } })
+        .then((roundDeadline) => {
+          if (
+            todayDate > roundDeadline.date ||
+            (todayDate == roundDeadline.date && todayTime >= roundDeadline.time)
+          ) {
+            return true;
+          }
+          return false;
+        });
+      return resultsTimeChecker;
+    };
+
     const missedSlot = (meetingCompleted, timeTo, date) => {
       const todayDate = moment().format("DD MMM");
       const todayTime = moment().format("HH:mm");
@@ -146,7 +163,12 @@ const dashboard = async (req, res) => {
             resultData.round1Status = constants.Ready;
             slots.round1 = roundData.Slot;
           } else {
-            resultData.round1Status = roundData.status;
+            const isResultTime = await resultsTimeCheck("1");
+            if (isResultTime) {
+              resultData.round1Status = roundData.status;
+            } else {
+              resultData.round1Status = constants.PendingReview;
+            }
             slots.round1 = roundData.Slot;
           }
           domainAdder(roundData);
@@ -174,7 +196,13 @@ const dashboard = async (req, res) => {
               resultData.round2NonMgmtStatus = constants.Ready;
               slots.round2NonMgmt = roundData.Slot;
             } else {
-              resultData.round2NonMgmtStatus = roundData.status;
+              const isResultTime = await resultsTimeCheck("2");
+              if (isResultTime) {
+                resultData.round2NonMgmtStatus = roundData.status;
+              } else {
+                resultData.round2NonMgmtStatus = constants.PendingReview;
+              }
+
               slots.round2NonMgmt = roundData.Slot;
             }
           }
@@ -197,7 +225,12 @@ const dashboard = async (req, res) => {
               resultData.round2MgmtStatus = constants.Ready;
               slots.round2Mgmt = roundData.Slot;
             } else {
-              resultData.round2MgmtStatus = roundData.status;
+              const isResultTime = await resultsTimeCheck("2");
+              if (isResultTime) {
+                resultData.round2MgmtStatus = roundData.status;
+              } else {
+                resultData.round2MgmtStatus = constants.PendingReview;
+              }
               slots.round2Mgmt = roundData.Slot;
             }
           }
@@ -230,7 +263,12 @@ const dashboard = async (req, res) => {
             resultData.round3Status = constants.Ready;
             slots.round3 = roundData.Slot;
           } else {
-            resultData.round3Status = roundData.status;
+            const isResultTime = await resultsTimeCheck("3");
+            if (isResultTime) {
+              resultData.round3Status = roundData.status;
+            } else {
+              resultData.round3Status = constants.PendingReview;
+            }
             slots.round3 = roundData.Slot;
           }
           domainAdder(roundData);
