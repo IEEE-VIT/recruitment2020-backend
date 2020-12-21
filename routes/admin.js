@@ -10,6 +10,7 @@ const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 const isBoard = require("../middleware/boardAuth");
 const headerAuth = require("../middleware/headerAuth");
+const updateController = require("../controller/admin/updates");
 
 router.get("/", adminController.readAdmin);
 router.get("/r1/candidates", adminRound1Controller.fetchReadyCandidates);
@@ -91,6 +92,10 @@ router.post(
   validater(schemas.round1SelectCandidates),
   adminRound1Controller.selectReadyCandidates
 );
+
+router.get("/updates", updateController.getUpdates);
+router.post("/updates", updateController.addUpdate);
+router.delete("/updates", updateController.deleteUpdate);
 
 router.put("/", validater(schemas.adminUpdate), adminController.updateAdmin);
 
