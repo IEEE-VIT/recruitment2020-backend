@@ -6,6 +6,7 @@ const adminModel = require("../../models/adminModel");
 const roundModel = require("../../models/roundModel");
 const userModel = require("../../models/userModel");
 const slotModel = require("../../models/slotModel");
+const slotLimitModel = require("../../models/slotLimitModel");
 const deadlineModel = require("../../models/deadlineModel");
 const projectsModel = require("../../models/projectModel");
 const response = require("../../utils/genericResponse");
@@ -241,6 +242,61 @@ const getAllSlots = async (req, res) => {
     });
 };
 
+const getslotLimits = async (req, res) => {
+  await slotLimitModel
+    .findAll()
+    .then((slots) => {
+      response(res, true, slots, "All Slots accordlingly sent");
+    })
+    .catch((err) => {
+      logger.error(`Failure to getAllSlots due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
+const updateSlotLimit = async (req, res) => {
+  await slotLimitModel
+    .findOne({ where: { roundNo: req.body.roundNo } })
+    .then(async (slot) => {
+      if (slot === null) {
+        await slotLimitModel
+          .create({
+            roundNo: req.body.roundNo,
+            maxCandidates: req.body.maxCandidates,
+          })
+          .then((createdSlot) => {
+            response(res, true, createdSlot, "New Slot Created");
+          })
+          .catch((err) => {
+            logger.error(`Failure to addSlotLimit due to ${err}`);
+            response(res, false, "", err.toString());
+          });
+      } else {
+        if (req.body.maxCandidates < 0) {
+          throw new Error("Please enter a valid number");
+        }
+        await slotLimitModel
+          .update(
+            {
+              maxCandidates: req.body.maxCandidates,
+            },
+            { where: { roundNo: req.body.roundNo } }
+          )
+          .then((updateddSlot) => {
+            response(res, true, updateddSlot, "Slot Updated");
+          })
+          .catch((err) => {
+            logger.error(`Failure to updateSlotLimit due to ${err}`);
+            response(res, false, "", err.toString());
+          });
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to updateSlotLimit due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
 module.exports = {
   fetchAllUsers,
   readAdmin,
@@ -252,4 +308,6 @@ module.exports = {
   fetchOnGoingMeetings,
   fetchProjects,
   getAllSlots,
+  getslotLimits,
+  updateSlotLimit,
 };

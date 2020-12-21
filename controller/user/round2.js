@@ -5,6 +5,7 @@ const slotModel = require("../../models/slotModel");
 const roundModel = require("../../models/roundModel");
 const userModel = require("../../models/userModel");
 const adminModel = require("../../models/adminModel");
+const slotLimitModel = require("../../models/slotLimitModel");
 const db = require("../../utils/db");
 const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
@@ -16,35 +17,47 @@ const getSlots = async (req, res) => {
   const todayDate = moment().format("YYYY-MM-DD");
   const todayTime = moment().format("HH:mm:ss");
 
-  slotModel
-    .findAll({
-      where: {
-        [Op.or]: [
-          {
-            count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
-            roundNo: "2",
-            mgmt: true,
-            date: { [Op.gt]: todayDate },
-          },
-          {
-            count: { [Op.lt]: constants.round2MaxCandidatesPerMgmtSlot },
-            roundNo: "2",
-            date: todayDate,
-            mgmt: true,
-            timeFrom: { [Op.gte]: todayTime },
-          },
-        ],
-      },
-      order: [
-        ["date", "ASC"],
-        ["timeFrom", "ASC"],
-      ],
-    })
-    .then((slot) => {
-      if (slot == "") {
-        response(res, true, "", "No Slots available");
+  await slotLimitModel
+    .findOne({ where: { roundNo: "2" } })
+    .then((slotLimit) => {
+      if (slotLimit === null) {
+        throw new Error("Slots will be sent asap the limit is set");
       } else {
-        response(res, true, slot, "Slots Sent");
+        slotModel
+          .findAll({
+            where: {
+              [Op.or]: [
+                {
+                  count: { [Op.lt]: slotLimit.maxCandidates },
+                  roundNo: "2",
+                  mgmt: true,
+                  date: { [Op.gt]: todayDate },
+                },
+                {
+                  count: { [Op.lt]: slotLimit.maxCandidates },
+                  roundNo: "2",
+                  date: todayDate,
+                  mgmt: true,
+                  timeFrom: { [Op.gte]: todayTime },
+                },
+              ],
+            },
+            order: [
+              ["date", "ASC"],
+              ["timeFrom", "ASC"],
+            ],
+          })
+          .then((slot) => {
+            if (slot == "") {
+              response(res, true, "", "No Slots available");
+            } else {
+              response(res, true, slot, "Slots Sent");
+            }
+          })
+          .catch((err) => {
+            logger.error(`Failure to getSlots due to ${err}`);
+            response(res, false, "", err.toString());
+          });
       }
     })
     .catch((err) => {

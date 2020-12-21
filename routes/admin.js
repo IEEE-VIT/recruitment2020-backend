@@ -66,6 +66,10 @@ router.get(
   adminRound2MgmtController.fetchOnGoingGda
 );
 
+router.get("/getslotlimit", isBoard, adminController.getslotLimits);
+
+router.post("/slotlimit", isBoard, adminController.updateSlotLimit);
+
 router.post(
   "/exceptions",
   validater(schemas.resolveException),
