@@ -214,7 +214,6 @@ const dashboard = async (req, res) => {
               } else {
                 resultData.round2NonMgmtStatus = constants.PendingReview;
               }
-
               slots.round2NonMgmt = roundData.Slot;
             }
           }
@@ -259,13 +258,8 @@ const dashboard = async (req, res) => {
             resultData.round2NonMgmtStatus = constants.AcceptedReview;
           }
 
-          if (roundData.Slot === null) {
-            resultData.round3Status = constants.PendingReview;
-            slots.round3 = null;
-          } else {
-            resultData.round3Status = constants.Ready;
-            slots.round3 = roundData.Slot;
-          }
+          resultData.round3Status = constants.PendingReview;
+          slots.round3 = null;
           domainAdder(roundData);
           break;
         default:
