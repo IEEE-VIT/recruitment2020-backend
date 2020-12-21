@@ -38,7 +38,7 @@ const schemas = {
   adminUpdate: Joi.object().keys({
     name: Joi.string(),
     password: Joi.string().min(8),
-    meetLink: Joi.string(),
+    meetLink: Joi.string().pattern(/^(http|https):/),
   }),
   round0form: Joi.object().keys({
     suid: Joi.string()
@@ -59,10 +59,11 @@ const schemas = {
         constants.Web,
         constants.Ml,
         constants.CSec,
-        constants.Game,
+        constants.ARVR,
         constants.GDes,
         constants.Ui,
         constants.Vfx,
+        constants.ThreeD,
         constants.Mgmt,
         constants.Unknown
       )
@@ -72,7 +73,9 @@ const schemas = {
       .required(),
   }),
   round1ProjectLink: Joi.object().keys({
-    projectLink: Joi.string().required(),
+    projectLink: Joi.string()
+      .pattern(/^(http|https):/)
+      .required(),
   }),
   round1SelectCandidates: Joi.object().keys({
     candidates: Joi.array()
@@ -88,7 +91,9 @@ const schemas = {
     suid: Joi.string()
       .pattern(/^[0-9]+$/)
       .required(),
-    gdpLink: Joi.string().required(),
+    gdpLink: Joi.string()
+      .pattern(/^(http|https):/)
+      .required(),
   }),
   round2SetGda: Joi.object().keys({
     auid: Joi.string()
@@ -127,10 +132,11 @@ const schemas = {
         constants.Web,
         constants.Ml,
         constants.CSec,
-        constants.Game,
+        constants.ARVR,
         constants.GDes,
         constants.Ui,
         constants.Vfx,
+        constants.ThreeD,
         constants.Mgmt,
         constants.Tech,
         constants.Dsn,
@@ -142,7 +148,8 @@ const schemas = {
       constants.Web,
       constants.Ml,
       constants.CSec,
-      constants.Game,
+      constants.ARVR,
+      constants.ThreeD,
       constants.GDes,
       constants.Ui,
       constants.Vfx,

@@ -14,8 +14,12 @@ const logger = require("../../configs/winston");
 moment.tz.setDefault("Asia/Calcutta");
 
 const getSlots = async (req, res) => {
-  const todayDate = moment().format("YYYY-MM-DD");
-  const todayTime = moment().format("HH:mm:ss");
+  const todayDate = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("YYYY-MM-DD");
+  const todayTime = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("HH:mm:ss");
 
   await slotLimitModel
     .findOne({ where: { roundNo: "2" } })

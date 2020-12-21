@@ -177,7 +177,10 @@ const dashboard = async (req, res) => {
         case "2":
           resultData.round1Status = constants.AcceptedReview;
 
-          if (roundData.coreDomain == (constants.Tech || constants.Dsn)) {
+          if (
+            roundData.coreDomain === constants.Tech ||
+            roundData.coreDomain === constants.Dsn
+          ) {
             resultData.round2NonMgmtStatus = true;
 
             if (roundData.Slot === null) {
@@ -248,27 +251,10 @@ const dashboard = async (req, res) => {
           }
 
           if (roundData.Slot === null) {
-            resultData.round3Status = constants.Ready;
+            resultData.round3Status = constants.PendingReview;
             slots.round3 = null;
-          } else if (
-            missedSlot(
-              roundData.meetingCompleted,
-              roundData.Slot.timeTo,
-              roundData.Slot.date
-            )
-          ) {
-            resultData.round3Status = constants.Missed;
-            slots.round3 = roundData.Slot;
-          } else if (roundData.meetingCompleted === false) {
-            resultData.round3Status = constants.Ready;
-            slots.round3 = roundData.Slot;
           } else {
-            const isResultTime = await resultsTimeCheck("3");
-            if (isResultTime) {
-              resultData.round3Status = roundData.status;
-            } else {
-              resultData.round3Status = constants.PendingReview;
-            }
+            resultData.round3Status = constants.Ready;
             slots.round3 = roundData.Slot;
           }
           domainAdder(roundData);
