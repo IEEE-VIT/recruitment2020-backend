@@ -7,8 +7,8 @@ const userModel = require("../../../models/userModel");
 const slotModel = require("../../../models/slotModel");
 const response = require("../../../utils/genericResponse");
 const constants = require("../../../utils/constants");
-const emailer = require("../../../utils/emailer");
-const templates = require("../../../utils/templates");
+// const emailer = require("../../../utils/emailer");
+// const templates = require("../../../utils/templates");
 const db = require("../../../utils/db");
 
 const fetchTechDsnRound2Candidates = async (req, res) => {
@@ -120,20 +120,20 @@ const selectR2TechDsnCandidate = async (req, res) => {
       if (slotDetails.length === 0) {
         throw Error("Unable to find such slots ");
       }
-      const userDetails = roundModelDetails.User;
-      const candidateEmailId = [userDetails.email];
-      const template = templates.round2Interview(
-        userDetails.name,
-        slotDetails.date,
-        slotDetails.timeFrom,
-        admin.meetLink
-      );
-      const email = await emailer(template, candidateEmailId);
-      if (!email.success) {
-        throw Error(
-          `Unable to send the email to the candidate because: ${email.error}`
-        );
-      }
+      // const userDetails = roundModelDetails.User;
+      // const candidateEmailId = [userDetails.email];
+      // const template = templates.round2Interview(
+      //   userDetails.name,
+      //   slotDetails.date,
+      //   slotDetails.timeFrom,
+      //   admin.meetLink
+      // );
+      // const email = await emailer(template, candidateEmailId);
+      // if (!email.success) {
+      //   throw Error(
+      //     `Unable to send the email to the candidate because: ${email.error}`
+      //   );
+      // }
       response(res, true, "", "Candidate Intrview Email Sent!");
     });
   } catch (err) {

@@ -6,8 +6,8 @@ const adminModel = require("../../models/adminModel");
 const response = require("../../utils/genericResponse");
 const db = require("../../utils/db");
 const logger = require("../../configs/winston");
-const emailer = require("../../utils/emailer");
-const templates = require("../../utils/templates");
+// const emailer = require("../../utils/emailer");
+// const templates = require("../../utils/templates");
 
 const fetchReadyCandidates = async (req, res) => {
   roundModel
@@ -77,15 +77,15 @@ const selectReadyCandidates = async (req, res) => {
         throw Error("Unable to find such user");
       }
 
-      const candidateEmailId = [user.email];
-      const template = templates.round1Interview(user.name, admin.meetLink);
+      // const candidateEmailId = [user.email];
+      // const template = templates.round1Interview(user.name, admin.meetLink);
       // eslint-disable-next-line no-await-in-loop
-      const email = await emailer(template, candidateEmailId);
-      if (!email.success) {
-        throw Error(
-          `Unable to send the email to the candidate because: ${email.error}`
-        );
-      }
+      // const email = await emailer(template, candidateEmailId);
+      // if (!email.success) {
+      //   throw Error(
+      //     `Unable to send the email to the candidate because: ${email.error}`
+      //   );
+      // }
     }
     await chainTransaction.commit();
     response(
