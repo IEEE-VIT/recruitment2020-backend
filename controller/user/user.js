@@ -5,6 +5,7 @@ const deadlineModel = require("../../models/deadlineModel");
 const roundModel = require("../../models/roundModel");
 const slotModel = require("../../models/slotModel");
 const updatesModel = require("../../models/updateModel");
+const projectModel = require("../../models/projectModel");
 const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
 const logger = require("../../configs/winston");
@@ -120,10 +121,18 @@ const dashboard = async (req, res) => {
         round3: {},
       },
       user: {},
+      project: {},
     };
+
     const userData = await userModel.findOne({
       where: { regNo },
     });
+
+    const projectData = await projectModel.findOne({
+      where: { puid: userData.puid },
+    });
+
+    resultData.project = projectData;
     resultData.user = userData;
     const roundModelData = await roundModel.findAll({
       include: slotModel,
