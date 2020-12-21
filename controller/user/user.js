@@ -79,8 +79,8 @@ const dashboard = async (req, res) => {
     };
 
     const resultsTimeCheck = async (roundNo) => {
-      const todayDate = moment().format("YYYY-MM-DD");
-      const todayTime = moment().format("HH:mm:ss");
+      const todayDate = moment().format("DD MMM");
+      const todayTime = moment().format("HH:mm");
       const resultsTimeChecker = await deadlineModel
         .findOne({ where: { roundNo } })
         .then((roundDeadline) => {
@@ -124,6 +124,9 @@ const dashboard = async (req, res) => {
       project: {},
     };
 
+    const round1Deadline = await resultsTimeCheck("1");
+    const round2Deadline = await resultsTimeCheck("2");
+
     const userData = await userModel.findOne({
       where: { regNo },
     });
@@ -155,6 +158,7 @@ const dashboard = async (req, res) => {
           break;
 
         case "1":
+          resultData.round1Status = constants.PendingReview;
           resultData.round0Status = true;
           if (roundData.Slot === null) {
             resultData.round1Status = constants.NoSlot;
@@ -171,29 +175,27 @@ const dashboard = async (req, res) => {
           } else if (roundData.meetingCompleted === false) {
             resultData.round1Status = constants.Ready;
             slots.round1 = roundData.Slot;
+          } else if (round1Deadline) {
+            resultData.round1Status = roundData.status;
           } else {
-            const isResultTime = await resultsTimeCheck("1");
-            if (isResultTime) {
-              resultData.round1Status = roundData.status;
-            } else {
-              resultData.round1Status = constants.PendingReview;
-            }
-            slots.round1 = roundData.Slot;
+            resultData.round1Status = constants.PendingReview;
           }
           domainAdder(roundData);
           break;
 
         case "2":
-          // eslint-disable-next-line no-case-declarations
-          const isResultTimeRound1 = await resultsTimeCheck("1");
-          if (isResultTimeRound1) {
-            resultData.round1Status = roundData.status;
+          if (round1Deadline === false) {
+            resultData.round1Status = constants.PendingReview;
+            break;
+          } else if (round1Deadline === true) {
+            resultData.round1Status = constants.AcceptedReview;
 
             if (
               roundData.coreDomain === constants.Tech ||
               roundData.coreDomain === constants.Dsn
             ) {
-              resultData.round2NonMgmtStatus = true;
+              // placeholder value for round2NonMgmtStatus
+              resultData.round2NonMgmtStatus = constants.PendingReview;
 
               if (roundData.Slot === null) {
                 resultData.round2NonMgmtStatus = constants.Ready;
@@ -211,8 +213,7 @@ const dashboard = async (req, res) => {
                 resultData.round2NonMgmtStatus = constants.Ready;
                 slots.round2NonMgmt = roundData.Slot;
               } else {
-                const isResultTime = await resultsTimeCheck("2");
-                if (isResultTime) {
+                if (round2Deadline) {
                   resultData.round2NonMgmtStatus = roundData.status;
                 } else {
                   resultData.round2NonMgmtStatus = constants.PendingReview;
@@ -222,7 +223,7 @@ const dashboard = async (req, res) => {
             }
 
             if (roundData.coreDomain == constants.Mgmt) {
-              resultData.round2MgmtStatus = true;
+              resultData.round2MgmtStatus = constants.PendingReview;
               if (roundData.Slot === null) {
                 resultData.round2MgmtStatus = constants.NoSlot;
                 slots.round2Mgmt = null;
@@ -239,8 +240,7 @@ const dashboard = async (req, res) => {
                 resultData.round2MgmtStatus = constants.Ready;
                 slots.round2Mgmt = roundData.Slot;
               } else {
-                const isResultTime = await resultsTimeCheck("2");
-                if (isResultTime) {
+                if (round2Deadline) {
                   resultData.round2MgmtStatus = roundData.status;
                 } else {
                   resultData.round2MgmtStatus = constants.PendingReview;
@@ -250,31 +250,31 @@ const dashboard = async (req, res) => {
             }
             domainAdder(roundData);
             break;
-          } else {
-            resultData.round1Status = constants.PendingReview;
           }
+          break;
 
-          // const isResultTimeRound1 = await resultsTimeCheck("1");
-          // if (isResultTimeRound1) {
-          //   resultData.round1Status = roundData.status;
-          // }
-
-          // resultData.round1Status = constants.AcceptedReview;
-
-          // case "3":
-          //   resultData.round0Status = true;
-          //   resultData.round1Status = constants.AcceptedReview;
-
-          //   if (roundData.coreDomain == constants.Mgmt) {
-          //     resultData.round2MgmtStatus = constants.AcceptedReview;
-          //   } else {
-          //     resultData.round2NonMgmtStatus = constants.AcceptedReview;
-          //   }
-
-          //   resultData.round3Status = constants.PendingReview;
-          //   slots.round3 = null;
-          //   domainAdder(roundData);
-          //   break;
+        case "3":
+          if (round1Deadline === false) {
+            resultData.round1Status = constants.PendingReview;
+            break;
+          } else if (round1Deadline === true) {
+            resultData.round1Status = constants.AcceptedReview;
+            if (round2Deadline === false) {
+              if (roundData.coreDomain == constants.Mgmt) {
+                resultData.round2MgmtStatus = constants.PendingReview;
+              } else {
+                resultData.round2NonMgmtStatus = constants.PendingReview;
+              }
+              break;
+            } else if (round2Deadline === true) {
+              if (roundData.coreDomain == constants.Mgmt) {
+                resultData.round2MgmtStatus = constants.AcceptedReview;
+              } else {
+                resultData.round2NonMgmtStatus = constants.AcceptedReview;
+              }
+              resultData.round3Status = constants.PendingReview;
+            }
+          }
           break;
         default:
           break;
