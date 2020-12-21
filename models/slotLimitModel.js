@@ -11,7 +11,7 @@ const SlotLimit = sequelize.define("SlotLimit", {
     },
   },
   maxCandidates: {
-    type: DataTypes.NUMBER,
+    type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       notEmpty: true,
