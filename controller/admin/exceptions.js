@@ -95,6 +95,11 @@ const resolveExceptions = async (req, res) => {
         },
         { transaction: t }
       );
+
+      if (updatedRoundData === 0) {
+        throw new Error("Error updating roundData");
+      }
+
       if (req.body.status === constants.AcceptedReview) {
         let newRoundNo = 1;
         // eslint-disable-next-line default-case
