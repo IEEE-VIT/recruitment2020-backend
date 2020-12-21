@@ -17,7 +17,7 @@ const fetchExceptions = async (req, res) => {
         [Op.and]: [
           req.query,
           {
-            exception: true,
+            status: constants.ExceptionReview,
           },
         ],
       },
@@ -44,7 +44,6 @@ const resolveExceptions = async (req, res) => {
             roundNo: req.body.roundNo,
             regNo: req.body.regNo,
             coreDomain: req.body.coreDomain,
-            exception: true,
             status: constants.ExceptionReview,
           },
         },
@@ -91,7 +90,7 @@ const resolveExceptions = async (req, res) => {
             roundNo: req.body.roundNo,
             regNo: req.body.regNo,
             coreDomain: req.body.coreDomain,
-            exception: true,
+            status: constants.ExceptionReview,
           },
         },
         { transaction: t }
