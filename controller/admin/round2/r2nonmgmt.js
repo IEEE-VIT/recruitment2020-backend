@@ -108,10 +108,10 @@ const fetchMyTechDesignMeetings = async (req, res) => {
     .findAll({
       attributes: ["id", "roundNo", "suid", "auid"],
       include: [
+        slotModel,
         {
           model: userModel,
           include: projectModel,
-          slotModel,
         },
       ],
 

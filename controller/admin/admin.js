@@ -178,13 +178,12 @@ const getAllMeetings = async (req, res) => {
 const fetchOnGoingMeetings = async (req, res) => {
   roundModel
     .findAll({
-      // include: [userModel, adminModel, slotModel],
       include: [
+        adminModel,
+        slotModel,
         {
-          userModel,
+          model: userModel,
           include: projectModel,
-          adminModel,
-          slotModel,
         },
       ],
 
