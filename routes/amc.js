@@ -3,6 +3,7 @@ const amcController = require("../controller/admin/amc");
 const legacyAmcController = require("../controller/legacy/amc");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
+const isBoard = require("../middleware/boardAuth");
 
 router.get("/candidate/meetings", legacyAmcController.fetchMeetings);
 router.get("/candidate", legacyAmcController.meetingCandidateHistory);
@@ -20,6 +21,7 @@ router.post(
 );
 router.post(
   "/round3Interview",
+  isBoard,
   validater(schemas.postRoundThreeAmc),
   amcController.round3Amc
 );
