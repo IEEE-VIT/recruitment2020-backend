@@ -6,6 +6,7 @@ const adminModel = require("../../models/adminModel");
 const roundModel = require("../../models/roundModel");
 const userModel = require("../../models/userModel");
 const slotModel = require("../../models/slotModel");
+const projectModel = require("../../models/projectModel");
 const slotLimitModel = require("../../models/slotLimitModel");
 const deadlineModel = require("../../models/deadlineModel");
 const projectsModel = require("../../models/projectModel");
@@ -177,7 +178,16 @@ const getAllMeetings = async (req, res) => {
 const fetchOnGoingMeetings = async (req, res) => {
   roundModel
     .findAll({
-      include: [userModel, adminModel, slotModel],
+      // include: [userModel, adminModel, slotModel],
+      include: [
+        {
+          userModel,
+          include: projectModel,
+          adminModel,
+          slotModel,
+        },
+      ],
+
       attributes: [
         [Sequelize.fn("DISTINCT", Sequelize.col("User.regNo")), "User.regNo"],
       ].concat(Object.keys(roundModel.rawAttributes)),

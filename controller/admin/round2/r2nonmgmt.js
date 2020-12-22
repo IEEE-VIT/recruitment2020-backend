@@ -6,6 +6,7 @@ const roundModel = require("../../../models/roundModel");
 const userModel = require("../../../models/userModel");
 const slotModel = require("../../../models/slotModel");
 const response = require("../../../utils/genericResponse");
+const projectModel = require("../../../models/projectModel");
 const constants = require("../../../utils/constants");
 // const emailer = require("../../../utils/emailer");
 // const templates = require("../../../utils/templates");
@@ -15,7 +16,14 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
   roundModel
     .findAll({
       attributes: ["regNo"],
-      include: { model: userModel, where: { projectLink: { [Op.ne]: null } } },
+      include: [
+        {
+          model: userModel,
+          where: { projectLink: { [Op.ne]: null } },
+          include: projectModel,
+        },
+      ],
+
       where: {
         [Op.and]: [
           req.query,
@@ -99,7 +107,14 @@ const fetchMyTechDesignMeetings = async (req, res) => {
   roundModel
     .findAll({
       attributes: ["id", "roundNo", "suid", "auid"],
-      include: [userModel, slotModel],
+      include: [
+        {
+          model: userModel,
+          include: projectModel,
+          slotModel,
+        },
+      ],
+
       where: {
         [Op.and]: [
           req.query,
