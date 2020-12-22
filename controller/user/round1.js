@@ -1,20 +1,43 @@
 /* eslint-disable eqeqeq */
+const moment = require("moment-timezone");
+const { Op } = require("sequelize");
 const userModel = require("../../models/userModel");
 const roundModel = require("../../models/roundModel");
 const response = require("../../utils/genericResponse");
 const logger = require("../../configs/winston");
+const constants = require("../../utils/constants");
+
+moment.tz.setDefault("Asia/Calcutta");
 
 const updateProjectLink = async (req, res) => {
+  const todayTime = moment();
+  const roundData = await roundModel.findOne({
+    where: {
+      roundNo: "2",
+      regNo: req.user.regNo,
+      coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
+    },
+  });
+  if (roundData === null) {
+    response(res, false, "", "No Such Entry found!");
+    return;
+  }
+  if (moment(todayTime).isAfter(roundData.projectDeadline)) {
+    response(res, true, { passed: true }, "Project Deadline passed");
+    return;
+  }
   userModel
     .update(
       { projectLink: req.body.projectLink },
       { where: { regNo: req.user.regNo } }
     )
     .then((result) => {
+      const newResult = result;
+      newResult.passed = false;
       if (result == 0) {
-        response(res, true, result, "User not found");
+        response(res, true, newResult, "User not found");
       } else {
-        response(res, true, result, "User Project updated");
+        response(res, true, newResult, "User Project updated");
       }
     })
     .catch((err) => {
