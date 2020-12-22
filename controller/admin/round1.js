@@ -47,6 +47,7 @@ const selectReadyCandidates = async (req, res) => {
         },
         {
           where: {
+            auid: { [Op.is]: null },
             regNo: candidates[i],
           },
           transaction: chainTransaction,
