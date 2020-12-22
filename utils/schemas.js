@@ -21,6 +21,7 @@ const schemas = {
       .email()
       .regex(RegExp("[a-zA-Z0-9.]*2020[a|b]?@vitstudent.ac.in"))
       .required(),
+    token: Joi.string().required(),
   }),
   forgotPassword: Joi.object().keys({
     email: Joi.string()
