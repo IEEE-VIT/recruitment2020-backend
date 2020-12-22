@@ -202,6 +202,14 @@ const userForm = async (req, res) => {
       if (user == null) {
         throw new Error("Invalid Registration Number");
       }
+      const userNumber = await userModel.findOne(
+        { where: { phoneNo: req.body.phoneNo } },
+        { transaction: t }
+      );
+
+      if (userNumber) {
+        throw new Error("Phone Number already exists");
+      }
 
       const slot = await slotModel.findOne(
         { where: { suid: req.body.suid, roundNo: "1" } },
