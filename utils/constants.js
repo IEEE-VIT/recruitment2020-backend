@@ -42,5 +42,5 @@ module.exports = {
   NonMandatoryQuesions: 2,
   round1MaxCandidatesPerSlot: 5,
   round2MaxCandidatesPerMgmtSlot: 15,
-  showSlotsafterHours: 2,
+  showSlotsafterHours: 0,
 };

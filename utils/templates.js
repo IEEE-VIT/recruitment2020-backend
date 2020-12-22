@@ -7,11 +7,11 @@ const forgotPasswordTempalate = (name, otp, time) => {
   };
 };
 
-const round2Interview = (name, date, time, meetlink) => {
+const round2Interview = (name, date, time) => {
   return {
     body: `Hey ${name}, <br>
     Congratulations!, Your IEEE Round 2 Interview is scheduled on ${date} at ${time}
-    Please make sure to join this ${meetlink} on time!
+    Please make sure to join on time! You'll find the Interview link in the portal.
     `,
     subject: "[IEEE-VIT] Round 2 Interview",
   };

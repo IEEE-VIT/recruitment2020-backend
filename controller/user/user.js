@@ -5,6 +5,8 @@ const deadlineModel = require("../../models/deadlineModel");
 const roundModel = require("../../models/roundModel");
 const slotModel = require("../../models/slotModel");
 const updatesModel = require("../../models/updateModel");
+const projectModel = require("../../models/projectModel");
+const adminModel = require("../../models/adminModel");
 const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
 const logger = require("../../configs/winston");
@@ -78,8 +80,8 @@ const dashboard = async (req, res) => {
     };
 
     const resultsTimeCheck = async (roundNo) => {
-      const todayDate = moment().format("YYYY-MM-DD");
-      const todayTime = moment().format("HH:mm:ss");
+      const todayDate = moment().format("DD MMM");
+      const todayTime = moment().format("HH:mm");
       const resultsTimeChecker = await deadlineModel
         .findOne({ where: { roundNo } })
         .then((roundDeadline) => {
@@ -119,14 +121,26 @@ const dashboard = async (req, res) => {
         round2NonMgmt: {},
         round3: {},
       },
+      adminMeetLink: "",
       user: {},
+      project: {},
     };
+
+    const round1Deadline = await resultsTimeCheck("1");
+    const round2Deadline = await resultsTimeCheck("2");
+
     const userData = await userModel.findOne({
       where: { regNo },
     });
+
+    const projectData = await projectModel.findOne({
+      where: { puid: userData.puid },
+    });
+
+    resultData.project = projectData;
     resultData.user = userData;
     const roundModelData = await roundModel.findAll({
-      include: slotModel,
+      include: [slotModel, adminModel],
       order: ["roundNo"],
       where: { regNo },
     });
@@ -146,6 +160,7 @@ const dashboard = async (req, res) => {
           break;
 
         case "1":
+          resultData.round1Status = constants.PendingReview;
           resultData.round0Status = true;
           if (roundData.Slot === null) {
             resultData.round1Status = constants.NoSlot;
@@ -162,102 +177,107 @@ const dashboard = async (req, res) => {
           } else if (roundData.meetingCompleted === false) {
             resultData.round1Status = constants.Ready;
             slots.round1 = roundData.Slot;
+          } else if (round1Deadline) {
+            resultData.round1Status = roundData.status;
           } else {
-            const isResultTime = await resultsTimeCheck("1");
-            if (isResultTime) {
-              resultData.round1Status = roundData.status;
-            } else {
-              resultData.round1Status = constants.PendingReview;
-            }
-            slots.round1 = roundData.Slot;
+            resultData.round1Status = constants.PendingReview;
           }
           domainAdder(roundData);
           break;
 
         case "2":
-          resultData.round1Status = constants.AcceptedReview;
+          if (round1Deadline === false) {
+            resultData.round1Status = constants.PendingReview;
+            break;
+          } else if (round1Deadline === true) {
+            resultData.round1Status = constants.AcceptedReview;
 
-          if (
-            roundData.coreDomain === constants.Tech ||
-            roundData.coreDomain === constants.Dsn
-          ) {
-            resultData.round2NonMgmtStatus = true;
-
-            if (roundData.Slot === null) {
-              resultData.round2NonMgmtStatus = constants.Ready;
-              slots.round2NonMgmt = null;
-            } else if (
-              missedSlot(
-                roundData.meetingCompleted,
-                roundData.Slot.timeTo,
-                roundData.Slot.date
-              )
+            if (
+              roundData.coreDomain === constants.Tech ||
+              roundData.coreDomain === constants.Dsn
             ) {
-              resultData.round2NonMgmtStatus = constants.Missed;
-              slots.round2NonMgmt = roundData.Slot;
-            } else if (roundData.meetingCompleted === false) {
-              resultData.round2NonMgmtStatus = constants.Ready;
-              slots.round2NonMgmt = roundData.Slot;
-            } else {
-              const isResultTime = await resultsTimeCheck("2");
-              if (isResultTime) {
-                resultData.round2NonMgmtStatus = roundData.status;
-              } else {
-                resultData.round2NonMgmtStatus = constants.PendingReview;
-              }
+              // placeholder value for round2NonMgmtStatus
+              resultData.round2NonMgmtStatus = constants.PendingReview;
 
-              slots.round2NonMgmt = roundData.Slot;
-            }
-          }
-
-          if (roundData.coreDomain == constants.Mgmt) {
-            resultData.round2MgmtStatus = true;
-            if (roundData.Slot === null) {
-              resultData.round2MgmtStatus = constants.NoSlot;
-              slots.round2Mgmt = null;
-            } else if (
-              missedSlot(
-                roundData.meetingCompleted,
-                roundData.Slot.timeTo,
-                roundData.Slot.date
-              )
-            ) {
-              resultData.round2MgmtStatus = constants.Missed;
-              slots.round2Mgmt = roundData.Slot;
-            } else if (roundData.meetingCompleted === false) {
-              resultData.round2MgmtStatus = constants.Ready;
-              slots.round2Mgmt = roundData.Slot;
-            } else {
-              const isResultTime = await resultsTimeCheck("2");
-              if (isResultTime) {
-                resultData.round2MgmtStatus = roundData.status;
+              if (roundData.Slot === null) {
+                resultData.round2NonMgmtStatus = constants.Ready;
+                slots.round2NonMgmt = null;
+              } else if (
+                missedSlot(
+                  roundData.meetingCompleted,
+                  roundData.Slot.timeTo,
+                  roundData.Slot.date
+                )
+              ) {
+                resultData.round2NonMgmtStatus = constants.Missed;
+                slots.round2NonMgmt = roundData.Slot;
+              } else if (roundData.meetingCompleted === false) {
+                resultData.round2NonMgmtStatus = constants.Ready;
+                slots.round2NonMgmt = roundData.Slot;
+                resultData.adminMeetLink = roundData.Admin.meetLink;
               } else {
-                resultData.round2MgmtStatus = constants.PendingReview;
+                if (round2Deadline) {
+                  resultData.round2NonMgmtStatus = roundData.status;
+                } else {
+                  resultData.round2NonMgmtStatus = constants.PendingReview;
+                }
+                slots.round2NonMgmt = roundData.Slot;
               }
-              slots.round2Mgmt = roundData.Slot;
             }
+
+            if (roundData.coreDomain === constants.Mgmt) {
+              resultData.round2MgmtStatus = constants.PendingReview;
+              if (roundData.Slot === null) {
+                resultData.round2MgmtStatus = constants.NoSlot;
+                slots.round2Mgmt = null;
+              } else if (
+                missedSlot(
+                  roundData.meetingCompleted,
+                  roundData.Slot.timeTo,
+                  roundData.Slot.date
+                )
+              ) {
+                resultData.round2MgmtStatus = constants.Missed;
+                slots.round2Mgmt = roundData.Slot;
+              } else if (roundData.meetingCompleted === false) {
+                resultData.round2MgmtStatus = constants.Ready;
+                slots.round2Mgmt = roundData.Slot;
+              } else {
+                if (round2Deadline) {
+                  resultData.round2MgmtStatus = roundData.status;
+                } else {
+                  resultData.round2MgmtStatus = constants.PendingReview;
+                }
+                slots.round2Mgmt = roundData.Slot;
+              }
+            }
+            domainAdder(roundData);
+            break;
           }
-          domainAdder(roundData);
           break;
 
         case "3":
-          resultData.round0Status = true;
-          resultData.round1Status = constants.AcceptedReview;
-
-          if (roundData.coreDomain == constants.Mgmt) {
-            resultData.round2MgmtStatus = constants.AcceptedReview;
-          } else {
-            resultData.round2NonMgmtStatus = constants.AcceptedReview;
+          if (round1Deadline === false) {
+            resultData.round1Status = constants.PendingReview;
+            break;
+          } else if (round1Deadline === true) {
+            resultData.round1Status = constants.AcceptedReview;
+            if (round2Deadline === false) {
+              if (roundData.coreDomain == constants.Mgmt) {
+                resultData.round2MgmtStatus = constants.PendingReview;
+              } else {
+                resultData.round2NonMgmtStatus = constants.PendingReview;
+              }
+              break;
+            } else if (round2Deadline === true) {
+              if (roundData.coreDomain == constants.Mgmt) {
+                resultData.round2MgmtStatus = constants.AcceptedReview;
+              } else {
+                resultData.round2NonMgmtStatus = constants.AcceptedReview;
+              }
+              resultData.round3Status = constants.PendingReview;
+            }
           }
-
-          if (roundData.Slot === null) {
-            resultData.round3Status = constants.PendingReview;
-            slots.round3 = null;
-          } else {
-            resultData.round3Status = constants.Ready;
-            slots.round3 = roundData.Slot;
-          }
-          domainAdder(roundData);
           break;
         default:
           break;
