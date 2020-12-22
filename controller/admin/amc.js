@@ -1,4 +1,5 @@
 /* eslint-disable eqeqeq */
+const moment = require("moment-timezone");
 const slotModel = require("../../models/slotModel");
 const roundModel = require("../../models/roundModel");
 const userModel = require("../../models/userModel");
@@ -31,6 +32,8 @@ const fetchProjects = async (req, res) => {
 };
 
 const round1Amc = async (req, res) => {
+  moment.tz.setDefault("Asia/Calcutta");
+  const deadlineTime = moment().add(2, "days");
   const { comment, status, eligibleDomains, regNo, puid } = req.body;
   try {
     const roundModelData = await roundModel.findOne({
@@ -92,6 +95,7 @@ const round1Amc = async (req, res) => {
               status: constants.PendingReview,
               specificDomain: eligibleDomains[i],
               coreDomain: eligibleDomains[i],
+              projectDeadline: deadlineTime,
             },
             { transaction: chain }
           );

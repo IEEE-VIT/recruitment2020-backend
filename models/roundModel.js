@@ -74,6 +74,10 @@ const Round = sequelize.define("Round", {
       }
     },
   },
+  projectDeadline: {
+    type: DataTypes.DATE,
+    defaultValue: null,
+  },
 });
 
 module.exports = Round;
