@@ -4,10 +4,17 @@ const adminAuthController = require("../controller/admin/adminAuthentication");
 const validater = require("../middleware/validation");
 const schemas = require("../utils/schemas");
 const headerAuth = require("../middleware/headerAuth");
+const recaptcha = require("../middleware/captcha");
 
-router.post("/login", validater(schemas.userLogin), userAuthController.login);
+router.post(
+  "/login",
+  recaptcha,
+  validater(schemas.userLogin),
+  userAuthController.login
+);
 router.post(
   "/register",
+  recaptcha,
   validater(schemas.userRegister),
   userAuthController.register
 );
@@ -23,16 +30,19 @@ router.post(
 );
 router.post(
   "/forgotPassword",
+  recaptcha,
   validater(schemas.forgotPassword),
   userAuthController.forgotPassword
 );
 router.post(
   "/resetPassword",
+  recaptcha,
   validater(schemas.resetPassword),
   userAuthController.resetPassword
 );
 router.post(
   "/verifyOtp",
+  recaptcha,
   validater(schemas.verifyOtp),
   userAuthController.verifyOtp
 );
