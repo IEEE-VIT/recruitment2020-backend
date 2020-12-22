@@ -1,5 +1,6 @@
 /* eslint-disable eqeqeq */
 const { Op } = require("sequelize");
+const moment = require("moment-timezone");
 const logger = require("../../../configs/winston");
 const roundModel = require("../../../models/roundModel");
 const userModel = require("../../../models/userModel");
@@ -46,6 +47,49 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
     })
     .catch((err) => {
       logger.error(`Failure to fetchTechDsnRound2Candidates due to ${err}`);
+      response(res, false, "", err.toString());
+    });
+};
+
+const getRound2Slots = async (req, res) => {
+  const todayDate = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("YYYY-MM-DD");
+  const todayTime = moment()
+    .add(constants.showSlotsafterHours, "hours")
+    .format("HH:mm:ss");
+
+  await slotModel
+    .findAll({
+      where: {
+        [Op.or]: [
+          {
+            roundNo: "2",
+            mgmt: false,
+            date: { [Op.gt]: todayDate },
+          },
+          {
+            roundNo: "2",
+            mgmt: false,
+            date: todayDate,
+            timeFrom: { [Op.gte]: todayTime },
+          },
+        ],
+      },
+      order: [
+        ["date", "ASC"],
+        ["timeFrom", "ASC"],
+      ],
+    })
+    .then((slots) => {
+      if (slots == "") {
+        response(res, true, "", "No Valid Slot available");
+      } else {
+        response(res, true, slots, "Slots Sent");
+      }
+    })
+    .catch((err) => {
+      logger.error(`Failure to getRound2Slots due to ${err}`);
       response(res, false, "", err.toString());
     });
 };
@@ -142,4 +186,5 @@ module.exports = {
   fetchTechDsnRound2Candidates,
   fetchMyTechDesignMeetings,
   selectR2TechDsnCandidate,
+  getRound2Slots,
 };

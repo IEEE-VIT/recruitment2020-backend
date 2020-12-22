@@ -53,6 +53,9 @@ router.get(
   "/r2/nonmgmt/fetchMeetings",
   adminRound2NonMgmtController.fetchMyTechDesignMeetings
 );
+
+router.get("/r2/nonmgmt/slots", adminRound2NonMgmtController.getRound2Slots);
+
 router.get(
   "/r2/mgmt/fetchUnoccupiedMgmtGdpSlots",
   adminRound2MgmtController.fetchUnoccupiedMgmtSlots
