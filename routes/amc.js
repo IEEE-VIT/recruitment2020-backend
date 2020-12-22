@@ -10,14 +10,18 @@ router.get("/fetchAmc", amcController.amcFetch);
 
 router.post(
   "/round1Interview",
-  validater(schemas.postAmc),
+  validater(schemas.postRoundOneAmc),
   amcController.round1Amc
 );
 router.post(
   "/round2Interview",
-  validater(schemas.postAmc),
+  validater(schemas.postRoundTwoAmc),
   amcController.round2Amc
 );
-router.post("/round3Interview", amcController.round3Amc);
+router.post(
+  "/round3Interview",
+  validater(schemas.postRoundThreeAmc),
+  amcController.round3Amc
+);
 
 module.exports = router;

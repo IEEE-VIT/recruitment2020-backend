@@ -118,7 +118,7 @@ const schemas = {
       .valid(constants.AcceptedReview, constants.RejectedReview)
       .required(),
   }),
-  postAmc: Joi.object().keys({
+  postRoundOneAmc: Joi.object().keys({
     comment: Joi.string(),
     status: Joi.string().valid(
       constants.AcceptedReview,
@@ -143,6 +143,28 @@ const schemas = {
         constants.Unknown
       )
     ),
+    regNo: Joi.string()
+      .alphanum()
+      .length(9)
+      .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/),
+    puid: Joi.string()
+      .pattern(/^[0-9]+$/)
+      .required(),
+  }),
+  postRoundTwoAmc: Joi.object().keys({
+    comment: Joi.string(),
+    status: Joi.string().valid(
+      constants.AcceptedReview,
+      constants.PendingReview,
+      constants.RejectedReview,
+      constants.ExceptionReview
+    ),
+    coreDomain: Joi.string().valid(
+      constants.Mgmt,
+      constants.Tech,
+      constants.Dsn,
+      constants.Unknown
+    ),
     specificDomain: Joi.string().valid(
       constants.App,
       constants.Web,
@@ -156,17 +178,23 @@ const schemas = {
       constants.Mgmt,
       constants.Unknown
     ),
-    coreDomain: Joi.string().valid(
-      constants.Mgmt,
-      constants.Tech,
-      constants.Dsn,
-      constants.Unknown
+    regNo: Joi.string()
+      .alphanum()
+      .length(9)
+      .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/),
+  }),
+  postRoundThreeAmc: Joi.object().keys({
+    comment: Joi.string(),
+    status: Joi.string().valid(
+      constants.AcceptedReview,
+      constants.PendingReview,
+      constants.RejectedReview,
+      constants.ExceptionReview
     ),
     regNo: Joi.string()
       .alphanum()
       .length(9)
       .pattern(/^[2][0]([a-zA-Z]){3}([0-9]){4}/),
-    puid: Joi.string().pattern(/^[0-9]+$/),
   }),
 };
 
