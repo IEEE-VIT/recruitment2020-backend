@@ -63,6 +63,7 @@ const schemas = {
         constants.GDes,
         constants.Ui,
         constants.Vfx,
+        constants.Elec,
         constants.ThreeD,
         constants.Mgmt,
         constants.Unknown
@@ -136,10 +137,9 @@ const schemas = {
         constants.GDes,
         constants.Ui,
         constants.Vfx,
+        constants.Elec,
         constants.ThreeD,
         constants.Mgmt,
-        constants.Tech,
-        constants.Dsn,
         constants.Unknown
       )
     ),
@@ -171,10 +171,11 @@ const schemas = {
       constants.Ml,
       constants.CSec,
       constants.ARVR,
-      constants.ThreeD,
       constants.GDes,
       constants.Ui,
       constants.Vfx,
+      constants.Elec,
+      constants.ThreeD,
       constants.Mgmt,
       constants.Unknown
     ),
