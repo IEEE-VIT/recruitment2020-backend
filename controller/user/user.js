@@ -6,6 +6,7 @@ const roundModel = require("../../models/roundModel");
 const slotModel = require("../../models/slotModel");
 const updatesModel = require("../../models/updateModel");
 const projectModel = require("../../models/projectModel");
+const adminModel = require("../../models/adminModel");
 const response = require("../../utils/genericResponse");
 const constants = require("../../utils/constants");
 const logger = require("../../configs/winston");
@@ -120,6 +121,7 @@ const dashboard = async (req, res) => {
         round2NonMgmt: {},
         round3: {},
       },
+      adminMeetLink: "",
       user: {},
       project: {},
     };
@@ -138,7 +140,7 @@ const dashboard = async (req, res) => {
     resultData.project = projectData;
     resultData.user = userData;
     const roundModelData = await roundModel.findAll({
-      include: slotModel,
+      include: [slotModel, adminModel],
       order: ["roundNo"],
       where: { regNo },
     });
@@ -212,6 +214,7 @@ const dashboard = async (req, res) => {
               } else if (roundData.meetingCompleted === false) {
                 resultData.round2NonMgmtStatus = constants.Ready;
                 slots.round2NonMgmt = roundData.Slot;
+                resultData.adminMeetLink = roundData.Admin.meetLink;
               } else {
                 if (round2Deadline) {
                   resultData.round2NonMgmtStatus = roundData.status;
@@ -222,7 +225,7 @@ const dashboard = async (req, res) => {
               }
             }
 
-            if (roundData.coreDomain == constants.Mgmt) {
+            if (roundData.coreDomain === constants.Mgmt) {
               resultData.round2MgmtStatus = constants.PendingReview;
               if (roundData.Slot === null) {
                 resultData.round2MgmtStatus = constants.NoSlot;
