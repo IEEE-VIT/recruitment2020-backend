@@ -63,15 +63,27 @@ const round1Amc = async (req, res) => {
       if (commentObj === null) {
         throw Error("Error in creating comment");
       }
-      const currentRoundUpdate = await roundModel.update(
-        {
-          meetingCompleted: true,
-          status,
-          cuid: commentObj.cuid,
-          auid: req.user.auid,
-        },
-        { where: { regNo, roundNo: "1" }, transaction: chain }
-      );
+      let currentRoundUpdate;
+      if (status === constants.ExceptionReview) {
+        currentRoundUpdate = await roundModel.update(
+          {
+            status,
+            cuid: commentObj.cuid,
+            auid: req.user.auid,
+          },
+          { where: { regNo, roundNo: "1" }, transaction: chain }
+        );
+      } else {
+        currentRoundUpdate = await roundModel.update(
+          {
+            meetingCompleted: true,
+            status,
+            cuid: commentObj.cuid,
+            auid: req.user.auid,
+          },
+          { where: { regNo, roundNo: "1" }, transaction: chain }
+        );
+      }
 
       if (currentRoundUpdate == 0) {
         throw Error("Unable to update Round 1 Object.");
@@ -151,16 +163,28 @@ const round2Amc = async (req, res) => {
       if (commentObj == null) {
         throw Error("Error in creating comment");
       }
-
-      const specificDomainUpdate = await roundModel.update(
-        {
-          status: constants.RejectedReview,
-          meetingCompleted: true,
-          cuid: commentObj.cuid,
-          auid: req.user.auid,
-        },
-        { transaction: chain, where: { coreDomain, regNo } }
-      );
+      let specificDomainUpdate;
+      if (status === constants.ExceptionReview) {
+        specificDomainUpdate = await roundModel.update(
+          {
+            status: constants.ExceptionReview,
+            meetingCompleted: false,
+            cuid: commentObj.cuid,
+            auid: req.user.auid,
+          },
+          { transaction: chain, where: { coreDomain, regNo } }
+        );
+      } else {
+        specificDomainUpdate = await roundModel.update(
+          {
+            status: constants.RejectedReview,
+            meetingCompleted: true,
+            cuid: commentObj.cuid,
+            auid: req.user.auid,
+          },
+          { transaction: chain, where: { coreDomain, regNo } }
+        );
+      }
       if (specificDomainUpdate == 0) {
         throw Error(
           "Unable to update other entries in Round2 for the candidate in the same core domain"
@@ -286,6 +310,7 @@ const postException = async (req, res) => {
     response(res, false, "", err.toString());
   }
 };
+
 const amcFetch = async (req, res) => {
   const { regNo } = req.query;
   try {
