@@ -297,7 +297,7 @@ const userForm = async (req, res) => {
     response(res, true, result, "Added to Round 0");
   } catch (err) {
     logger.error(`Failure to userForm due to ${err}`);
-    response(res, false, "", err.toString());
+    response(res, false, "", "Something went wrong! Please try again");
   }
 };
 
