@@ -6,7 +6,7 @@ name: Build and deploy Node.js app to Azure Web App - recruitments2020preccs
 on:
   push:
     branches:
-      - azure-pre-ccs
+      - precss-master-merge
 
 jobs:
   build-and-deploy:
