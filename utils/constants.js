@@ -39,8 +39,8 @@ module.exports = {
   MgmtDomains() {
     return [this.Mgmt];
   },
-  NonMandatoryQuesions: 2,
+  NonMandatoryQuesions: 3,
   round1MaxCandidatesPerSlot: 5,
   round2MaxCandidatesPerMgmtSlot: 15,
-  showSlotsafterHours: 0,
+  showSlotsafterHours: 2,
 };
