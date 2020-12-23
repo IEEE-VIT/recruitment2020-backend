@@ -14,7 +14,7 @@ const Update = sequelize.define("Update", {
     },
   },
   content: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(1000),
     allowNull: false,
     validate: {
       notEmpty: true,

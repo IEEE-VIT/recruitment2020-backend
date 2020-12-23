@@ -19,7 +19,7 @@ const Answer = sequelize.define("Answer", {
     },
   },
   answer: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(1000),
   },
 });
 
