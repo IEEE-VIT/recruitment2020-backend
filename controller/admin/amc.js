@@ -150,6 +150,11 @@ const round2Amc = async (req, res) => {
           "Candidate's Round 2 Interview for this coreDomain has already been taken!"
         );
       }
+      if (roundModelData[i].suid == null) {
+        throw Error(
+          "No suid present for this candidate! Cannot take this interview!"
+        );
+      }
     }
     await db.transaction(async (chain) => {
       const commentObj = await commentsModel.create(
