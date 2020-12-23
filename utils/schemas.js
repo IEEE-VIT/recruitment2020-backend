@@ -37,7 +37,6 @@ const schemas = {
   }),
   adminUpdate: Joi.object().keys({
     name: Joi.string(),
-    password: Joi.string().min(8),
     meetLink: Joi.string().pattern(/^(http|https):/),
   }),
   round0form: Joi.object().keys({

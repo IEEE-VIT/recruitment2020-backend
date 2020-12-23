@@ -33,8 +33,6 @@ const updateAdmin = async (req, res) => {
     .update(
       {
         name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
         meetLink: req.body.meetLink,
       },
       { where: { auid: req.user.auid } }
