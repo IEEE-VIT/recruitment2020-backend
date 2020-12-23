@@ -10,8 +10,12 @@ require("dotenv").config();
 const passport = require("passport");
 const logger = require("./configs/winston");
 const relations = require("./utils/relations");
-const round0Route = require("./routes/round0");
+const userRoute = require("./routes/user");
 const adminRoute = require("./routes/admin");
+const amcRoute = require("./routes/amc");
+const round0Route = require("./routes/round0");
+const round1Route = require("./routes/round1");
+const round2Route = require("./routes/round2");
 const authRoute = require("./routes/authentication");
 
 const app = express();
@@ -36,12 +40,12 @@ const adminAuthMiddleware = passport.authenticate("adminStrategy", {
   session: false,
 });
 
-// app.use("/api/user", userAuthMiddleware, userRoute);
+app.use("/api/user", userAuthMiddleware, userRoute);
 app.use("/api/r0", userAuthMiddleware, round0Route);
-// app.use("/api/r1", userAuthMiddleware, round1Route);
-// app.use("/api/r2", userAuthMiddleware, round2Route);
+app.use("/api/r1", userAuthMiddleware, round1Route);
+app.use("/api/r2", userAuthMiddleware, round2Route);
 app.use("/api/admin", adminAuthMiddleware, adminRoute);
-// app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
+app.use("/api/admin/amc", adminAuthMiddleware, amcRoute);
 
 app.use("/api", authRoute);
 
