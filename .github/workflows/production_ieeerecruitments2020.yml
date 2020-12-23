@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'ieeerecruitments2020'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1aa4801e26f648ee8de16484387ca4e5 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_22d62ce1b52145c98174fd917b62a2ac }}
         package: .
