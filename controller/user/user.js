@@ -130,6 +130,7 @@ const dashboard = async (req, res) => {
     const round2Deadline = await resultsTimeCheck("2");
 
     const userData = await userModel.findOne({
+      attributes: ["name", "regNo", "projectLink", "puid"],
       where: { regNo },
     });
 
