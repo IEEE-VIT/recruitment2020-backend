@@ -1,5 +1,6 @@
 /* eslint-disable eqeqeq */
 const moment = require("moment-timezone");
+const { Op } = require("sequelize");
 const userModel = require("../../models/userModel");
 const deadlineModel = require("../../models/deadlineModel");
 const roundModel = require("../../models/roundModel");
@@ -68,6 +69,9 @@ const getResults = async (req, res) => {
 const dashboard = async (req, res) => {
   const { regNo } = req.user;
   try {
+    const todayDate = moment().format("DD MMM");
+    const todayTime = moment().format("HH:mm");
+
     const qualifiedRounds = [];
     const slots = {};
     const domainAdder = (roundData) => {
@@ -80,8 +84,6 @@ const dashboard = async (req, res) => {
     };
 
     const resultsTimeCheck = async (roundNo) => {
-      const todayDate = moment().format("DD MMM");
-      const todayTime = moment().format("HH:mm");
       const resultsTimeChecker = await deadlineModel
         .findOne({ where: { roundNo } })
         .then((roundDeadline) => {
@@ -97,8 +99,6 @@ const dashboard = async (req, res) => {
     };
 
     const missedSlot = (meetingCompleted, timeTo, date) => {
-      const todayDate = moment().format("DD MMM");
-      const todayTime = moment().format("HH:mm");
       if (
         !meetingCompleted &&
         (todayDate > date || (todayDate == date && todayTime >= timeTo))
@@ -106,6 +106,44 @@ const dashboard = async (req, res) => {
         return true;
       }
       return false;
+    };
+
+    const checkRound2Time = async (userRegNo) => {
+      const finalData = await roundModel
+        .findOne({
+          where: {
+            regNo: userRegNo,
+            roundNo: "2",
+            coreDomain: { [Op.or]: [constants.Tech, constants.Dsn] },
+          },
+        })
+        .then((data) => {
+          if (data == null) {
+            return false;
+          }
+          return slotModel
+            .findOne({ where: { suid: data.suid, roundNo: "2", mgmt: false } })
+            .then((slot) => {
+              if (slot == null) {
+                return false;
+              }
+              if (
+                todayDate == slot.date &&
+                todayTime >= slot.timeFrom &&
+                todayTime <= slot.timeTo
+              ) {
+                return true;
+              }
+              return false;
+            })
+            .catch(() => {
+              return false;
+            });
+        })
+        .catch(() => {
+          return false;
+        });
+      return finalData;
     };
 
     const resultData = {
@@ -149,6 +187,8 @@ const dashboard = async (req, res) => {
       response(res, true, resultData, "Did not submit round0 form");
       return;
     }
+
+    const checkRound2Slot = await checkRound2Time(req.user.regNo);
 
     roundModelData.map(async (roundData) => {
       switch (roundData.roundNo) {
@@ -213,9 +253,12 @@ const dashboard = async (req, res) => {
                 resultData.round2NonMgmtStatus = constants.Missed;
                 slots.round2NonMgmt = roundData.Slot;
               } else if (roundData.meetingCompleted === false) {
+                if (checkRound2Slot) {
+                  resultData.adminMeetLink = roundData.Admin.meetLink;
+                }
+
                 resultData.round2NonMgmtStatus = constants.Ready;
                 slots.round2NonMgmt = roundData.Slot;
-                resultData.adminMeetLink = roundData.Admin.meetLink;
               } else {
                 if (round2Deadline) {
                   resultData.round2NonMgmtStatus = roundData.status;
