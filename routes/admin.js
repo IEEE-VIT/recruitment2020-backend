@@ -34,11 +34,12 @@ router.get(
 );
 router.get(
   "/exceptions",
+  isBoard,
   queryFilter,
   adminExceptionController.fetchExceptions
 );
 router.get("/meetings", adminController.getAllMeetings);
-router.get("/ongoing", adminController.fetchOnGoingMeetings);
+router.get("/ongoing", isBoard, adminController.fetchOnGoingMeetings);
 router.get("/projects", queryFilter, adminController.fetchProjects);
 router.get("/allslots", queryFilter, adminController.getAllSlots);
 router.get(
@@ -75,6 +76,7 @@ router.post("/slotlimit", isBoard, adminController.updateSlotLimit);
 
 router.post(
   "/exceptions",
+  isBoard,
   validater(schemas.resolveException),
   adminExceptionController.resolveExceptions
 );
