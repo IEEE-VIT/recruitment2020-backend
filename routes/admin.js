@@ -39,7 +39,7 @@ router.get(
   adminExceptionController.fetchExceptions
 );
 router.get("/meetings", adminController.getAllMeetings);
-router.get("/ongoing", isBoard, adminController.fetchOnGoingMeetings);
+router.get("/ongoing", adminController.fetchOnGoingMeetings);
 router.get("/projects", queryFilter, adminController.fetchProjects);
 router.get("/allslots", queryFilter, adminController.getAllSlots);
 router.get(
