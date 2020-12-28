@@ -60,12 +60,8 @@ const fetchTechDsnRound2Candidates = async (req, res) => {
 };
 
 const getRound2Slots = async (req, res) => {
-  const todayDate = moment()
-    .add(constants.showSlotsafterHours, "hours")
-    .format("YYYY-MM-DD");
-  const todayTime = moment()
-    .add(constants.showSlotsafterHours, "hours")
-    .format("HH:mm:ss");
+  const todayDate = moment().format("YYYY-MM-DD");
+  const todayTime = moment().format("HH:mm:ss");
 
   await slotModel
     .findAll({
