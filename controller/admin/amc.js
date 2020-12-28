@@ -204,7 +204,7 @@ const round2Amc = async (req, res) => {
             cuid: commentObj.cuid,
             auid: req.user.auid,
           },
-          { where: { coreDomain, specificDomain }, transaction: chain }
+          { where: { coreDomain, specificDomain, regNo }, transaction: chain }
         );
         if (approvalDomainUpdate == 0) {
           throw Error("Unable to approve candidate in the domain");
