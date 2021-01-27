@@ -97,6 +97,10 @@ To start contributing, check out [`CONTRIBUTING.md`](https://github.com/IEEE-VIT
 
 [Admin API Revised Docs](https://documenter.getpostman.com/view/11431136/TVsoFUzo)
 
+### API Design Docs
+
+[API Design Documentation](https://github.com/IEEE-VIT/recruitment2020-backend/blob/master/overview.md)
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):

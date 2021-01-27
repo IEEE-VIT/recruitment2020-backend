@@ -9,11 +9,11 @@
 - PR - Pending Review
 - AR - Accepted through the round
 - RR - Rejected throught the round
-- ER - Exception in the round 
+- ER - Exception in the round
 
-# User Walkthrough
+## User Walkthrough
 
-## R0
+### R0
 
 - User signs up/logs in using email, name, regno, password (check 2020 in email, vit email, regno in format)
 
@@ -23,7 +23,7 @@
 
 - ask for slots (verify before sending)
 
-## R1
+### R1
 
 - Banner display asking if you're ready for meeting
 
@@ -31,57 +31,53 @@
 
 - once admin shedules the meet with the user, meet link of the admin will be sent via mail
 
-## Post R1 
+### Post R1
 
-### Tech and Design
+#### Tech and Design
 
 - display the project (tech/design)
 
 - submission of link
 
-### Management
+#### Management
 
 - user selects the Round2 slots
 
+### R2
 
-## R2 
-
-### Tech and Design
+#### Tech and Design
 
 - user gets a scheduled meet link
 
-### Management
+#### Management
 
 - user gets GD pool link
 
 - gets the actual GD room link
 
+## Admin Walkthrough
 
-# Admin Walkthrough
-
-## R0
+### R0
 
 - Generate Admin creds
 
 - ask admin to put up their meet link
 
-
-## R1
+### R1
 
 - display a list and select a candidate
 
 - AMC
 
+### R2
 
-## R2 
-
-### Tech and Design
+#### Tech and Design
 
 - AMC
 
 - send a scheduled meet link
 
-### Management
+#### Management
 
 - AMC
 
@@ -89,13 +85,13 @@
 
 - mail actual GD link
 
-## Exception
+### Exception
 
 - Fetch Exceptions
 
 - Resolve Exceptions
 
-## Admin Meet Control (AMC)
+### Admin Meet Control (AMC)
 
 - Accept/Reject to next round
 
