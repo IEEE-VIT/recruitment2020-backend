@@ -4,10 +4,9 @@
 
 ## About
 
-Recruitment 2020 Backend, This project was to create a backend that ensure smooth process of recruting amazing set of people into IEEE-VIT. It handles both Admin as well as user sides and has a MVC based monolith architecuture. Uses 2FA by utilising Firebase Authentication and uses PostgresSQL as its database.
+Recruitment 2020 Backend, This project was to create a backend that ensures a smooth process of recruiting an amazing set of people into IEEE-VIT. It handles both Admin as well as user sides and has an MVC based monolith architecture. Uses 2FA by utilising Firebase Authentication and uses PostgresSQL as its database.
 
-Authentication by Firebase and Authorisation by JWT is covered with robust middleware implementations.
-
+Authentication by Firebase and Authorisation by JWT are covered with robust middleware implementations.
 ## Tools and technology used
 
 * Node.js
